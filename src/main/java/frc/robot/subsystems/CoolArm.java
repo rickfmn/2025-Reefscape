@@ -24,6 +24,8 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.proto.Wpimath;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.ExponentialProfile.ProfileTiming;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.TimeUnit;
 import edu.wpi.first.units.Units;
@@ -31,6 +33,7 @@ import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.units.Units.*;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -58,9 +61,13 @@ public class CoolArm extends SubsystemBase {
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
   private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kS, CoolArmConstants.kG, CoolArmConstants.kV);
   private PIDController armPIDController = new PIDController(CoolArmConstants.kP, CoolArmConstants.kI, CoolArmConstants.kD);
+  private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((130d/0.75d), (130d/0.75d)/(0.75d*0.5d ));
+  private TrapezoidProfile.State previousTrapezoidState = new TrapezoidProfile.State(0, 0);
+  private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints);
+  private Timer trapezoidTimer = new Timer();
   private double angleSetpoint = 5;
   private double elevatorSetpoint = 0;
-  private double elevatorTolerance = 5;
+  private double elevatorTolerance = 0.25;
 
 
   public SparkMax elevatorMotor = new SparkMax(CoolArmConstants.elevatorCANID, MotorType.kBrushless);
@@ -83,61 +90,76 @@ public class CoolArm extends SubsystemBase {
     armPIDController.setIZone(20);
 
     angleSetpoint = absAngleEncoder.getPosition();
-    SetElevatorEncoder(0);
+    SetElevatorEncoderPosition(0);
     elevatorSetpoint = elevatorEncoder.getPosition();
 
     //Shuffleboard.getTab("Arm Sysid Testing").add(armPIDController);
     SmartDashboard.putData(armPIDController);
+    
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     double absAngle = absAngleEncoder.getPosition();
-    SetAngleMotor(armPIDController.calculate(absAngle,angleSetpoint ) + armFFController.calculate( ( (angleSetpoint - 90) / 180) * Math.PI, 0));
+    
+    previousTrapezoidState = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState, new TrapezoidProfile.State(angleSetpoint,0));
+    trapezoidTimer.restart();
 
-    // if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
-    //   SetElevatorMotor(-1);
-    // }
-    // else if(elevatorEncoder.getPosition() < elevatorSetpoint - elevatorTolerance){
-    //   SetElevatorMotor(1);
-    // }
-    // else{
-    //   SetElevatorMotor(0);
-    // }
+    SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 90) / 180) * Math.PI, 0));
+
+    if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
+      SetElevatorMotor(-1);
+    }
+    else if(elevatorEncoder.getPosition() < elevatorSetpoint - elevatorTolerance){
+      SetElevatorMotor(1);
+    }
+    else{
+      SetElevatorMotor(0);
+    }
   }
 
   
 
   public void SetArmAction(ArmAction newAction){
     double newAngleSP = absAngleEncoder.getPosition();
+    double newElevatorSP = elevatorEncoder.getPosition();
+
 
     switch(newAction){
       case L1:
         newAngleSP = CoolArmConstants.kL1PrepAngleSP;
+        newElevatorSP = CoolArmConstants.kL1PrepElevatorSP;
+
         break;
       case L2:
         newAngleSP = CoolArmConstants.kL2PrepAngleSP;
+        newElevatorSP = CoolArmConstants.kL2PrepElevatorSP;
         break;
       case L3:
         newAngleSP = CoolArmConstants.kL3PrepAngleSP;
+        newElevatorSP = CoolArmConstants.kL3PrepElevatorSP;
         break;
       case L4:
         newAngleSP = CoolArmConstants.kL4PrepAngleSP;
+        newElevatorSP = CoolArmConstants.kL4PrepElevatorSP;
         break;
       case Travel:
         newAngleSP = CoolArmConstants.kTravelAngleSP;
+        newElevatorSP = CoolArmConstants.kTravelElevatorSP;
         break;
       case Pickup:
         newAngleSP = CoolArmConstants.kPickupAngleSP;
+        newElevatorSP = CoolArmConstants.kPickupElevatorSP;
         break;
       case Place:
-        newAngleSP += CoolArmConstants.kPlaceSPChange;
+        newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
+        newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
         break;
     }
 
     SetAngleSetpoint(newAngleSP);
-      
+    SetElevatorSetpoint(newElevatorSP); 
   }
 
   public void SetAngleSetpoint(double sp){
@@ -148,11 +170,15 @@ public class CoolArm extends SubsystemBase {
     //angleMotor.setVoltage(speed);
   }
 
+  public void SetElevatorSetpoint(double sp){
+    elevatorSetpoint = sp;
+  }
+
   public void SetElevatorMotor(double voltage){
     elevatorMotor.setVoltage(voltage);
   }
 
-  public void SetElevatorEncoder(double newValue){
+  public void SetElevatorEncoderPosition(double newValue){
     elevatorEncoder.setPosition(newValue);
   }
 

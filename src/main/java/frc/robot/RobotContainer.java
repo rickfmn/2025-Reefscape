@@ -183,7 +183,7 @@ public class RobotContainer
     // driverJoystick.button(16).whileTrue(coolArm.sysIdRoutine.dynamic(Direction.kReverse));
     // driverJoystick.button(11).whileTrue(coolArm.sysIdRoutine.quasistatic(Direction.kReverse));
 
-    coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 90),coolArm));
+    //coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 90),coolArm));
 
     copilotController.button(1).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     copilotController.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
@@ -194,8 +194,9 @@ public class RobotContainer
     copilotController.button(8).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
     copilotController.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
 
-    copilotController.button(3).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotor(1), ()->coolArm.SetElevatorMotor(0)));
-    copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotor(-1),()->coolArm.SetElevatorMotor(0)));
+    copilotController.button(3).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotor(1), ()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotor(-1),()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
 
 
   }
