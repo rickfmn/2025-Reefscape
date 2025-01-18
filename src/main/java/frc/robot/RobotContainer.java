@@ -171,8 +171,8 @@ public class RobotContainer
     driverJoystick.button(3).whileTrue(autoAim);
 
 
-    // driverJoystick.button(6).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(0.1), () -> coolArm.SetAngleMotor(0), coolArm));
-    // driverJoystick.button(9).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(-0.1), () -> coolArm.SetAngleMotor(0), coolArm));
+    driverJoystick.button(6).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(0.1), () -> coolArm.SetAngleMotor(0), coolArm));
+    driverJoystick.button(9).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(-0.1), () -> coolArm.SetAngleMotor(0), coolArm));
 
     // driverJoystick.button(5).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(0.1), () -> coolArm.SetElevatorMotor(0), coolArm));
     // driverJoystick.button(8).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(-0.1), () -> coolArm.SetElevatorMotor(0), coolArm));
@@ -194,8 +194,8 @@ public class RobotContainer
     copilotController.button(8).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
     copilotController.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
 
-    copilotController.button(3).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotor(1), ()->coolArm.SetElevatorMotor(0),coolArm));
-    copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotor(-1),()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.button(3).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(1), ()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-1),()->coolArm.SetElevatorMotor(0),coolArm));
     copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
 
 

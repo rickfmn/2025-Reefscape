@@ -64,8 +64,8 @@ public final class Constants
     public static final double kD = 0;
 
 
-    public static final double kL1PrepAngleSP = 82;
-    public static final double kL2PrepAngleSP = 105;
+    public static final double kL1PrepAngleSP = 57;
+    public static final double kL2PrepAngleSP = 112;
     public static final double kL3PrepAngleSP = 139;
     public static final double kL4PrepAngleSP = 139;
 
@@ -73,10 +73,10 @@ public final class Constants
     public static final double kPickupAngleSP = 6;
     public static final double kPlaceAngleSPChange = -15;
 
-    public static final double kL1PrepElevatorSP = 1.94;
-    public static final double kL2PrepElevatorSP = 1.94;
+    public static final double kL1PrepElevatorSP = 2.05;
+    public static final double kL2PrepElevatorSP = 0.25;
     public static final double kL3PrepElevatorSP = 1.94;
-    public static final double kL4PrepElevatorSP = 5.54;
+    public static final double kL4PrepElevatorSP = 5.9;
     public static final double kTravelElevatorSP = 1.0;
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;

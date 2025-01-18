@@ -61,7 +61,7 @@ public class CoolArm extends SubsystemBase {
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
   private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kS, CoolArmConstants.kG, CoolArmConstants.kV);
   private PIDController armPIDController = new PIDController(CoolArmConstants.kP, CoolArmConstants.kI, CoolArmConstants.kD);
-  private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((130d/0.75d), (130d/0.75d)/(0.75d*0.5d ));
+  private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((65d/0.75d), (65d/0.75d)/(0.75d*0.5d ));
   private TrapezoidProfile.State previousTrapezoidState = new TrapezoidProfile.State(0, 0);
   private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints);
   private Timer trapezoidTimer = new Timer();
@@ -72,6 +72,7 @@ public class CoolArm extends SubsystemBase {
 
   public SparkMax elevatorMotor = new SparkMax(CoolArmConstants.elevatorCANID, MotorType.kBrushless);
   public RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
+  private boolean elevatorControlEnabled = false;
 
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
   //   new SysIdRoutine.Config(Volts.of( 0.15 ).per(Units.Seconds), Volts.of(0.7), Seconds.of(10)),
@@ -84,8 +85,12 @@ public class CoolArm extends SubsystemBase {
     
       
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Absolute Angle", absAngleEncoder::getPosition);
-    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Setpoint", () -> angleSetpoint);
+    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle ProfileGoal", () -> angleSetpoint);
+    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Setpoint", () -> previousTrapezoidState.position);
+
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Motor Current", angleMotor::getOutputCurrent);
+    
+    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Motor Output", angleMotor::getAppliedOutput);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Elevator Position", elevatorEncoder::getPosition);
     armPIDController.setIZone(20);
 
@@ -106,17 +111,21 @@ public class CoolArm extends SubsystemBase {
     previousTrapezoidState = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState, new TrapezoidProfile.State(angleSetpoint,0));
     trapezoidTimer.restart();
 
-    SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 90) / 180) * Math.PI, 0));
+    //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 90) / 180) * Math.PI, 0));
 
-    if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
-      SetElevatorMotor(-1);
+    if(elevatorControlEnabled){
+      if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
+        SetElevatorMotor(-1);
+      }
+      else if(elevatorEncoder.getPosition() < elevatorSetpoint - elevatorTolerance){
+        SetElevatorMotor(1);
+      }
+      else{
+        SetElevatorMotor(0);
+      }
     }
-    else if(elevatorEncoder.getPosition() < elevatorSetpoint - elevatorTolerance){
-      SetElevatorMotor(1);
-    }
-    else{
-      SetElevatorMotor(0);
-    }
+    
+    
   }
 
   
@@ -167,19 +176,32 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void SetAngleMotor(double speed){
-    //angleMotor.setVoltage(speed);
+    angleMotor.setVoltage(speed);
   }
 
   public void SetElevatorSetpoint(double sp){
     elevatorSetpoint = sp;
+    SetElevatorControlEnabled(true);
   }
 
   public void SetElevatorMotor(double voltage){
     elevatorMotor.setVoltage(voltage);
   }
 
+  public void SetElevatorMotorManual(double voltage){
+    SetElevatorControlEnabled(false);
+    SetElevatorMotor(voltage);
+  }
+
   public void SetElevatorEncoderPosition(double newValue){
     elevatorEncoder.setPosition(newValue);
+  }
+
+  public void SetElevatorControlEnabled(boolean enabled){
+    elevatorControlEnabled = enabled;
+    if(!enabled){
+      SetElevatorMotor(0);
+    }
   }
 
 //   public void voltageDrive(Voltage volts){
