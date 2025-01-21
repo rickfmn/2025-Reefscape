@@ -62,7 +62,7 @@ public class CoolArm extends SubsystemBase {
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
   private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kS, CoolArmConstants.kG, CoolArmConstants.kV);
   private PIDController armPIDController = new PIDController(CoolArmConstants.kP, CoolArmConstants.kI, CoolArmConstants.kD);
-  private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((65d/0.75d), (65d/0.75d)/(0.75d*0.5d ));
+  private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((65d/0.25d), (65d/0.25d)/(0.25d*0.5d ));
   private TrapezoidProfile.State previousTrapezoidState = new TrapezoidProfile.State(0, 0);
   private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints);
   private Timer trapezoidTimer = new Timer();
@@ -117,10 +117,10 @@ public class CoolArm extends SubsystemBase {
 
     if(elevatorControlEnabled){
       if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
-        SetElevatorMotor(-1);
+        SetElevatorMotor(-2);
       }
       else if(elevatorEncoder.getPosition() < elevatorSetpoint - elevatorTolerance){
-        SetElevatorMotor(1);
+        SetElevatorMotor(2);
       }
       else{
         SetElevatorMotor(0);
@@ -164,8 +164,10 @@ public class CoolArm extends SubsystemBase {
         newElevatorSP = CoolArmConstants.kPickupElevatorSP;
         break;
       case Place:
-        newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
-        newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
+
+        //newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
+        //newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
+        newAngleSP = CoolArmConstants.kPlaceAngleSP;
         break;
     }
 
@@ -174,7 +176,8 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void SetAngleSetpoint(double sp){
-    angleSetpoint = sp;
+
+    angleSetpoint = Math.max(90, Math.min(sp, 270));
   }
 
   public void SetAngleMotor(double speed){

@@ -36,6 +36,7 @@
       "/SmartDashboard/Motors": "Alerts",
       "/SmartDashboard/PIDController[1]": "PIDController",
       "/SmartDashboard/PIDController[8]": "PIDController",
+      "/SmartDashboard/Pigeon 2 (v6) [13]": "Gyro",
       "/SmartDashboard/Pigeon IMU [13]": "Gyro",
       "/SmartDashboard/Swerve Drive": "Alerts"
     }
