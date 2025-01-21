@@ -183,7 +183,7 @@ public class RobotContainer
     // driverJoystick.button(16).whileTrue(coolArm.sysIdRoutine.dynamic(Direction.kReverse));
     // driverJoystick.button(11).whileTrue(coolArm.sysIdRoutine.quasistatic(Direction.kReverse));
 
-    //coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 90),coolArm));
+    coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 180),coolArm));
 
     copilotController.button(1).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     copilotController.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));

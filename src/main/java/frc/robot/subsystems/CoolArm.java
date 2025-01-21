@@ -20,6 +20,7 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
@@ -83,7 +84,6 @@ public class CoolArm extends SubsystemBase {
   public CoolArm() {
     // Creates a SysIdRoutine
     
-      
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Absolute Angle", absAngleEncoder::getPosition);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle ProfileGoal", () -> angleSetpoint);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Setpoint", () -> previousTrapezoidState.position);
@@ -93,10 +93,12 @@ public class CoolArm extends SubsystemBase {
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Motor Output", angleMotor::getAppliedOutput);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Elevator Position", elevatorEncoder::getPosition);
     armPIDController.setIZone(20);
+    
 
     angleSetpoint = absAngleEncoder.getPosition();
     SetElevatorEncoderPosition(0);
     elevatorSetpoint = elevatorEncoder.getPosition();
+    angleMotor.getEncoder().setPosition( -1d *  (( absAngleEncoder.getPosition()-90d ) / 360d ) * 42d);
 
     //Shuffleboard.getTab("Arm Sysid Testing").add(armPIDController);
     SmartDashboard.putData(armPIDController);
@@ -111,7 +113,7 @@ public class CoolArm extends SubsystemBase {
     previousTrapezoidState = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState, new TrapezoidProfile.State(angleSetpoint,0));
     trapezoidTimer.restart();
 
-    //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 90) / 180) * Math.PI, 0));
+    SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
 
     if(elevatorControlEnabled){
       if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
@@ -176,7 +178,7 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void SetAngleMotor(double speed){
-    angleMotor.setVoltage(speed);
+    angleMotor.setVoltage(-1 * speed);
   }
 
   public void SetElevatorSetpoint(double sp){

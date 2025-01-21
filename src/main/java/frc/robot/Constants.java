@@ -57,10 +57,10 @@ public final class Constants
 
     //Gains for the Arm angle controllers, both FF and PID
     public static final double kS = 0;
-    public static final double kG = 2.07;//0.085 gains for no coral and set()
+    public static final double kG = 0.35;//0.085 gains for no coral and set()
     public static final double kV = 0;
-    public static final double kP = 0.03;//0.0025 gains for no coral and set()
-    public static final double kI = 0.001;//0.001 gains for no coral and set()
+    public static final double kP = 0.04;//0.0025 gains for no coral and set()
+    public static final double kI = 0;//0.001 gains for no coral and set()
     public static final double kD = 0;
 
 
