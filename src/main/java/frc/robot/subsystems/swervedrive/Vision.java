@@ -23,6 +23,8 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
+import frc.robot.Constants.VisionConstants;
+
 import java.awt.Desktop;
 import java.util.ArrayList;
 import java.util.List;
@@ -338,9 +340,7 @@ public class Vision
     
     APRIL_CAM("April_Camera",
               new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)),
-              new Translation3d(Units.inchesToMeters(12),
-                                Units.inchesToMeters(9.5),
-                                Units.inchesToMeters(18.5)),
+              VisionConstants.KAprilCamFromGyro,
               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1))
               ;
 
@@ -472,6 +472,7 @@ public class Vision
         {
           bestResult = result;
           amiguity = currentAmbiguity;
+          
         }
       }
       return Optional.of(bestResult);
