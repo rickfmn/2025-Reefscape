@@ -4,12 +4,16 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Inches;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -48,16 +52,29 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
+    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    Transform3d rightOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, 180));
+    Transform3d leftOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, 180));
+
+    VisionConstants.kReefGoalPoses[18][0] = fieldLayout.getTagPose(18).get().transformBy(rightOffset);
+    System.out.println("Processed pose X: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getX()));
+    System.out.println("Processed pose Y: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getY()));
+    System.out.println("Processed pose Z: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getZ()));
+
+
+    System.out.println("Tag pose X: "+ Units.metersToInches(fieldLayout.getTagPose(18).get().getMeasureX().in(Inches)));
+    System.out.println("Tag pose Y: "+ Units.metersToInches(fieldLayout.getTagPose(18).get().getMeasureY().in(Inches)));
+    System.out.println("Tag pose Z: "+ Units.metersToInches(fieldLayout.getTagPose(18).get().getMeasureZ().in(Inches)));
+
+    System.out.println("Field Width" + fieldLayout.getFieldWidth());
+    System.out.println("Origin:" + fieldLayout.getOrigin());
+    System.out.println("Origin Rotation:" + " X: " + fieldLayout.getOrigin().getRotation().getX() + " Y: " + fieldLayout.getOrigin().getRotation().getY() + " Z: " + fieldLayout.getOrigin().getRotation().getZ());
+    // VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);
+
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
 
-    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    Transform3d rightOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, 0));
-    Transform3d leftOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, 0));
-
-    VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);
-    // VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);
 
 
     // Create a timer to disable motor brake a few seconds after disable.  This will let the robot stop

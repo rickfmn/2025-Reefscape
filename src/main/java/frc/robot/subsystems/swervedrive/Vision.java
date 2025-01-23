@@ -145,13 +145,19 @@ public class Vision
     for (Cameras camera : Cameras.values())
     {
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
-      if (poseEst.isPresent())
-      {
-        var pose = poseEst.get();
-        swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+      if(poseEst != null){
+        if (poseEst.isPresent())
+        { 
+          //System.out.println("Running pose estimation with vision");
+
+          var pose = poseEst.get();
+          swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
                                          pose.timestampSeconds,
                                          camera.curStdDevs);
+          field2d.getObject(camera.name() + " pose: ").setPose(pose.estimatedPose.toPose2d());
+        }
       }
+      
     }
 
   }
@@ -616,7 +622,7 @@ public class Vision
 
   }
 
-  public double getLatestTag16Distance(){
+  public double getBestTargetDistanceToCamera(){
     Optional<PhotonPipelineResult> bestTarget = Cameras.APRIL_CAM.getLatestResult();
 
     if (bestTarget.isPresent()){
@@ -627,10 +633,8 @@ public class Vision
     }
     
     return -90000d;
-      
-    
-    
-    
   }
+
+
 
 }

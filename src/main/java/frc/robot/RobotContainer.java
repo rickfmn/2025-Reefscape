@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.CoolArm;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -141,12 +142,13 @@ public class RobotContainer
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
 
     // Shuffleboard.getTab("testing").addDouble("Distance to Tag 16", vision::getLatestTag16Distance);
-    driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
+    // driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
+    //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
   }
 
   public void getTag16Distance(){
     if(vision != null){
-      System.out.println(vision.getLatestTag16Distance());
+      System.out.println(vision.getBestTargetDistanceToCamera());
       
     }
     
@@ -198,7 +200,7 @@ public class RobotContainer
     copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-1),()->coolArm.SetElevatorMotor(0),coolArm));
     copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
 
-
+    driverJoystick.button(3).whileTrue(drivebase.driveToPose(VisionConstants.kReefGoalPoses[18][0].toPose2d()).alongWith(new PrintCommand("X: "+ VisionConstants.kReefGoalPoses[18][0].getX() + "Y: "+ VisionConstants.kReefGoalPoses[18][0].getY() + "Z: "+ VisionConstants.kReefGoalPoses[18][0].getZ())));
   }
 
   /**
