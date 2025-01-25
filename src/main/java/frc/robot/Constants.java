@@ -41,7 +41,9 @@ public final class Constants
   }
 
   public static final class VisionConstants {
-    public static final Translation3d KAprilCamFromGyro = new Translation3d(-11.5, 8.5, 17.75);
+    public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(-12.5), Units.inchesToMeters(8.25), Units.inchesToMeters(19));
+    //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
+
     public static final Pose3d[][] kReefGoalPoses = new Pose3d[22][2];
     
   }
