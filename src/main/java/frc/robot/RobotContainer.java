@@ -31,7 +31,13 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 
 import java.io.File;
+import java.util.Optional;
 import java.util.function.DoubleSupplier;
+
+import javax.swing.text.StyledEditorKit.BoldAction;
+import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
+
+import org.photonvision.targeting.PhotonPipelineResult;
 
 import swervelib.SwerveInputStream;
 
@@ -146,13 +152,7 @@ public class RobotContainer
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
   }
 
-  public void getTag16Distance(){
-    if(vision != null){
-      System.out.println(vision.getBestTargetDistanceToCamera());
-      
-    }
-    
-  }
+
 
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
@@ -200,10 +200,44 @@ public class RobotContainer
     copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-1),()->coolArm.SetElevatorMotor(0),coolArm));
     copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
 
-    driverJoystick.button(4).whileTrue(drivebase.driveToPose(VisionConstants.kReefGoalPoses[18][0].toPose2d()).alongWith(new PrintCommand("X: "+ VisionConstants.kReefGoalPoses[18][0].getX() + "Y: "+ VisionConstants.kReefGoalPoses[18][0].getY() + "Z: "+ VisionConstants.kReefGoalPoses[18][0].getZ())));
-    driverJoystick.button(3).whileTrue(drivebase.driveToPose(VisionConstants.kReefGoalPoses[18][1].toPose2d()).alongWith(new PrintCommand("X: "+ VisionConstants.kReefGoalPoses[18][1].getX() + "Y: "+ VisionConstants.kReefGoalPoses[18][1].getY() + "Z: "+ VisionConstants.kReefGoalPoses[18][1].getZ())));
+    driverJoystick.button(4).onTrue(new InstantCommand(() -> driveToBestTarget(true)));
+    driverJoystick.button(3).onTrue(new InstantCommand(() -> driveToBestTarget(false)));
 
   }
+
+  public void driveToBestTarget(boolean isRight){
+    int targetID = getBestAprilCamTarget();
+
+    System.out.println("Best Target ID(Remember this may not be the latest result) " + targetID);
+
+    int button = 3;
+    if(!isRight) button = 4;
+    final int buttonFinal = button;
+    
+    int tagLRIndex = 0;
+    if(!isRight) tagLRIndex = 1;
+
+    if(targetID == 0){
+      System.out.println("Oh no, It looks like you didn't see anything");
+      return;
+    }
+
+    Command pathfindCommand = drivebase.driveToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d()).onlyWhile(() -> driverJoystick.button(buttonFinal).getAsBoolean());
+    pathfindCommand.schedule();
+  }
+
+  public int getBestAprilCamTarget(){
+
+    Optional<PhotonPipelineResult> bestResultOPT = Vision.Cameras.APRIL_CAM.getBestResult();
+    if(bestResultOPT.isPresent()){
+      PhotonPipelineResult bestResult = bestResultOPT.get();
+      if(bestResult.hasTargets()){
+        return bestResult.getBestTarget().getFiducialId();
+      }
+    }
+    return 0;
+  }
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.

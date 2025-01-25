@@ -145,19 +145,19 @@ public class Vision
     for (Cameras camera : Cameras.values())
     {
       Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
-      if(poseEst != null){
-        if (poseEst.isPresent())
-        { 
-          //System.out.println("Running pose estimation with vision");
-
-          var pose = poseEst.get();
-          swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
+      if (poseEst.isPresent())
+      {
+        var pose = poseEst.get();
+        var pose2D = pose.estimatedPose.toPose2d();
+        swerveDrive.addVisionMeasurement(pose2D,
                                          pose.timestampSeconds,
                                          camera.curStdDevs);
-          field2d.getObject(camera.name() + " pose: ").setPose(pose.estimatedPose.toPose2d());
-        }
+
+        field2d.getObject(camera.name() + " pose: ").setPose(pose2D);
+
+        
+        
       }
-      
     }
 
   }
@@ -341,14 +341,15 @@ public class Vision
   /**
    * Camera Enum to select each camera
    */
-  enum Cameras
+  public static enum Cameras
   {
-    
+    /**
+     * Front April Tag Camera
+     */
     APRIL_CAM("April_Camera",
-              new Rotation3d(0, Math.toRadians(0), Math.toRadians(0)),
-              VisionConstants.KAprilCamFromGyro,
-              VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1))
-              ;
+               new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)),
+               VisionConstants.KAprilCamFromGyro,
+               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
     /**
      * Latency alert to use when high latency is detected.
@@ -358,7 +359,6 @@ public class Vision
      * Camera instance for comms.
      */
     public final  PhotonCamera                 camera;
-    
     /**
      * Pose estimator for camera.
      */
@@ -478,7 +478,6 @@ public class Vision
         {
           bestResult = result;
           amiguity = currentAmbiguity;
-          
         }
       }
       return Optional.of(bestResult);
@@ -550,6 +549,7 @@ public class Vision
       {
         visionEst = poseEstimator.update(change);
         updateEstimationStdDevs(visionEst, change.getTargets());
+        
       }
       estimatedRobotPose = visionEst;
     }
@@ -621,20 +621,5 @@ public class Vision
 
 
   }
-
-  public double getBestTargetDistanceToCamera(){
-    Optional<PhotonPipelineResult> bestResult = Cameras.APRIL_CAM.getLatestResult();
-
-    if (bestResult.isPresent()){
-        PhotonPipelineResult result = bestResult.get();
-        return result.getMultiTagResult().get().estimatedPose.ambiguity;//needs to be changed
-      
-      
-    }
-    
-    return -90000d;
-  }
-
-
 
 }

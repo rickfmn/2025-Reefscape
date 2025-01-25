@@ -56,21 +56,13 @@ public class Robot extends TimedRobot
     Transform3d rightOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
     Transform3d leftOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(-25), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
 
-    VisionConstants.kReefGoalPoses[18][0] = fieldLayout.getTagPose(18).get().transformBy(rightOffset);
-    VisionConstants.kReefGoalPoses[18][1] = fieldLayout.getTagPose(18).get().transformBy(leftOffset);
+    for (int i = 17; i < 22; i++){
+      VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
+      VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
+    }
 
-    System.out.println("Processed pose X: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getX()));
-    System.out.println("Processed pose Y: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getY()));
-    System.out.println("Processed pose Z: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getZ()));
+    
 
-
-    System.out.println("Tag pose X: "+ Units.metersToInches(fieldLayout.getTagPose(18).get().getMeasureX().in(Inches)));
-    System.out.println("Tag pose Y: "+ Units.metersToInches(fieldLayout.getTagPose(18).get().getMeasureY().in(Inches)));
-    System.out.println("Tag pose Z: "+ Units.metersToInches(fieldLayout.getTagPose(18).get().getMeasureZ().in(Inches)));
-
-    System.out.println("Field Width" + fieldLayout.getFieldWidth());
-    System.out.println("Origin:" + fieldLayout.getOrigin());
-    System.out.println("Origin Rotation:" + " X: " + fieldLayout.getOrigin().getRotation().getX() + " Y: " + fieldLayout.getOrigin().getRotation().getY() + " Z: " + fieldLayout.getOrigin().getRotation().getZ());
     // VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
