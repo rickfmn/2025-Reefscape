@@ -200,7 +200,9 @@ public class RobotContainer
     copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-1),()->coolArm.SetElevatorMotor(0),coolArm));
     copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
 
-    driverJoystick.button(3).whileTrue(drivebase.driveToPose(VisionConstants.kReefGoalPoses[18][0].toPose2d()).alongWith(new PrintCommand("X: "+ VisionConstants.kReefGoalPoses[18][0].getX() + "Y: "+ VisionConstants.kReefGoalPoses[18][0].getY() + "Z: "+ VisionConstants.kReefGoalPoses[18][0].getZ())));
+    driverJoystick.button(4).whileTrue(drivebase.driveToPose(VisionConstants.kReefGoalPoses[18][0].toPose2d()).alongWith(new PrintCommand("X: "+ VisionConstants.kReefGoalPoses[18][0].getX() + "Y: "+ VisionConstants.kReefGoalPoses[18][0].getY() + "Z: "+ VisionConstants.kReefGoalPoses[18][0].getZ())));
+    driverJoystick.button(3).whileTrue(drivebase.driveToPose(VisionConstants.kReefGoalPoses[18][1].toPose2d()).alongWith(new PrintCommand("X: "+ VisionConstants.kReefGoalPoses[18][1].getX() + "Y: "+ VisionConstants.kReefGoalPoses[18][1].getY() + "Z: "+ VisionConstants.kReefGoalPoses[18][1].getZ())));
+
   }
 
   /**
@@ -211,7 +213,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return drivebase.getAutonomousCommand("New Auto");
+    return new InstantCommand(()->drivebase.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0))) ).alongWith(drivebase.getAutonomousCommand("1m Drive"));
   }
 
   public void setDriveMode()

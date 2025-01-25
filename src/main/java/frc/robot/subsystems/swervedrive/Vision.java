@@ -623,12 +623,12 @@ public class Vision
   }
 
   public double getBestTargetDistanceToCamera(){
-    Optional<PhotonPipelineResult> bestTarget = Cameras.APRIL_CAM.getLatestResult();
+    Optional<PhotonPipelineResult> bestResult = Cameras.APRIL_CAM.getLatestResult();
 
-    if (bestTarget.isPresent()){
-      if(bestTarget != null){
-        return bestTarget.get().getBestTarget().getBestCameraToTarget().getTranslation().getNorm();
-      }
+    if (bestResult.isPresent()){
+        PhotonPipelineResult result = bestResult.get();
+        return result.getMultiTagResult().get().estimatedPose.ambiguity;//needs to be changed
+      
       
     }
     

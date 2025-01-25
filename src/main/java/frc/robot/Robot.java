@@ -53,10 +53,12 @@ public class Robot extends TimedRobot
   public void robotInit()
   {
     AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    Transform3d rightOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, 180));
-    Transform3d leftOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, 180));
+    Transform3d rightOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
+    Transform3d leftOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(-25), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
 
     VisionConstants.kReefGoalPoses[18][0] = fieldLayout.getTagPose(18).get().transformBy(rightOffset);
+    VisionConstants.kReefGoalPoses[18][1] = fieldLayout.getTagPose(18).get().transformBy(leftOffset);
+
     System.out.println("Processed pose X: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getX()));
     System.out.println("Processed pose Y: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getY()));
     System.out.println("Processed pose Z: "+ Units.metersToInches(VisionConstants.kReefGoalPoses[18][0].getZ()));
