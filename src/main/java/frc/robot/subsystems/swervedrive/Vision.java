@@ -21,8 +21,10 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTablesJNI;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.Robot;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.VisionConstants;
 
 import java.awt.Desktop;
@@ -101,6 +103,7 @@ public class Vision
 
       openSimCameraViews();
     }
+    Shuffleboard.getTab("Tab 7").addInteger("LatestBestFiducialIDSeen", Cameras.APRIL_CAM::getLatestBestFiducialIDSeen);
   }
 
   /**
@@ -391,6 +394,7 @@ public class Vision
      * Results list to be updated periodically and cached to avoid unnecessary queries.
      */
     public        List<PhotonPipelineResult>   resultsList       = new ArrayList<>();
+    public int latestBestFiducialIDSeen = 0;
     /**
      * Last read from the camera timestamp to prevent lag due to slow data fetches.
      */
@@ -528,8 +532,30 @@ public class Vision
         if (!resultsList.isEmpty())
         {
           updateEstimatedGlobalPose();
+          updateLatestBestFiducialIDSeen(); 
         }
       }
+    }
+
+    public void updateLatestBestFiducialIDSeen(){
+      PhotonTrackedTarget bestTarget = resultsList.get(0).getBestTarget();
+      if(bestTarget == null) return;
+      int newID = bestTarget.fiducialId;
+      if(VisionConstants.kReefGoalPoses[newID][0] != null){
+        latestBestFiducialIDSeen = newID;
+      }
+    }
+
+    public int getLatestBestFiducialIDSeen(){
+
+      // Optional<PhotonPipelineResult> bestResultOPT = Vision.Cameras.APRIL_CAM.getBestResult();
+      // if(bestResultOPT.isPresent()){
+      //   PhotonPipelineResult bestResult = bestResultOPT.get();
+      //   if(bestResult.hasTargets()){
+      //     return bestResult.getBestTarget().getFiducialId();
+      //   }
+      // }
+      return latestBestFiducialIDSeen;
     }
 
     /**

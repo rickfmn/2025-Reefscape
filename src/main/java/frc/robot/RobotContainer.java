@@ -163,14 +163,15 @@ public class RobotContainer
    */
   private void configureBindings()
   {
+    
     // (Condition) ? Return-On-True : Return-on-False
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
 
-    Command autoAim = drivebase.aimAtSpeaker(5);
-    autoAim.addRequirements(drivebase);
-    driverJoystick.button(3).whileTrue(autoAim);
+    // Command autoAim = drivebase.aimAtSpeaker(5);
+    // autoAim.addRequirements(drivebase);
+    // driverJoystick.button(3).whileTrue(autoAim);
 
 
     driverJoystick.button(6).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(0.1), () -> coolArm.SetAngleMotor(0), coolArm));
@@ -206,7 +207,7 @@ public class RobotContainer
   }
 
   public void driveToBestTarget(boolean isRight){
-    int targetID = getBestAprilCamTarget();
+    int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
 
     System.out.println("Best Target ID(Remember this may not be the latest result) " + targetID);
 
@@ -222,21 +223,14 @@ public class RobotContainer
       return;
     }
 
-    Command pathfindCommand = drivebase.driveToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d()).onlyWhile(() -> driverJoystick.button(buttonFinal).getAsBoolean());
+    Command pathfindCommand = drivebase.driveToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
+    .onlyWhile(driverJoystick.button(buttonFinal).debounce(0.1));
+    pathfindCommand.addRequirements(drivebase);
     pathfindCommand.schedule();
+
+    //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
   }
 
-  public int getBestAprilCamTarget(){
-
-    Optional<PhotonPipelineResult> bestResultOPT = Vision.Cameras.APRIL_CAM.getBestResult();
-    if(bestResultOPT.isPresent()){
-      PhotonPipelineResult bestResult = bestResultOPT.get();
-      if(bestResult.hasTargets()){
-        return bestResult.getBestTarget().getFiducialId();
-      }
-    }
-    return 0;
-  }
 
 
   /**
