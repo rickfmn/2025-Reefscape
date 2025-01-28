@@ -6,12 +6,15 @@ package frc.robot.subsystems.swervedrive;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.ctre.phoenix6.mechanisms.swerve.LegacySwerveRequest.PointWheelsAt;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.commands.PathfindingCommand;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.DriveFeedforwards;
@@ -42,8 +45,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
+import com.pathplanner.lib.path.Waypoint;
+import java.awt.List;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -354,6 +360,24 @@ public class SwerveSubsystem extends SubsystemBase
         constraints,
         edu.wpi.first.units.Units.MetersPerSecond.of(0) // Goal end velocity in meters/sec
                                      );
+  }
+
+  public Command createTrajectoryToPose(Pose2d endPose){
+    
+    PathPlannerPath path = new PathPlannerPath(
+      PathPlannerPath.waypointsFromPoses(getPose(),endPose)
+    , new PathConstraints(
+      swerveDrive.getMaximumChassisVelocity(), 4.0,
+      swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
+      new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
+       new GoalEndState(0, endPose.getRotation()));
+
+    return AutoBuilder.followPath(path);
+  }
+
+  public double getSpeedMagnitudeMpS(){
+    ChassisSpeeds velocity = getRobotVelocity();
+    return Math.sqrt(Math.pow( velocity.vxMetersPerSecond,2) + Math.pow(velocity.vyMetersPerSecond,2));
   }
 
   
