@@ -538,6 +538,8 @@ public class Vision
     }
 
     public void updateLatestBestFiducialIDSeen(){
+      if(!resultsList.get(0).hasTargets()) return;
+
       PhotonTrackedTarget bestTarget = resultsList.get(0).getBestTarget();
       if(bestTarget == null) return;
       int newID = bestTarget.fiducialId;

@@ -6,6 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -146,7 +147,10 @@ public class RobotContainer
     configureBindings();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
-
+    
+    // Shuffleboard.getTab("Debug 1").addBoolean("Button 3", driverJoystick.button(3));
+    
+    // Shuffleboard.getTab("Debug 1").addBoolean("Button 4", driverJoystick.button(4));
     // Shuffleboard.getTab("testing").addDouble("Distance to Tag 16", vision::getLatestTag16Distance);
     // driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
@@ -212,7 +216,7 @@ public class RobotContainer
     System.out.println("Best Target ID(Remember this may not be the latest result) " + targetID);
 
     int button = 3;
-    if(!isRight) button = 4;
+    if(isRight) button = 4;
     final int buttonFinal = button;
     
     int tagLRIndex = 0;
@@ -224,7 +228,7 @@ public class RobotContainer
     }
 
     Command pathfindCommand = drivebase.driveToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
-    .onlyWhile(driverJoystick.button(buttonFinal).debounce(0.1));
+    .onlyWhile(driverJoystick.button(buttonFinal));
     pathfindCommand.addRequirements(drivebase);
     pathfindCommand.schedule();
 
