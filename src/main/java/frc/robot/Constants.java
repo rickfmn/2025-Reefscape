@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import swervelib.math.Matter;
@@ -24,6 +28,10 @@ public final class Constants
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
   public static final double LOOP_TIME  = 0.13; //s, 20ms + 110ms sprk max velocity lag
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
+
+  public static final Pose2d REEF_POSE3D_BLUE = new Pose2d(Units.inchesToMeters(176.745), Units.inchesToMeters(158.50), Rotation2d.kZero);
+  public static final Pose2d REEF_POSE3D_RED = new Pose2d(Units.inchesToMeters(176.745), Units.inchesToMeters(158.50), Rotation2d.kZero);
+  
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
 //  public static final class AutonConstants
@@ -43,6 +51,8 @@ public final class Constants
   public static final class VisionConstants {
     public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-8.25), Units.inchesToMeters(19));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
+    public static final Transform3d reefOffset_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(12), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-12), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
 
     public static final Pose3d[][] kReefGoalPoses = new Pose3d[22][2];
     

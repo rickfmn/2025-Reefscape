@@ -86,6 +86,7 @@ public class SwerveSubsystem extends SubsystemBase
    * PhotonVision class to keep an accurate odometry.
    */
   public       Vision              vision;
+  public Pose3d reefCenterPose3d;
 
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
@@ -139,7 +140,7 @@ public class SwerveSubsystem extends SubsystemBase
       swerveDrive.stopOdometryThread();
     }
     setupPathPlanner();
-
+    
     SmartDashboard.putData(getSwerveController().thetaController);
   }
 
@@ -367,7 +368,7 @@ public class SwerveSubsystem extends SubsystemBase
     PathPlannerPath path = new PathPlannerPath(
       PathPlannerPath.waypointsFromPoses(getPose(),endPose)
     , new PathConstraints(
-      swerveDrive.getMaximumChassisVelocity(), 4.0,
+      swerveDrive.getMaximumChassisVelocity(), 0.250,
       swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
       new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
        new GoalEndState(0, endPose.getRotation()));
@@ -375,12 +376,29 @@ public class SwerveSubsystem extends SubsystemBase
     return AutoBuilder.followPath(path);
   }
 
+
   public double getSpeedMagnitudeMpS(){
     ChassisSpeeds velocity = getRobotVelocity();
     return Math.sqrt(Math.pow( velocity.vxMetersPerSecond,2) + Math.pow(velocity.vyMetersPerSecond,2));
   }
 
-  
+  public int getBestReefTargetByPose(){
+    Pose2d reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_BLUE);
+    double angleToReef = Units.radiansToDegrees(Math.atan2(reefRelativePose.getY(), reefRelativePose.getX()) );
+    int tagIndex = 0;
+
+    if(angleToReef > 150 || angleToReef < -150){
+      tagIndex = 18;
+    }
+    else if(angleToReef > 120 && angleToReef < 150){
+      tagIndex = 19;
+    }
+    else if(angleToReef < -120 && angleToReef > -150){
+      tagIndex = 17;
+    }
+
+    return tagIndex;
+  }
 
   /**
    * Drive with {@link SwerveSetpointGenerator} from 254, implemented by PathPlanner.

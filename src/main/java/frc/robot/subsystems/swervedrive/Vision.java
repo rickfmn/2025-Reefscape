@@ -104,6 +104,8 @@ public class Vision
       openSimCameraViews();
     }
     Shuffleboard.getTab("Tab 7").addInteger("LatestBestFiducialIDSeen", Cameras.APRIL_CAM::getLatestBestFiducialIDSeen);
+    Shuffleboard.getTab("Tab 7").addDouble("LatestBestTargetyaw", Cameras.APRIL_CAM::getLatestTargetYaw);
+    
   }
 
   /**
@@ -394,7 +396,7 @@ public class Vision
      * Results list to be updated periodically and cached to avoid unnecessary queries.
      */
     public        List<PhotonPipelineResult>   resultsList       = new ArrayList<>();
-    public int latestBestFiducialIDSeen = 0;
+    public PhotonTrackedTarget latestBestTrackedTarget = new PhotonTrackedTarget();
     /**
      * Last read from the camera timestamp to prevent lag due to slow data fetches.
      */
@@ -540,11 +542,20 @@ public class Vision
     public void updateLatestBestFiducialIDSeen(){
       if(!resultsList.get(0).hasTargets()) return;
 
+      List<PhotonTrackedTarget> targets = resultsList.get(0).targets;
+
       PhotonTrackedTarget bestTarget = resultsList.get(0).getBestTarget();
+
+      for(PhotonTrackedTarget target : targets){
+        if(Math.abs(target.yaw) < Math.abs(bestTarget.yaw)){
+          bestTarget = target;
+        }
+      }
+
       if(bestTarget == null) return;
-      int newID = bestTarget.fiducialId;
-      if(VisionConstants.kReefGoalPoses[newID][0] != null){
-        latestBestFiducialIDSeen = newID;
+
+      if(VisionConstants.kReefGoalPoses[bestTarget.fiducialId][0] != null){
+        latestBestTrackedTarget = bestTarget;
       }
     }
 
@@ -557,8 +568,14 @@ public class Vision
       //     return bestResult.getBestTarget().getFiducialId();
       //   }
       // }
-      return latestBestFiducialIDSeen;
+      return latestBestTrackedTarget.fiducialId;
     }
+
+    public double getLatestTargetYaw(){
+      return latestBestTrackedTarget.yaw;
+    }
+
+    
 
     /**
      * The latest estimated robot pose on the field from vision data. This may be empty. This should only be called once

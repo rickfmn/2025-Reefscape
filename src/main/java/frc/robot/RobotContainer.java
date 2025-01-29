@@ -154,6 +154,7 @@ public class RobotContainer
     // Shuffleboard.getTab("testing").addDouble("Distance to Tag 16", vision::getLatestTag16Distance);
     // driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
+    Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef", drivebase::getBestReefTargetByPose);
   }
 
 
@@ -211,7 +212,9 @@ public class RobotContainer
   }
 
   public void driveToBestTarget(boolean isRight){
-    int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
+    //int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
+    int targetID = drivebase.getBestReefTargetByPose();
+
 
     System.out.println("Best Target ID(Remember this may not be the latest result) " + targetID);
 

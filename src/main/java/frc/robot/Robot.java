@@ -53,8 +53,8 @@ public class Robot extends TimedRobot
   public void robotInit()
   {
     AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    Transform3d rightOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(25), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
-    Transform3d leftOffset = new Transform3d(Units.inchesToMeters(50), Units.inchesToMeters(-25), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
+    Transform3d rightOffset = VisionConstants.reefOffset_Right;
+    Transform3d leftOffset = VisionConstants.reefOffset_Left;
 
     for (int i = 17; i < 22; i++){
       VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
