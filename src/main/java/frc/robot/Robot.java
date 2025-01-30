@@ -17,6 +17,7 @@ import edu.wpi.first.units.Unit;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.VisionConstants;
@@ -35,6 +36,8 @@ public class Robot extends TimedRobot
   private RobotContainer m_robotContainer;
 
   private Timer disabledTimer;
+
+  public static boolean isRedAlliance = false;
 
   public Robot()
   {
@@ -61,8 +64,12 @@ public class Robot extends TimedRobot
       VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
     }
 
-    
+    for (int i = 6; i < 11; i++){
+      VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
+      VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
+    }
 
+    updateAlliance();
     // VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);
 
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
@@ -127,6 +134,7 @@ public class Robot extends TimedRobot
   @Override
   public void autonomousInit()
   {
+    updateAlliance();
     m_robotContainer.setMotorBrake(true);
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
@@ -135,6 +143,10 @@ public class Robot extends TimedRobot
     {
       m_autonomousCommand.schedule();
     }
+  }
+
+  public void updateAlliance(){
+    isRedAlliance = DriverStation.getAlliance().get() == Alliance.Red; 
   }
 
   /**
@@ -148,6 +160,7 @@ public class Robot extends TimedRobot
   @Override
   public void teleopInit()
   {
+    updateAlliance();
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove

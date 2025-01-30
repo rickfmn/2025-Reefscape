@@ -162,6 +162,7 @@ public class CoolArm extends SubsystemBase {
       case Pickup:
         newAngleSP = CoolArmConstants.kPickupAngleSP;
         newElevatorSP = CoolArmConstants.kPickupElevatorSP;
+        
         break;
       case Place:
 

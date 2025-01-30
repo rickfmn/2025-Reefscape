@@ -26,6 +26,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -44,6 +45,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
+import frc.robot.Robot;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import com.pathplanner.lib.path.Waypoint;
 import java.awt.List;
@@ -364,14 +366,19 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public Command createTrajectoryToPose(Pose2d endPose){
+
+    Transform2d halfPoseOffset = new Transform2d(getPose(), endPose);
+    Pose2d halfPose = endPose.plus(halfPoseOffset.times(-0.5));
     
     PathPlannerPath path = new PathPlannerPath(
-      PathPlannerPath.waypointsFromPoses(getPose(),endPose)
+      PathPlannerPath.waypointsFromPoses(halfPose, endPose)
     , new PathConstraints(
       swerveDrive.getMaximumChassisVelocity(), 0.250,
       swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
       new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
        new GoalEndState(0, endPose.getRotation()));
+    path.preventFlipping = true;
+    
 
     return AutoBuilder.followPath(path);
   }
@@ -383,18 +390,40 @@ public class SwerveSubsystem extends SubsystemBase
   }
 
   public int getBestReefTargetByPose(){
-    Pose2d reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_BLUE);
+
+    Pose2d reefRelativePose = null;
+
+    if(Robot.isRedAlliance){
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_RED);
+    }
+    else{
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_BLUE);
+    }
+  
     double angleToReef = Units.radiansToDegrees(Math.atan2(reefRelativePose.getY(), reefRelativePose.getX()) );
     int tagIndex = 0;
 
+    int[] fiducialIDS = Constants.REEF_FIDUCIALIDS_BLUE;
+    if(Robot.isRedAlliance) fiducialIDS = Constants.REEF_FIDUCIALIDS_RED;
+
+
     if(angleToReef > 150 || angleToReef < -150){
-      tagIndex = 18;
+      tagIndex = fiducialIDS[0];
     }
-    else if(angleToReef > 120 && angleToReef < 150){
-      tagIndex = 19;
+    else if(angleToReef > 90 && angleToReef < 150){
+      tagIndex = fiducialIDS[1];
     }
-    else if(angleToReef < -120 && angleToReef > -150){
-      tagIndex = 17;
+    else if(angleToReef > 30 && angleToReef < 90){
+      tagIndex = fiducialIDS[2];
+    }
+    else if(angleToReef > -30 && angleToReef < 30){
+      tagIndex = fiducialIDS[3];
+    }
+    else if(angleToReef > -90 && angleToReef < -30){
+      tagIndex = fiducialIDS[4];
+    }
+    else if(angleToReef > -150 && angleToReef < -90){
+      tagIndex = fiducialIDS[5];
     }
 
     return tagIndex;

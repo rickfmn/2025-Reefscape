@@ -30,7 +30,10 @@ public final class Constants
   public static final double MAX_SPEED  = Units.feetToMeters(14.5);
 
   public static final Pose2d REEF_POSE3D_BLUE = new Pose2d(Units.inchesToMeters(176.745), Units.inchesToMeters(158.50), Rotation2d.kZero);
-  public static final Pose2d REEF_POSE3D_RED = new Pose2d(Units.inchesToMeters(176.745), Units.inchesToMeters(158.50), Rotation2d.kZero);
+  public static final Pose2d REEF_POSE3D_RED = new Pose2d(Units.inchesToMeters(448.65), Units.inchesToMeters(158.50), Rotation2d.kZero);
+
+  public static final int[] REEF_FIDUCIALIDS_BLUE = new int[]{18,19,20,21,22,17};
+  public static final int[] REEF_FIDUCIALIDS_RED = new int[]{10,9,8,7,6,11};
   
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
@@ -52,7 +55,7 @@ public final class Constants
     public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-8.25), Units.inchesToMeters(19));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
     public static final Transform3d reefOffset_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(12), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-12), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
 
     public static final Pose3d[][] kReefGoalPoses = new Pose3d[22][2];
     
@@ -95,7 +98,7 @@ public final class Constants
 
 
 
-    public static final double kL1PrepElevatorSP = 2.05;
+    public static final double kL1PrepElevatorSP = 2.15;
     public static final double kL2PrepElevatorSP = 0.25;
     public static final double kL3PrepElevatorSP = 1.94;
     public static final double kL4PrepElevatorSP = 5.9;
