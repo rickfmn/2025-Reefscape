@@ -367,20 +367,28 @@ public class SwerveSubsystem extends SubsystemBase
 
   public Command createTrajectoryToPose(Pose2d endPose){
 
-    Transform2d halfPoseOffset = new Transform2d(getPose(), endPose);
-    Pose2d halfPose = endPose.plus(halfPoseOffset.times(-0.5));
+    // Transform2d halfPoseOffset = new Transform2d(getPose(), endPose);
+    // Pose2d halfPose = endPose.plus(halfPoseOffset.times(-0.5));
+    
     
     PathPlannerPath path = new PathPlannerPath(
-      PathPlannerPath.waypointsFromPoses(halfPose, endPose)
-    , new PathConstraints(
+      PathPlannerPath.waypointsFromPoses( endPose),
+     
+    // return AutoBuilder.followPath(
+    //   endPose, 
+     new PathConstraints(
       swerveDrive.getMaximumChassisVelocity(), 0.250,
       swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
-      new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
-       new GoalEndState(0, endPose.getRotation()));
-    path.preventFlipping = true;
+     new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
+       new GoalEndState(0, endPose.getRotation())); 
+       
     
 
+    path.preventFlipping = true;
     return AutoBuilder.followPath(path);
+
+    
+    
   }
 
 

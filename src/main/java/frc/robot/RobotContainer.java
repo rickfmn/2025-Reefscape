@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.filter.Debouncer.DebounceType;
@@ -14,6 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -58,6 +60,8 @@ public class RobotContainer
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/Omega"));
+
+  private final SendableChooser<Command> autoSelector;
   private final Vision vision = drivebase.vision;
 
   private final CoolArm coolArm = new CoolArm();
@@ -155,6 +159,8 @@ public class RobotContainer
     // driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
     Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef", drivebase::getBestReefTargetByPose);
+    autoSelector = AutoBuilder.buildAutoChooser();
+    Shuffleboard.getTab("Game HUD").add(autoSelector);
   }
 
 
@@ -206,8 +212,8 @@ public class RobotContainer
     copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-1),()->coolArm.SetElevatorMotor(0),coolArm));
     copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
 
-    driverJoystick.button(4).onTrue(new InstantCommand(() -> driveToBestTarget(true)));
-    driverJoystick.button(3).onTrue(new InstantCommand(() -> driveToBestTarget(false)));
+    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), ()-> System.out.println("Lined Up Right")));
+    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), () -> System.out.println("Lined UP Left?")));
 
   }
 
@@ -215,7 +221,7 @@ public class RobotContainer
     //int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
     int targetID = drivebase.getBestReefTargetByPose();
 
-
+//TODO: force vision update of odometry
     System.out.println("Best Target ID(Remember this may not be the latest result) " + targetID);
 
     int button = 3;
@@ -230,7 +236,7 @@ public class RobotContainer
       return;
     }
 
-    Command pathfindCommand = drivebase.createTrajectoryToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
+    Command pathfindCommand = drivebase.driveToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
     .onlyWhile(driverJoystick.button(buttonFinal));
     pathfindCommand.addRequirements(drivebase);
     pathfindCommand.schedule();
@@ -248,7 +254,7 @@ public class RobotContainer
   public Command getAutonomousCommand()
   {
     // An example command will be run in autonomous
-    return new InstantCommand(()->drivebase.resetOdometry(new Pose2d(0, 0, Rotation2d.fromDegrees(0))) ).alongWith(drivebase.getAutonomousCommand("1m Drive"));
+    return autoSelector.getSelected();
   }
 
   public void setDriveMode()

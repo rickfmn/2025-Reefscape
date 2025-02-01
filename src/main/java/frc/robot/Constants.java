@@ -71,6 +71,13 @@ public final class Constants
     public static final double TURN_CONSTANT    = 6;
   }
 
+  public static class AlgaeIntakeConstants
+  {
+
+    public static final int ANGLE_MOTOR_ID        = 25;
+    
+  }
+
   public static class CoolArmConstants
   {
 
