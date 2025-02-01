@@ -152,6 +152,7 @@ public class RobotContainer
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     
+    
     // Shuffleboard.getTab("Debug 1").addBoolean("Button 3", driverJoystick.button(3));
     
     // Shuffleboard.getTab("Debug 1").addBoolean("Button 4", driverJoystick.button(4));
@@ -159,6 +160,7 @@ public class RobotContainer
     // driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
     Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef", drivebase::getBestReefTargetByPose);
+    
     autoSelector = AutoBuilder.buildAutoChooser();
     Shuffleboard.getTab("Game HUD").add(autoSelector);
   }
@@ -253,6 +255,9 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
+    drivebase.resetDriveEncoders();
+    updateDriveEncoders();
+    
     // An example command will be run in autonomous
     return autoSelector.getSelected();
   }
@@ -270,4 +275,11 @@ public class RobotContainer
   public void disabledPeriodic(){
     coolArm.SetAngleSetpoint(coolArm.absAngleEncoder.getPosition());
   }
+
+
+
+public void updateDriveEncoders() {
+    drivebase.resetDriveEncoders();
+    drivebase.synchronizeModuleEncoders();
+}
 }

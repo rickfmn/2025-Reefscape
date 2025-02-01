@@ -127,14 +127,16 @@ public class SwerveSubsystem extends SubsystemBase
     {
       throw new RuntimeException(e);
     }
+    swerveDrive.setAutoCenteringModules(false);
     swerveDrive.setHeadingCorrection(false); // Heading correction should only be used while controlling the robot via angle.
-    swerveDrive.setCosineCompensator(false);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
+    swerveDrive.setCosineCompensator(true);//!SwerveDriveTelemetry.isSimulation); // Disables cosine compensation for simulations since it causes discrepancies not seen in real life.
     swerveDrive.setAngularVelocityCompensation(true,
                                                true,
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
-    swerveDrive.setModuleEncoderAutoSynchronize(false,
+    swerveDrive.setModuleEncoderAutoSynchronize(true,
                                                 1); // Enable if you want to resynchronize your absolute encoders and motor encoders periodically when they are not moving.
     swerveDrive.pushOffsetsToEncoders(); // Set the absolute encoder to be used over the internal encoder and push the offsets onto it. Throws warning if not possible
+    swerveDrive.resetDriveEncoders();
     if (visionDriveTest)
     {
       setupPhotonVision();
@@ -262,6 +264,16 @@ public class SwerveSubsystem extends SubsystemBase
     PathfindingCommand.warmupCommand().schedule();
   }
 
+
+  public void resetDriveEncoders(){
+    swerveDrive.resetDriveEncoders();
+  }
+
+
+  public void synchronizeModuleEncoders(){
+    swerveDrive.synchronizeModuleEncoders();
+  }
+
   /**
    * Get the distance to the speaker.
    *
@@ -288,6 +300,7 @@ public class SwerveSubsystem extends SubsystemBase
     Translation2d relativeTrl         = speakerAprilTagPose.toPose2d().relativeTo(getPose()).getTranslation();
     return new Rotation2d(relativeTrl.getX(), relativeTrl.getY()).plus(swerveDrive.getOdometryHeading());
   }
+
 
   /**
    * Aim the robot at the speaker.
@@ -340,7 +353,24 @@ public class SwerveSubsystem extends SubsystemBase
    */
   public Command getAutonomousCommand(String pathName)
   {
-    // Create a path following command using AutoBuilder. This will also trigger event markers.
+    try
+    {
+      PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+      if (path.getStartingHolonomicPose().isPresent())
+      {
+        Pose2d initialPose = path.getStartingHolonomicPose().get();
+        resetOdometry(initialPose);
+        this.synchronizeModuleEncoders();
+        this.resetDriveEncoders();
+        System.out.println("About to run new auto via SwerveSubSystem");
+      }
+    }
+    catch (Exception e)
+    {
+      //TODO: Catch Exception
+    }
+
+    // Create a path following command using AutoBuilder. This will also trigger event markers.    
     return new PathPlannerAuto(pathName);
   }
 
