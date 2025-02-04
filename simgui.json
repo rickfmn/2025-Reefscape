@@ -11,16 +11,6 @@
           "open": true
         }
       },
-      "SPARK MAX [5]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [7]": {
-        "header": {
-          "open": true
-        }
-      },
       "Talon FX (v6)[2]/Rotor Sensor": {
         "header": {
           "open": true
@@ -60,6 +50,7 @@
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
       "/LiveWindow/Ungrouped/Pigeon 2 [13]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/Shuffleboard/Game HUD/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/Alerts": "Alerts",
       "/SmartDashboard/Encoders": "Alerts",
       "/SmartDashboard/Field": "Field2d",
@@ -78,6 +69,11 @@
     },
     "windows": {
       "/FMSInfo": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/Shuffleboard/Game HUD/SendableChooser[0]": {
         "window": {
           "visible": true
         }
@@ -126,11 +122,22 @@
       "FMSInfo": {
         "open": true
       },
+      "Shuffleboard": {
+        "Game HUD": {
+          "SendableChooser[0]": {
+            "open": true,
+            "string[]##v_/Shuffleboard/Game HUD/SendableChooser[0]/options": {
+              "open": true
+            }
+          },
+          "open": true
+        },
+        "open": true
+      },
       "SmartDashboard": {
         "Field": {
           "open": true
         },
-        "open": true,
         "swerve": {
           "open": true
         }
@@ -139,5 +146,8 @@
   },
   "NetworkTables Info": {
     "visible": true
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
