@@ -29,7 +29,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
+import frc.robot.subsystems.AlgaeIntake;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoolArm;
+import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.robot.subsystems.swervedrive.Vision;
 
@@ -63,6 +66,10 @@ public class RobotContainer
 
   private final SendableChooser<Command> autoSelector;
   private final Vision vision = drivebase.vision;
+
+  private final SignalLights signalLights = new SignalLights();
+  private final Climber climber = new Climber(signalLights);
+  private final AlgaeIntake algaeIntake = new AlgaeIntake(signalLights);
 
   private final CoolArm coolArm = new CoolArm();
   // Applies deadbands and inverts controls because joysticks

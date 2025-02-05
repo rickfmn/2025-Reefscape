@@ -11,6 +11,8 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj.util.Color8Bit;
 import swervelib.math.Matter;
 
 /**
@@ -74,7 +76,53 @@ public final class Constants
   public static class AlgaeIntakeConstants
   {
 
-    public static final int ANGLE_MOTOR_ID        = 25;
+    public static final int ANGLE_MOTOR_ID = 25;
+    public static final int INTAKE_MOTOR_ID = 26;
+    
+    public static final double INTAKE_DEPLOY_ANGLE = 0.25;
+
+    public static final double kINTAKE_SPEED = 0.1;
+    public static final double kOUTTAKE_SPEED = -0.1;
+    
+  }
+
+  public static class LEDConstants
+  {
+
+    public static final int LEFT_LED_COUNT = 100;
+    public static final int RIGHT_LED_COUNT = 100;
+    public static final int LEFT_LED_PORT = 0;
+    public static final int RIGHT_LED_PORT = 0;
+
+    public static final Color kNoAlgaeColor = Color.kWheat;
+    //public static final Color8Bit kNoNoteColor = new Color8Bit(Color.kWhite);
+    public static final Color kYesAlgaeColor = Color.kGhostWhite;
+    public static final Color kAlignColor = Color.kBlack;
+    public static final Color kClimbFinishColor = Color.kPurple;
+    public static final Color kClimbReadyColor = Color.kPurple;
+    public static final Color kDatabitsColor = new Color(2,255,4);
+    public static final Color kOffColor = Color.kBlack;
+    public static final Color kErrorColor = Color.kHotPink;
+    
+  }
+
+  public static class ClimberConstants
+  {
+
+    public static final int LEADER_MOTOR_ID = 25;
+    public static final int FOLLOWER_MOTOR_ID = 26;
+    
+    //Prep angle
+    public static final double CLIMB_PANGLE = 0.25;
+    //Finish angle
+    public static final double CLIMB_FANGLE = 0.15;
+    //Best Angle(for the rest of the match)
+    public static final double CLIMB_BANGLE = 0.0;
+
+
+
+    public static final double kPREPARE_SPEED = 0.1;
+    public static final double kCLIMB_SPEED = -0.1;
     
   }
 
