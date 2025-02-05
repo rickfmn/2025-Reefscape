@@ -76,8 +76,8 @@ public final class Constants
   public static class AlgaeIntakeConstants
   {
 
-    public static final int ANGLE_MOTOR_ID = 25;
-    public static final int INTAKE_MOTOR_ID = 26;
+    public static final int ANGLE_MOTOR_ID = 16;
+    public static final int INTAKE_MOTOR_ID = 17;
     
     public static final double INTAKE_DEPLOY_ANGLE = 0.25;
 
@@ -92,7 +92,7 @@ public final class Constants
     public static final int LEFT_LED_COUNT = 100;
     public static final int RIGHT_LED_COUNT = 100;
     public static final int LEFT_LED_PORT = 0;
-    public static final int RIGHT_LED_PORT = 0;
+    public static final int RIGHT_LED_PORT = 1;
 
     public static final Color kNoAlgaeColor = Color.kWheat;
     //public static final Color8Bit kNoNoteColor = new Color8Bit(Color.kWhite);
@@ -109,8 +109,8 @@ public final class Constants
   public static class ClimberConstants
   {
 
-    public static final int LEADER_MOTOR_ID = 25;
-    public static final int FOLLOWER_MOTOR_ID = 26;
+    public static final int LEADER_MOTOR_ID = 19;
+    public static final int FOLLOWER_MOTOR_ID = 18;
     
     //Prep angle
     public static final double CLIMB_PANGLE = 0.25;
@@ -129,8 +129,8 @@ public final class Constants
   public static class CoolArmConstants
   {
 
-    public static final int angleCANID = 14;
-    public static final int elevatorCANID = 15;
+    public static final int angleCANID = 15;
+    public static final int elevatorCANID = 14;
 
     //Gains for the Arm angle controllers, both FF and PID
     public static final double kS = 0;
