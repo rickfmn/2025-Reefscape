@@ -33,6 +33,7 @@ public class Climber extends SubsystemBase {
   /** Creates a new Climber. */
   public Climber(SignalLights lights) {
     signalLights = lights;
+    currentState = ClimbState.Best;
   }
 
   @Override
@@ -42,11 +43,11 @@ public class Climber extends SubsystemBase {
     switch(currentState){
       case Best:
 
-        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_BANGLE){
-          setWinch(0.01);
+        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_BANGLE - 2.5){
+          setWinch(0.1);
         }
-        else if(m_absEncoder.getPosition() > ClimberConstants.CLIMB_BANGLE){
-          setWinch(-0.01);
+        else if(m_absEncoder.getPosition() > ClimberConstants.CLIMB_BANGLE + 2.5){
+          setWinch(-0.1);
         }
         else{
           setWinch(0);
@@ -58,12 +59,12 @@ public class Climber extends SubsystemBase {
         //TODO: lights party mode
         break;
       case Climbing:
-        setWinch(ClimberConstants.kPREPARE_SPEED);
+        setWinch(ClimberConstants.kCLIMB_SPEED);
 
-        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_PANGLE){
+        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_FANGLE){
           setWinch(0);
           currentState = ClimbState.Prepared;
-          signalLights.SetSignal(LightSignal.climbFinish);
+          //signalLights.SetSignal(LightSignal.climbFinish);
         }
 
         break;
@@ -95,6 +96,7 @@ public class Climber extends SubsystemBase {
 
 
   public void setWinch(double voltage){
+    
     m_winchLeader.set(voltage);
     //other motor should follow
   }

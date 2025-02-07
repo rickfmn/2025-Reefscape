@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
 
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
 import com.fasterxml.jackson.databind.cfg.ConstructorDetector.SingleArgConstructor;
 import com.revrobotics.RelativeEncoder;
@@ -28,6 +29,7 @@ public class AlgaeIntake extends SubsystemBase {
 
   private SparkFlex m_intakeMotor = new SparkFlex(AlgaeIntakeConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
   private SparkMax m_angleMotor = new SparkMax(AlgaeIntakeConstants.ANGLE_MOTOR_ID, MotorType.kBrushless);
+  private SparkLimitSwitch angleLimitSwitch = m_angleMotor.getReverseLimitSwitch();
   private RelativeEncoder m_angleEncoder = m_angleMotor.getEncoder();
   public IntakeState currentState = IntakeState.Retracted;
   public SignalLights signalLights;
@@ -48,7 +50,7 @@ public class AlgaeIntake extends SubsystemBase {
         SetAngleMotor(0);
         break;
       case Deploying:
-        SetAngleMotor(0.01);
+        SetAngleMotor(AlgaeIntakeConstants.kDEPLOY_SPEED);
         if(m_angleEncoder.getPosition() > AlgaeIntakeConstants.INTAKE_DEPLOY_ANGLE){
           currentState = IntakeState.Deployed;
         }
@@ -57,7 +59,7 @@ public class AlgaeIntake extends SubsystemBase {
         SetAngleMotor(0);
         break;
       case Retracting:
-        SetAngleMotor(-0.01);
+        SetAngleMotor(AlgaeIntakeConstants.kRETRACT_SPEED);
         if(m_angleEncoder.getPosition() < AlgaeIntakeConstants.INTAKE_DEPLOY_ANGLE){
           currentState = IntakeState.Retracted;
         }
@@ -90,11 +92,19 @@ public class AlgaeIntake extends SubsystemBase {
 
   public void StopIntake(){
     SetIntakeMotor(0);
+    retractIntake();
     signalLights.SetSignal(LightSignal.databits);
   }
 
   public void Intake(){
-    SetIntakeMotor(AlgaeIntakeConstants.kINTAKE_SPEED);
+    if(angleLimitSwitch.isPressed()){
+      SetIntakeMotor(AlgaeIntakeConstants.kHOLD_SPEED);
+    }
+    else{
+      SetIntakeMotor(AlgaeIntakeConstants.kINTAKE_SPEED);
+    }
+    
+    deployIntake();
     signalLights.SetSignal(LightSignal.hasAlgae);
   }
 

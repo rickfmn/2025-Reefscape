@@ -17,6 +17,7 @@ import org.dyn4j.geometry.Rotation;
 
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -60,8 +61,8 @@ public class CoolArm extends SubsystemBase {
 
   private SparkMax angleMotor = new SparkMax(CoolArmConstants.angleCANID, MotorType.kBrushless);
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
-  private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kS, CoolArmConstants.kG, CoolArmConstants.kV);
-  private PIDController armPIDController = new PIDController(CoolArmConstants.kP, CoolArmConstants.kI, CoolArmConstants.kD);
+  private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kSAngle, CoolArmConstants.kGAngle, CoolArmConstants.kVAngle);
+  private PIDController armPIDController = new PIDController(CoolArmConstants.kPAngle, CoolArmConstants.kIAngle, CoolArmConstants.kDAngle);
   private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((65d/0.25d), (65d/0.25d)/(0.25d*0.5d ));
   private TrapezoidProfile.State previousTrapezoidState = new TrapezoidProfile.State(0, 0);
   private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints);
@@ -71,9 +72,12 @@ public class CoolArm extends SubsystemBase {
   private double elevatorTolerance = 0.25;
 
 
-  public SparkMax elevatorMotor = new SparkMax(CoolArmConstants.elevatorCANID, MotorType.kBrushless);
+  private SparkMax elevatorMotor = new SparkMax(CoolArmConstants.elevatorCANID, MotorType.kBrushless);
   public RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
+  private PIDController elevatorPIDController = new PIDController(CoolArmConstants.kPElevator, CoolArmConstants.kIElevator, CoolArmConstants.kDElevator);
   private boolean elevatorControlEnabled = false;
+  private SparkLimitSwitch raiseLimitSwitch = elevatorMotor.getReverseLimitSwitch();
+  private SparkLimitSwitch lowerLimitSwitch = elevatorMotor.getForwardLimitSwitch();
 
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
   //   new SysIdRoutine.Config(Volts.of( 0.15 ).per(Units.Seconds), Volts.of(0.7), Seconds.of(10)),
@@ -100,8 +104,10 @@ public class CoolArm extends SubsystemBase {
     elevatorSetpoint = elevatorEncoder.getPosition();
     angleMotor.getEncoder().setPosition( -1d *  (( absAngleEncoder.getPosition()-90d ) / 360d ) * 42d);
 
+
     //Shuffleboard.getTab("Arm Sysid Testing").add(armPIDController);
     SmartDashboard.putData(armPIDController);
+    SmartDashboard.putData(elevatorPIDController);
     
   }
 
@@ -116,15 +122,16 @@ public class CoolArm extends SubsystemBase {
     SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
 
     if(elevatorControlEnabled){
-      if(elevatorEncoder.getPosition() > elevatorSetpoint + elevatorTolerance){
-        SetElevatorMotor(-2);
-      }
-      else if(elevatorEncoder.getPosition() < elevatorSetpoint - elevatorTolerance){
-        SetElevatorMotor(2);
-      }
-      else{
-        SetElevatorMotor(0);
-      }
+      //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
+      SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), elevatorSetpoint),0.1));
+    
+    }
+
+    if(raiseLimitSwitch.isPressed()){
+      elevatorEncoder.setPosition(CoolArmConstants.kMaxElevatorPos);
+    }
+    else if (lowerLimitSwitch.isPressed()){
+      elevatorEncoder.setPosition(0);
     }
     
     
@@ -174,6 +181,9 @@ public class CoolArm extends SubsystemBase {
 
     SetAngleSetpoint(newAngleSP);
     SetElevatorSetpoint(newElevatorSP); 
+    if(newAction == ArmAction.Pickup){
+      SetElevatorMotorManual(-3);
+    }
   }
 
   public void SetAngleSetpoint(double sp){
@@ -182,7 +192,7 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void SetAngleMotor(double speed){
-    angleMotor.setVoltage(-1 * speed);
+    angleMotor.setVoltage(1 * speed);
   }
 
   public void SetElevatorSetpoint(double sp){
@@ -191,7 +201,8 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void SetElevatorMotor(double voltage){
-    elevatorMotor.setVoltage(voltage);
+    //have to drive the motor negative to go up
+    elevatorMotor.setVoltage(-1 * voltage);
   }
 
   public void SetElevatorMotorManual(double voltage){

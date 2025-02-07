@@ -79,18 +79,22 @@ public final class Constants
     public static final int ANGLE_MOTOR_ID = 16;
     public static final int INTAKE_MOTOR_ID = 17;
     
-    public static final double INTAKE_DEPLOY_ANGLE = 0.25;
+    public static final double INTAKE_DEPLOY_ANGLE = 0.85;
 
-    public static final double kINTAKE_SPEED = 0.1;
-    public static final double kOUTTAKE_SPEED = -0.1;
+    public static final double kINTAKE_SPEED = 2;
+    public static final double kHOLD_SPEED = 0.5;
+    public static final double kOUTTAKE_SPEED = -1;
+
+    public static final double kDEPLOY_SPEED = 5;
+    public static final double kRETRACT_SPEED = -2;
     
   }
 
   public static class LEDConstants
   {
 
-    public static final int LEFT_LED_COUNT = 100;
-    public static final int RIGHT_LED_COUNT = 100;
+    public static final int LEFT_LED_COUNT = 49;
+    public static final int RIGHT_LED_COUNT = 49;
     public static final int LEFT_LED_PORT = 0;
     public static final int RIGHT_LED_PORT = 1;
 
@@ -113,11 +117,11 @@ public final class Constants
     public static final int FOLLOWER_MOTOR_ID = 18;
     
     //Prep angle
-    public static final double CLIMB_PANGLE = 0.25;
+    public static final double CLIMB_PANGLE = 292.0;
     //Finish angle
-    public static final double CLIMB_FANGLE = 0.15;
+    public static final double CLIMB_FANGLE = 222.0;
     //Best Angle(for the rest of the match)
-    public static final double CLIMB_BANGLE = 0.0;
+    public static final double CLIMB_BANGLE = 180.0;
 
 
 
@@ -133,12 +137,21 @@ public final class Constants
     public static final int elevatorCANID = 14;
 
     //Gains for the Arm angle controllers, both FF and PID
-    public static final double kS = 0;
-    public static final double kG = 0.35;//0.085 gains for no coral and set()
-    public static final double kV = 0;
-    public static final double kP = 0.04;//0.0025 gains for no coral and set()
-    public static final double kI = 0;//0.001 gains for no coral and set()
-    public static final double kD = 0;
+    public static final double kSAngle = 0;
+    public static final double kGAngle = 0.35;//0.085 gains for no coral and set()  // 0.35
+    public static final double kVAngle = 0;
+    public static final double kPAngle = 0.04;//0.0025 gains for no coral and set() //0.04
+    public static final double kIAngle = 0;//0.001 gains for no coral and set()
+    public static final double kDAngle = 0;
+
+    //Gains for the Arm elevator controllers, PID
+    public static final double kPElevator = 0.5// 1 is better than 0.5
+    ; //1 is good, but have to be sad and go slow
+    public static final double kIElevator = 0;
+    public static final double kDElevator = 0;
+
+    public static final double kMaxElevatorPos = -25.476;
+    
 
 
     public static final double kL1PrepAngleSP = 147;
@@ -146,18 +159,18 @@ public final class Constants
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 229;
 
-    public static final double kTravelAngleSP = 96;
-    public static final double kPickupAngleSP = 96;
+    public static final double kTravelAngleSP = 88;
+    public static final double kPickupAngleSP = 88;
     //public static final double kPlaceAngleSPChange = -30;
     public static final double kPlaceAngleSP = 165;
 
 
 
-    public static final double kL1PrepElevatorSP = 2.15;
-    public static final double kL2PrepElevatorSP = 0.25;
-    public static final double kL3PrepElevatorSP = 1.94;
-    public static final double kL4PrepElevatorSP = 5.9;
-    public static final double kTravelElevatorSP = 1.0;
+    public static final double kL1PrepElevatorSP = -9.28;
+    public static final double kL2PrepElevatorSP = -1.07;
+    public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
+    public static final double kL4PrepElevatorSP = -24;
+    public static final double kTravelElevatorSP = -4.3;
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;
 

@@ -48,7 +48,8 @@ public class SignalLights extends SubsystemBase {
   /** Creates a new SignalLights. */
   public SignalLights() {
     leftLEDs = new AddressableLED(LEDConstants.LEFT_LED_PORT);
-    rightLEDs = new AddressableLED(LEDConstants.RIGHT_LED_PORT);
+    //rightLEDs = new AddressableLED(LEDConstants.RIGHT_LED_PORT);
+    rightLEDs = leftLEDs;
 
     animationTimer.start();
     animationCounter = 0;
