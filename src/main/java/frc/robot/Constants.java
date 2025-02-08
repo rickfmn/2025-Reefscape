@@ -81,7 +81,7 @@ public final class Constants
     
     public static final double INTAKE_DEPLOY_ANGLE = 0.85;
 
-    public static final double kINTAKE_SPEED = 2;
+    public static final double kINTAKE_SPEED = 3;
     public static final double kHOLD_SPEED = 0.5;
     public static final double kOUTTAKE_SPEED = -1;
 
@@ -117,7 +117,9 @@ public final class Constants
     public static final int FOLLOWER_MOTOR_ID = 18;
     
     //Prep angle
-    public static final double CLIMB_PANGLE = 292.0;
+    public static final double CLIMB_PANGLE = 270.0;
+    //Stiction angle
+    public static final double CLIMB_VANGLE = 232.0;
     //Finish angle
     public static final double CLIMB_FANGLE = 222.0;
     //Best Angle(for the rest of the match)
@@ -126,7 +128,13 @@ public final class Constants
 
 
     public static final double kPREPARE_SPEED = 0.1;
-    public static final double kCLIMB_SPEED = -0.1;
+    public static final double kCLIMB_SPEED = -0.5;
+    public static final double kCLIMB_STICTION_SPEED = -1.0;
+
+    public static final double kLOCKED_SERVO_POS = 1;
+    
+    public static final double kRELEASED_SERVO_POS = 0;
+    public static final int SERVO_ID = 9;
     
   }
 

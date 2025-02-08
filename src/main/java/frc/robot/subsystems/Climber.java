@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimberConstants;
 import frc.robot.subsystems.SignalLights.LightSignal;
@@ -25,6 +27,7 @@ public class Climber extends SubsystemBase {
   private SparkMax m_winchLeader = new SparkMax(ClimberConstants.LEADER_MOTOR_ID, MotorType.kBrushless);
   private SparkMax m_winchFollower = new SparkMax(ClimberConstants.FOLLOWER_MOTOR_ID, MotorType.kBrushless);
   private SparkAbsoluteEncoder m_absEncoder = m_winchLeader.getAbsoluteEncoder();
+  private Servo m_servo = new Servo(ClimberConstants.SERVO_ID);
 
   public ClimbState currentState = ClimbState.Best;
 
@@ -34,6 +37,7 @@ public class Climber extends SubsystemBase {
   public Climber(SignalLights lights) {
     signalLights = lights;
     currentState = ClimbState.Best;
+    Shuffleboard.getTab("Debug 1").addDouble("Abs Climb Encoder", m_absEncoder::getPosition);
   }
 
   @Override
@@ -59,11 +63,20 @@ public class Climber extends SubsystemBase {
         //TODO: lights party mode
         break;
       case Climbing:
-        setWinch(ClimberConstants.kCLIMB_SPEED);
+        double absAngle = m_absEncoder.getPosition();
+        if(absAngle > ClimberConstants.CLIMB_VANGLE){
+          double interpolatedSpeed = ((absAngle - ClimberConstants.CLIMB_VANGLE)/(ClimberConstants.CLIMB_PANGLE - ClimberConstants.CLIMB_VANGLE)) * (ClimberConstants.kCLIMB_STICTION_SPEED - ClimberConstants.kCLIMB_SPEED) + ClimberConstants.kCLIMB_SPEED;
+          setWinch(interpolatedSpeed);
+
+        }
+        else{
+          setWinch(ClimberConstants.kCLIMB_SPEED);
+        }
+        
 
         if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_FANGLE){
           setWinch(0);
-          currentState = ClimbState.Prepared;
+          currentState = ClimbState.Climbed;
           //signalLights.SetSignal(LightSignal.climbFinish);
         }
 
@@ -103,15 +116,29 @@ public class Climber extends SubsystemBase {
 
   public void Prepare(){
     currentState = ClimbState.Preparing;
+    ReleaseServo();
   }
 
   public void Climb(){
     currentState = ClimbState.Climbing;
+    LockServo();
   }
 
   //go to the position for the coral intake mode
   public void Best(){
     currentState = ClimbState.Best;
+    ReleaseServo();
   }
+
+  public void LockServo(){
+    m_servo.set(ClimberConstants.kLOCKED_SERVO_POS);
+  }
+
+  
+  public void ReleaseServo(){
+    m_servo.set(ClimberConstants.kRELEASED_SERVO_POS);
+  }
+
+
 
 }
