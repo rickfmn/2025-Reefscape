@@ -4,16 +4,12 @@
 
 package frc.robot.subsystems;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
 import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
-import com.fasterxml.jackson.databind.cfg.ConstructorDetector.SingleArgConstructor;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.AlgaeIntakeConstants;
 import frc.robot.subsystems.SignalLights.LightSignal;

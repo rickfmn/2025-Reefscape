@@ -6,46 +6,27 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.swervedrive.drivebase.AbsoluteDriveAdv;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoolArm;
 import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.SignalLights.LightSignal;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
-import frc.robot.subsystems.swervedrive.Vision;
-
 import java.io.File;
-import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
-import javax.swing.text.StyledEditorKit.BoldAction;
-import javax.xml.crypto.dsig.keyinfo.RetrievalMethod;
-
-import org.photonvision.targeting.PhotonPipelineResult;
-
 import swervelib.SwerveInputStream;
 
 /**
@@ -66,7 +47,7 @@ public class RobotContainer
                                                                                 "swerve/Abyss"));
 
   private final SendableChooser<Command> autoSelector;
-  private final Vision vision = drivebase.vision;
+  // private final Vision vision = drivebase.vision;
 
   private final SignalLights signalLights = new SignalLights();
   private final Climber climber = new Climber(signalLights);
@@ -299,6 +280,10 @@ public class RobotContainer
     coolArm.SetElevatorSetpoint(coolArm.elevatorEncoder.getPosition());
     signalLights.periodic();
     //signalLights.SetSignal(LightSignal.databitsAnimated);
+  }
+
+  public void disabledInit(){
+    signalLights.SetSignal(LightSignal.databitsAnimated);
   }
 
 

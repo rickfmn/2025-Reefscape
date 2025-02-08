@@ -77,7 +77,7 @@ public class Climber extends SubsystemBase {
         if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_FANGLE){
           setWinch(0);
           currentState = ClimbState.Climbed;
-          //signalLights.SetSignal(LightSignal.climbFinish);
+          signalLights.SetSignal(LightSignal.climbFinish);
         }
 
         break;

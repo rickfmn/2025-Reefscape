@@ -4,50 +4,20 @@
 
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
-
-import java.util.function.Predicate;
-
-import javax.annotation.processing.SupportedOptions;
-
-import org.dyn4j.geometry.Rotation;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkRelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
-
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.proto.Wpimath;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.ExponentialProfile.ProfileTiming;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.units.TimeUnit;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Voltage;
-import edu.wpi.first.units.Units.*;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Robot;
-import frc.robot.RobotContainer;
-import frc.robot.Constants.CoolArmConstants;
-import edu.wpi.first.wpilibj.sysid.SysIdRoutineLog.State;;
+import frc.robot.Constants.CoolArmConstants;;
 
 public class CoolArm extends SubsystemBase {
 
@@ -71,7 +41,6 @@ public class CoolArm extends SubsystemBase {
   private Timer trapezoidTimer = new Timer();
   private double angleSetpoint = 5;
   private double elevatorSetpoint = 0;
-  private double elevatorTolerance = 0.25;
 
 
   private SparkMax elevatorMotor = new SparkMax(CoolArmConstants.elevatorCANID, MotorType.kBrushless);
