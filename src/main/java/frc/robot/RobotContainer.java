@@ -170,7 +170,7 @@ public class RobotContainer
     Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef", drivebase::getBestReefTargetByPose);
     
     autoSelector = AutoBuilder.buildAutoChooser();
-    Shuffleboard.getTab("Game HUD").add(autoSelector);
+    Shuffleboard.getTab("Game HUD").add(autoSelector).withSize(2,1);
   }
 
 
@@ -190,13 +190,21 @@ public class RobotContainer
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
 
+    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), ()-> System.out.println("Lined Up Right")));
+    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), () -> System.out.println("Lined UP Left?")));
+
     // Command autoAim = drivebase.aimAtSpeaker(5);
     // autoAim.addRequirements(drivebase);
     // driverJoystick.button(3).whileTrue(autoAim);
 
+    driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    driverJoystick.button(10).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
+    driverJoystick.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    driverJoystick.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
-    driverJoystick.button(6).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(0.1), () -> coolArm.SetAngleMotor(0), coolArm));
-    driverJoystick.button(9).whileTrue(new StartEndCommand(() -> coolArm.SetAngleMotor(-0.1), () -> coolArm.SetAngleMotor(0), coolArm));
+    driverJoystick.trigger().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+    
 
     // driverJoystick.button(5).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(0.1), () -> coolArm.SetElevatorMotor(0), coolArm));
     // driverJoystick.button(8).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(-0.1), () -> coolArm.SetElevatorMotor(0), coolArm));
@@ -209,28 +217,26 @@ public class RobotContainer
 
     //coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 180),coolArm));
 
-    copilotController.button(1).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
-    copilotController.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
-    copilotController.button(7).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
-    copilotController.button(11).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
-    copilotController.button(10).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
+    copilotController.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    copilotController.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    copilotController.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
+    copilotController.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    copilotController.povLeft().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
-    copilotController.button(8).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
-    copilotController.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    copilotController.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+    copilotController.button(10).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
 
-    copilotController.button(3).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(2), ()->coolArm.SetElevatorMotor(0),coolArm));
-    copilotController.button(2).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-2),()->coolArm.SetElevatorMotor(0),coolArm));
-    copilotController.button(4).onTrue(new InstantCommand(()-> coolArm.SetElevatorEncoderPosition(0) , coolArm));
+    copilotController.button(8).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(2), ()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.button(7).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-2),()->coolArm.SetElevatorMotor(0),coolArm));
 
-    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), ()-> System.out.println("Lined Up Right")));
-    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), () -> System.out.println("Lined UP Left?")));
+    copilotController.button(11).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotController), coolArm));
+   
+    copilotController.button(1).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
 
-    driverJoystick.button(5).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
-    driverJoystick.button(10).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
-
-    driverJoystick.button(12).whileTrue(new InstantCommand(() -> climber.Prepare(), climber));
-    driverJoystick.button(15).whileTrue(new InstantCommand(() -> climber.Climb(), climber));
-    driverJoystick.button(16).whileTrue(new InstantCommand(() -> climber.Best(), climber));
+    copilotController.button(6).whileTrue(new InstantCommand(() -> climber.Prepare(), climber));
+    copilotController.button(12).whileTrue(new InstantCommand(() -> climber.Climb(), climber));
+    copilotController.button(4).whileTrue(new InstantCommand(() -> climber.Best(), climber));
 
 
   }
