@@ -44,7 +44,7 @@ public class SignalLights extends SubsystemBase {
   /** Creates a new SignalLights. */
   public SignalLights() {
     leftLEDs = new AddressableLED(LEDConstants.LEFT_LED_PORT);
-    //rightLEDs = new AddressableLED(LEDConstants.RIGHT_LED_PORT);
+    // rightLEDs = new AddressableLED(LEDConstants.RIGHT_LED_PORT);
     rightLEDs = leftLEDs;
 
     animationTimer.start();
@@ -156,7 +156,7 @@ public class SignalLights extends SubsystemBase {
 
     for (int i = 0; i < rightLEDBuffer.getLength(); i++) {
       
-      leftLEDBuffer.setHSV(i, (animationCounter + (i*animationStepSize))%180, 255, 255);
+      rightLEDBuffer.setHSV(i, (animationCounter + (i*animationStepSize))%180, 255, 255);
     }
    
   }

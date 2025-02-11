@@ -122,7 +122,7 @@ public final class Constants
     //Finish angle
     public static final double CLIMB_FANGLE = 222.0;
     //Best Angle(for the rest of the match)
-    public static final double CLIMB_BANGLE = 180.0;
+    public static final double CLIMB_BANGLE = 183.0;
 
 
 

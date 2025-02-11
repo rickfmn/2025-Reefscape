@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -199,25 +200,26 @@ public class RobotContainer
     //coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 180),coolArm));
 
     copilotController.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
-    copilotController.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    copilotController.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
     copilotController.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     copilotController.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     copilotController.povLeft().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
     copilotController.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
-    copilotController.button(10).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    copilotController.button(8).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
 
-    copilotController.button(8).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(2), ()->coolArm.SetElevatorMotor(0),coolArm));
-    copilotController.button(7).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-2),()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.axisGreaterThan(3, 0.5).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(2), ()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotController.axisGreaterThan(2, 0.5).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-2),()->coolArm.SetElevatorMotor(0),coolArm));
 
-    copilotController.button(11).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotController), coolArm));
+    copilotController.button(9).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotController), coolArm));
    
-    copilotController.button(1).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotController.button(4).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
     copilotController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
 
-    copilotController.button(6).whileTrue(new InstantCommand(() -> climber.Prepare(), climber));
-    copilotController.button(12).whileTrue(new InstantCommand(() -> climber.Climb(), climber));
-    copilotController.button(4).whileTrue(new InstantCommand(() -> climber.Best(), climber));
+    copilotController.button(6).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
+    //copilotController.button(6).onTrue(new PrintCommand("Should be preparing"));
+    copilotController.button(10).onTrue(new InstantCommand(() -> climber.Climb(), climber));
+    copilotController.button(3).onTrue(new InstantCommand(() -> climber.Best(), climber));
 
 
   }

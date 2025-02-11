@@ -50,6 +50,8 @@ public class CoolArm extends SubsystemBase {
   private SparkLimitSwitch raiseLimitSwitch = elevatorMotor.getReverseLimitSwitch();
   private SparkLimitSwitch lowerLimitSwitch = elevatorMotor.getForwardLimitSwitch();
 
+  private ArmAction currentAction = ArmAction.L1;
+
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
   //   new SysIdRoutine.Config(Volts.of( 0.15 ).per(Units.Seconds), Volts.of(0.7), Seconds.of(10)),
   //   //new SysIdRoutine.Config(),
@@ -103,6 +105,11 @@ public class CoolArm extends SubsystemBase {
     }
     else if (lowerLimitSwitch.isPressed()){
       elevatorEncoder.setPosition(0);
+      if(currentAction == ArmAction.Pickup){
+        SetElevatorControlEnabled(true);
+        
+      }
+      System.out.println("Made it to the lower limit");
     }
     
     
@@ -139,7 +146,7 @@ public class CoolArm extends SubsystemBase {
         break;
       case Pickup:
         newAngleSP = CoolArmConstants.kPickupAngleSP;
-        newElevatorSP = CoolArmConstants.kPickupElevatorSP;
+        newElevatorSP = CoolArmConstants.kTravelElevatorSP;
         
         break;
       case Place:
@@ -155,6 +162,8 @@ public class CoolArm extends SubsystemBase {
     if(newAction == ArmAction.Pickup){
       SetElevatorMotorManual(-3);
     }
+
+    currentAction = newAction;
   }
 
   public void SetAngleSetpoint(double sp){
@@ -193,7 +202,7 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void ManualAngleControl(CommandJoystick joystick) {
-    SetAngleSetpoint(joystick.getX());
+    SetAngleSetpoint(joystick.getRawAxis(0));
   }
 
 //   public void voltageDrive(Voltage volts){
