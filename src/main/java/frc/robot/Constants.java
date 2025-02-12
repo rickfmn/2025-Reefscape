@@ -53,12 +53,12 @@ public final class Constants
   }
 
   public static final class VisionConstants {
-    public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(12.5), Units.inchesToMeters(-8.25), Units.inchesToMeters(19));
+    public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(10.75), Units.inchesToMeters(16.5));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
     public static final Transform3d reefOffset_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(12), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
 
-    public static final Pose3d[][] kReefGoalPoses = new Pose3d[22][2];
+    public static final Pose3d[][] kReefGoalPoses = new Pose3d[23][2];
     
   }
 
@@ -78,7 +78,7 @@ public final class Constants
     public static final int ANGLE_MOTOR_ID = 16;
     public static final int INTAKE_MOTOR_ID = 17;
     
-    public static final double INTAKE_DEPLOY_ANGLE = 0.85;
+    public static final double INTAKE_DEPLOY_ANGLE = 0.5;
 
     public static final double kINTAKE_SPEED = 3;
     public static final double kHOLD_SPEED = 0.5;
@@ -152,7 +152,7 @@ public final class Constants
     public static final double kDAngle = 0;
 
     //Gains for the Arm elevator controllers, PID
-    public static final double kPElevator = 0.5// 1 is better than 0.5
+    public static final double kPElevator = 1.5// 1 is better than 0.5
     ; //1 is good, but have to be sad and go slow
     public static final double kIElevator = 0;
     public static final double kDElevator = 0;
@@ -161,22 +161,24 @@ public final class Constants
     
 
 
-    public static final double kL1PrepAngleSP = 147;
+    public static final double kL1PrepAngleSP = 168;
     public static final double kL2PrepAngleSP = 202;
     public static final double kL3PrepAngleSP = 229;
-    public static final double kL4PrepAngleSP = 229;
+    public static final double kL4PrepAngleSP = 263;
 
     public static final double kTravelAngleSP = 88;
     public static final double kPickupAngleSP = 88;
     //public static final double kPlaceAngleSPChange = -30;
     public static final double kPlaceAngleSP = 165;
+    public static final double kMaxPickupBoxAngle = 100;
 
 
 
-    public static final double kL1PrepElevatorSP = -9.28;
+
+    public static final double kL1PrepElevatorSP = 0;
     public static final double kL2PrepElevatorSP = -1.07;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
-    public static final double kL4PrepElevatorSP = -24;
+    public static final double kL4PrepElevatorSP = -25.6;
     public static final double kTravelElevatorSP = -4.3;
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;

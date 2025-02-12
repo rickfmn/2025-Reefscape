@@ -52,7 +52,7 @@ public class Robot extends TimedRobot
     Transform3d rightOffset = VisionConstants.reefOffset_Right;
     Transform3d leftOffset = VisionConstants.reefOffset_Left;
 
-    for (int i = 17; i < 22; i++){
+    for (int i = 17; i < 23; i++){
       VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
       VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
     }

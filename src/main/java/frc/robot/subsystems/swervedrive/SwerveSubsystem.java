@@ -106,7 +106,7 @@ public class SwerveSubsystem extends SubsystemBase
     Shuffleboard.getTab("Debug 1").addDouble("Gyro Angle", this::GetGyroYaw);
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
-    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
+    SwerveDriveTelemetry.verbosity = TelemetryVerbosity.NONE;
     try
     {
       swerveDrive = new SwerveParser(directory).createSwerveDrive(Constants.MAX_SPEED,

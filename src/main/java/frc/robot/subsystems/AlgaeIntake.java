@@ -29,6 +29,7 @@ public class AlgaeIntake extends SubsystemBase {
   private RelativeEncoder m_angleEncoder = m_angleMotor.getEncoder();
   public IntakeState currentState = IntakeState.Retracted;
   public SignalLights signalLights;
+  private boolean isIntaking = false;
 
 
   /** Creates a new AlgaeIntake. */
@@ -66,6 +67,15 @@ public class AlgaeIntake extends SubsystemBase {
 
     }
 
+    if(isIntaking){
+      if(angleLimitSwitch.isPressed()){
+        SetIntakeMotor(AlgaeIntakeConstants.kHOLD_SPEED);
+      }
+      else{
+        SetIntakeMotor(AlgaeIntakeConstants.kINTAKE_SPEED);
+      }
+    }
+
     
   }
 
@@ -90,6 +100,7 @@ public class AlgaeIntake extends SubsystemBase {
     SetIntakeMotor(0);
     retractIntake();
     signalLights.SetSignal(LightSignal.databits);
+    isIntaking = false;
   }
 
   public void Intake(){
@@ -99,6 +110,7 @@ public class AlgaeIntake extends SubsystemBase {
     else{
       SetIntakeMotor(AlgaeIntakeConstants.kINTAKE_SPEED);
     }
+    isIntaking = true;
     
     deployIntake();
     signalLights.SetSignal(LightSignal.hasAlgae);
@@ -107,6 +119,7 @@ public class AlgaeIntake extends SubsystemBase {
   public void Outtake(){
     SetIntakeMotor(AlgaeIntakeConstants.kOUTTAKE_SPEED);
     signalLights.SetSignal(LightSignal.hasAlgae);
+    isIntaking = false;
   }
 
   public boolean hasAlgae(){

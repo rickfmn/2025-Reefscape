@@ -92,11 +92,21 @@ public class CoolArm extends SubsystemBase {
     previousTrapezoidState = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState, new TrapezoidProfile.State(angleSetpoint,0));
     trapezoidTimer.restart();
 
-    SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
+    double anglePIDOutput = GetAnglePIDOutput(absAngle);
+
+    if(elevatorEncoder.getPosition() > CoolArmConstants.kTravelElevatorSP/2 && absAngle < CoolArmConstants.kMaxPickupBoxAngle){//if the elevator is above the travel position
+      if(anglePIDOutput > 0){
+        anglePIDOutput = 0;
+      }
+      
+      //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
+    }
+    
+    SetAngleMotor(anglePIDOutput);
 
     if(elevatorControlEnabled){
       //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
-      SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), elevatorSetpoint),0.1));
+      SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), elevatorSetpoint),3));
     
     }
 
@@ -109,10 +119,15 @@ public class CoolArm extends SubsystemBase {
         SetElevatorControlEnabled(true);
         
       }
-      System.out.println("Made it to the lower limit");
+      //System.out.println("Made it to the lower limit");
     }
     
     
+  }
+
+  public double GetAnglePIDOutput(double angle){
+    return armPIDController.calculate(angle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0);
+
   }
 
   
@@ -154,6 +169,7 @@ public class CoolArm extends SubsystemBase {
         //newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
         //newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
         newAngleSP = CoolArmConstants.kPlaceAngleSP;
+        newElevatorSP = elevatorEncoder.getPosition();
         break;
     }
 
@@ -202,7 +218,7 @@ public class CoolArm extends SubsystemBase {
   }
 
   public void ManualAngleControl(CommandJoystick joystick) {
-    SetAngleSetpoint(joystick.getRawAxis(0));
+    SetAngleSetpoint(((joystick.getRawAxis(0) +1) * 90) + 90);
   }
 
 //   public void voltageDrive(Voltage volts){
