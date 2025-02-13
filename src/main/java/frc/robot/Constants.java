@@ -11,6 +11,11 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Meters;
+
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.util.Color;
 import swervelib.math.Matter;
 
@@ -92,20 +97,19 @@ public final class Constants
   public static class LEDConstants
   {
 
-    public static final int LEFT_LED_COUNT = 49;
-    public static final int RIGHT_LED_COUNT = 49;
-    public static final int LEFT_LED_PORT = 0;
-    public static final int RIGHT_LED_PORT = 1;
+    public static final int LED_COUNT = 49;
 
-    public static final Color kNoAlgaeColor = Color.kWheat;
+    public static final int LED_PORT = 1;
+
+    public static final LEDPattern kNoAlgaeColor = LEDPattern.solid(Color.kWheat);
     //public static final Color8Bit kNoNoteColor = new Color8Bit(Color.kWhite);
-    public static final Color kYesAlgaeColor = Color.kGhostWhite;
-    public static final Color kAlignColor = Color.kBlack;
-    public static final Color kClimbFinishColor = Color.kPurple;
-    public static final Color kClimbReadyColor = Color.kPurple;
-    public static final Color kDatabitsColor = new Color(2,255,4);
-    public static final Color kOffColor = Color.kBlack;
-    public static final Color kErrorColor = Color.kHotPink;
+    public static final LEDPattern kYesAlgaeColor = LEDPattern.solid(Color.kGhostWhite);
+    public static final LEDPattern kAlignColor = LEDPattern.solid(Color.kBlack);
+    public static final LEDPattern kClimbFinishColor = LEDPattern.rainbow(255,255).scrollAtAbsoluteSpeed(MetersPerSecond.of(20), Meters.of(1));
+    public static final LEDPattern kClimbReadyColor = LEDPattern.solid(Color.kPurple);
+    public static final LEDPattern kDatabitsAnimated = LEDPattern.solid(new Color(2,255,4)).breathe(Seconds.of(1));
+    public static final LEDPattern kOffColor = LEDPattern.kOff;
+    public static final LEDPattern kErrorColor = LEDPattern.solid(Color.kHotPink);
     
   }
 
@@ -162,7 +166,7 @@ public final class Constants
 
 
     public static final double kL1PrepAngleSP = 168;
-    public static final double kL2PrepAngleSP = 202;
+    public static final double kL2PrepAngleSP = 195;
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 263;
 
@@ -171,17 +175,20 @@ public final class Constants
     //public static final double kPlaceAngleSPChange = -30;
     public static final double kPlaceAngleSP = 165;
     public static final double kMaxPickupBoxAngle = 100;
+    
+    public static final double kMaxPickupBoxElevator = -2.5;
 
 
 
 
     public static final double kL1PrepElevatorSP = 0;
-    public static final double kL2PrepElevatorSP = -1.07;
+    public static final double kL2PrepElevatorSP = -4;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
     public static final double kTravelElevatorSP = -4.3;
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;
+    public static final int kSensorID = 10;
 
     
   }

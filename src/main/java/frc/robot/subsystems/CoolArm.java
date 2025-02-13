@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -49,6 +50,8 @@ public class CoolArm extends SubsystemBase {
   private boolean elevatorControlEnabled = false;
   private SparkLimitSwitch raiseLimitSwitch = elevatorMotor.getReverseLimitSwitch();
   private SparkLimitSwitch lowerLimitSwitch = elevatorMotor.getForwardLimitSwitch();
+
+  private DigitalInput coralPickupSensor = new DigitalInput(CoolArmConstants.kSensorID);
 
   private ArmAction currentAction = ArmAction.L1;
 
@@ -94,9 +97,13 @@ public class CoolArm extends SubsystemBase {
 
     double anglePIDOutput = GetAnglePIDOutput(absAngle);
 
-    if(elevatorEncoder.getPosition() > CoolArmConstants.kTravelElevatorSP/2 && absAngle < CoolArmConstants.kMaxPickupBoxAngle){//if the elevator is above the travel position
+    if(elevatorEncoder.getPosition() > CoolArmConstants.kMaxPickupBoxElevator && absAngle < CoolArmConstants.kMaxPickupBoxAngle){//if the elevator is above the travel position
       if(anglePIDOutput > 0){
         anglePIDOutput = 0;
+      }
+
+      if(currentAction == ArmAction.L1){
+        SetElevatorSetpoint(CoolArmConstants.kTravelElevatorSP);
       }
       
       //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
@@ -107,11 +114,16 @@ public class CoolArm extends SubsystemBase {
     if(elevatorControlEnabled){
       //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
       SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), elevatorSetpoint),3));
-    
+      
+      if(AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && !HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP)){
+        SetArmAction(ArmAction.Pickup);
+        //this if statement should try to pick up the coral again if we fail to pick it up the first time
+      }
     }
 
     if(raiseLimitSwitch.isPressed()){
-      elevatorEncoder.setPosition(CoolArmConstants.kMaxElevatorPos);
+      //elevatorEncoder.setPosition(CoolArmConstants.kMaxElevatorPos);
+
     }
     else if (lowerLimitSwitch.isPressed()){
       elevatorEncoder.setPosition(0);
@@ -128,6 +140,15 @@ public class CoolArm extends SubsystemBase {
   public double GetAnglePIDOutput(double angle){
     return armPIDController.calculate(angle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0);
 
+  }
+
+  public boolean AtAngleSetpoint(double sp){
+    return Math.abs(absAngleEncoder.getPosition() - sp) < 3;
+  }
+
+  public boolean AtElevatorSetpoint(double sp){
+    //1.5 is the arbitrary tolerance
+    return Math.abs(elevatorEncoder.getPosition() - sp) < 1.5;
   }
 
   
@@ -228,4 +249,27 @@ public class CoolArm extends SubsystemBase {
 //   public void logMotors(SysIdRoutineLog log){
 //     log.motor("AngleMotor").voltage(Volts.of( angleMotor.getAppliedOutput()*angleMotor.getBusVoltage() ) ).angularPosition(Degrees.of(absAngleEncoder.getPosition())).angularVelocity(DegreesPerSecond.of(absAngleEncoder.getVelocity()));
 // }
+
+  public boolean HasCoralInPickupBin(){
+    return coralPickupSensor.get();
+  }
+
+  public void DoAction(CommandJoystick copilotController) {
+    ArmAction newAction = currentAction;
+    if(copilotController.povUp().getAsBoolean()){
+      newAction = ArmAction.L1;
+    }    
+    else if(copilotController.povRight().getAsBoolean()){
+      newAction = ArmAction.L2;
+    }
+    else if(copilotController.povDown().getAsBoolean()){
+      newAction = ArmAction.L3;
+    }
+    else if(copilotController.povLeft().getAsBoolean()){
+      newAction = ArmAction.L4;
+    }
+
+    SetArmAction(newAction);
+
+  }
 }

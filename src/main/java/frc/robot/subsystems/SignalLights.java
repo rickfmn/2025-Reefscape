@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -13,17 +14,12 @@ import frc.robot.Constants.LEDConstants;
 
 public class SignalLights extends SubsystemBase {
   
-  public AddressableLED leftLEDs;
-  public AddressableLED rightLEDs;
-  public AddressableLEDBuffer leftLEDBuffer = new AddressableLEDBuffer(LEDConstants.LEFT_LED_COUNT);
-  public AddressableLEDBuffer rightLEDBuffer = new AddressableLEDBuffer(LEDConstants.RIGHT_LED_COUNT);
+  public AddressableLED LEDs;
+  public AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
 
   public boolean hasAlgae = false;
+  public boolean hadAlgae = true;
 
-  public Timer animationTimer = new Timer();
-  
-  public int animationCounter = 0;
-  private int animationStepSize = 5;//this is used in party mode and wave color with time
 
   public LightSignal currentSignal = LightSignal.databits;
 
@@ -43,18 +39,12 @@ public class SignalLights extends SubsystemBase {
 
   /** Creates a new SignalLights. */
   public SignalLights() {
-    leftLEDs = new AddressableLED(LEDConstants.LEFT_LED_PORT);
-    // rightLEDs = new AddressableLED(LEDConstants.RIGHT_LED_PORT);
-    rightLEDs = leftLEDs;
+    LEDs = new AddressableLED(LEDConstants.LED_PORT);
 
-    animationTimer.start();
-    animationCounter = 0;
 
-    leftLEDBuffer = new AddressableLEDBuffer(LEDConstants.LEFT_LED_COUNT);
-    rightLEDBuffer = new AddressableLEDBuffer(LEDConstants.RIGHT_LED_COUNT);
+    LEDBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
     //SetArmLEDBufferToSolidColor(LEDConstants.kDatabitsColor);
-    leftLEDs.setLength(LEDConstants.LEFT_LED_COUNT);
-    rightLEDs.setLength(LEDConstants.RIGHT_LED_COUNT);
+    LEDs.setLength(LEDConstants.LED_COUNT);
     //armLEDs.setData(armLEDBuffer);
     //armLEDs.start();
     currentSignal = LightSignal.databitsAnimated;
@@ -74,37 +64,38 @@ public class SignalLights extends SubsystemBase {
     switch (currentSignal) {
 
       case hasAlgae:
+        if(hadAlgae != hasAlgae){
           if(hasAlgae){
-            SetArmLEDBuffersToSolidColor(LEDConstants.kYesAlgaeColor);
+            SetLEDPattern(LEDConstants.kYesAlgaeColor);
           }
           else{
-            SetArmLEDBuffersToSolidColor(LEDConstants.kNoAlgaeColor);
+            SetLEDPattern(LEDConstants.kNoAlgaeColor);
           }
+        }
+          
         break;
       case leftAlign:
-        SetOneSideLEDBuffersToSolidColor(LEDConstants.kAlignColor, false);
+        SetLEDPattern(LEDConstants.kAlignColor);
         break;
       case rightAlign:
-        SetOneSideLEDBuffersToSolidColor(LEDConstants.kAlignColor, true);
+        SetLEDPattern(LEDConstants.kAlignColor);
         break;
       case climbPrep:      
-        SetArmLEDBuffersToSolidColor(LEDConstants.kClimbReadyColor);
+        SetLEDPattern(LEDConstants.kClimbReadyColor);
         break;
       case climbFinish:
-        PartyMode(animationTimer.get());
+        SetLEDPattern(LEDConstants.kClimbFinishColor);
         ledChanged = true;
         break;
-      case databits:
-        SetArmLEDBuffersToSolidColor(LEDConstants.kDatabitsColor);
-        break;
+
       case databitsAnimated:
-        WaveColorWithTime(LEDConstants.kDatabitsColor, animationTimer.get());
+        SetLEDPattern(LEDConstants.kDatabitsAnimated);
         //This needs to update every loop
         ledChanged = true;
         break;
     
       default:
-        SetArmLEDBuffersToSolidColor(LEDConstants.kErrorColor);
+      SetLEDPattern(LEDConstants.kErrorColor);
         ledChanged = true;
         break;
 
@@ -114,78 +105,82 @@ public class SignalLights extends SubsystemBase {
     //Only push the LED state if it has changed
     if (ledChanged)
     {
-      leftLEDs.setData(leftLEDBuffer);
-      leftLEDs.start(); 
-      rightLEDs.setData(rightLEDBuffer);
-      rightLEDs.start(); 
+      LEDs.setData(LEDBuffer);
+      LEDs.start(); 
+      
     
     }
+    hadAlgae = hasAlgae;
   }
 
-  private void WaveColorWithTime(Color color, double timer) {
-    animationCounter +=animationStepSize;
-    if(animationCounter>180){
-      animationCounter = 0;
-    }
-    //double timerDeg = Units.degreesToRadians(timer);
-    for (int i = 0; i < leftLEDBuffer.getLength(); i++) {
-      
-      double brightness  = ((Math.sin( Units.degreesToRadians( i*animationStepSize + animationCounter ) ) + 1) / 2) / 8;
-      leftLEDBuffer.setRGB(i, (int)(brightness * color.red), (int)(brightness * color.green), (int)(brightness * color.blue));
-    }
+  private void SetLEDPattern(LEDPattern pattern){
+    pattern.applyTo(LEDBuffer);
+  }
 
-    for (int i = 0; i < rightLEDBuffer.getLength(); i++) {
+  // private void WaveColorWithTime(Color color, double timer) {
+  //   animationCounter +=animationStepSize;
+  //   if(animationCounter>180){
+  //     animationCounter = 0;
+  //   }
+  //   //double timerDeg = Units.degreesToRadians(timer);
+  //   for (int i = 0; i < leftLEDBuffer.getLength(); i++) {
       
-      double brightness  = ((Math.sin( Units.degreesToRadians( i*animationStepSize + animationCounter ) ) + 1) / 2) / 8;
-      rightLEDBuffer.setRGB(i, (int)(brightness * color.red), (int)(brightness * color.green), (int)(brightness * color.blue));
-    }
+  //     double brightness  = ((Math.sin( Units.degreesToRadians( i*animationStepSize + animationCounter ) ) + 1) / 2) / 8;
+  //     leftLEDBuffer.setRGB(i, (int)(brightness * color.red), (int)(brightness * color.green), (int)(brightness * color.blue));
+  //   }
+
+  //   for (int i = 0; i < rightLEDBuffer.getLength(); i++) {
+      
+  //     double brightness  = ((Math.sin( Units.degreesToRadians( i*animationStepSize + animationCounter ) ) + 1) / 2) / 8;
+  //     rightLEDBuffer.setRGB(i, (int)(brightness * color.red), (int)(brightness * color.green), (int)(brightness * color.blue));
+  //   }
    
-  }
+  // }
 
 
-  private void PartyMode(double timer) {
-    animationCounter +=animationStepSize;
-    if(animationCounter>180){
-      animationCounter = 0;
-    }
-    //double timerDeg = Units.degreesToRadians(timer);
-    for (int i = 0; i < leftLEDBuffer.getLength(); i++) {
+  // private void PartyMode(double timer) {
+  //   animationCounter +=animationStepSize;
+  //   if(animationCounter>180){
+  //     animationCounter = 0;
+  //   }
+  //   //double timerDeg = Units.degreesToRadians(timer);
+  //   for (int i = 0; i < leftLEDBuffer.getLength(); i++) {
       
-      leftLEDBuffer.setHSV(i, (animationCounter + (i*animationStepSize))%180, 255, 255);
-    }
+  //     leftLEDBuffer.setHSV(i, (animationCounter + (i*animationStepSize))%180, 255, 255);
+  //   }
 
-    for (int i = 0; i < rightLEDBuffer.getLength(); i++) {
+  //   for (int i = 0; i < rightLEDBuffer.getLength(); i++) {
       
-      rightLEDBuffer.setHSV(i, (animationCounter + (i*animationStepSize))%180, 255, 255);
-    }
+  //     rightLEDBuffer.setHSV(i, (animationCounter + (i*animationStepSize))%180, 255, 255);
+  //   }
    
-  }
+  // }
 
-  public void SetArmLEDBuffersToSolidColor(Color color){
+  // public void SetArmLEDBuffersToSolidColor(Color color){
 
-    for (var i = 0; i < leftLEDBuffer.getLength(); i++) {
+  //   for (var i = 0; i < leftLEDBuffer.getLength(); i++) {
       
-      leftLEDBuffer.setLED(i, color);
-    }
+  //     leftLEDBuffer.setLED(i, color);
+  //   }
    
-    for (var i = 0; i < rightLEDBuffer.getLength(); i++) {
+  //   for (var i = 0; i < rightLEDBuffer.getLength(); i++) {
       
-      rightLEDBuffer.setLED(i, color);
-    }
-  }
+  //     rightLEDBuffer.setLED(i, color);
+  //   }
+  // }
 
-  public void SetOneSideLEDBuffersToSolidColor(Color color, boolean isRight){
+  // public void SetOneSideLEDBuffersToSolidColor(Color color, boolean isRight){
 
-    for (var i = 0; i < leftLEDBuffer.getLength(); i++) {
+  //   for (var i = 0; i < leftLEDBuffer.getLength(); i++) {
       
-      leftLEDBuffer.setLED(i, isRight ? LEDConstants.kOffColor : color);
-    }
+  //     leftLEDBuffer.setLED(i, isRight ? LEDConstants.kOffColor : color);
+  //   }
    
-    for (var i = 0; i < rightLEDBuffer.getLength(); i++) {
+  //   for (var i = 0; i < rightLEDBuffer.getLength(); i++) {
       
-      rightLEDBuffer.setLED(i, isRight ? color : LEDConstants.kOffColor);
-    }
-  }
+  //     rightLEDBuffer.setLED(i, isRight ? color : LEDConstants.kOffColor);
+  //   }
+  // }
 
   public void ReceiveIntakeData(boolean algae){
     hasAlgae = algae;
