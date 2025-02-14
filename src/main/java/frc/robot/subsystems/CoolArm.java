@@ -36,9 +36,12 @@ public class CoolArm extends SubsystemBase {
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
   private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kSAngle, CoolArmConstants.kGAngle, CoolArmConstants.kVAngle);
   private PIDController armPIDController = new PIDController(CoolArmConstants.kPAngle, CoolArmConstants.kIAngle, CoolArmConstants.kDAngle);
-  private TrapezoidProfile.Constraints trapezoidConstraints = new TrapezoidProfile.Constraints((65d/0.25d), (65d/0.25d)/(0.25d*0.5d ));
-  private TrapezoidProfile.State previousTrapezoidState = new TrapezoidProfile.State(0, 0);
-  private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints);
+  private TrapezoidProfile.Constraints trapezoidConstraints_Angle = new TrapezoidProfile.Constraints((65d/0.25d), (65d/0.25d)/(0.25d*0.5d ));
+  private TrapezoidProfile.State previousTrapezoidState_Angle = new TrapezoidProfile.State(0, 0);
+  private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints_Angle);
+  private TrapezoidProfile.Constraints trapezoidConstraints_Elevator = new TrapezoidProfile.Constraints((25d/0.75d), (25d/0.75d)/(0.25 ));
+  private TrapezoidProfile.State previousTrapezoidState_Elevator = new TrapezoidProfile.State(0, 0);
+  private TrapezoidProfile elevatorTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints_Elevator);
   private Timer trapezoidTimer = new Timer();
   private double angleSetpoint = 5;
   private double elevatorSetpoint = 0;
@@ -66,13 +69,15 @@ public class CoolArm extends SubsystemBase {
     
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Absolute Angle", absAngleEncoder::getPosition);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle ProfileGoal", () -> angleSetpoint);
-    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Setpoint", () -> previousTrapezoidState.position);
+    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Setpoint", () -> previousTrapezoidState_Angle.position);
 
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Motor Current", angleMotor::getOutputCurrent);
     
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Motor Output", angleMotor::getAppliedOutput);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Elevator Position", elevatorEncoder::getPosition);
+    Shuffleboard.getTab("Arm Sysid Testing").addDouble("Elevator Setpoint", this::GetElevatorSetpoint);
     armPIDController.setIZone(20);
+    elevatorPIDController.setIZone(1);
     
 
     angleSetpoint = absAngleEncoder.getPosition();
@@ -85,6 +90,7 @@ public class CoolArm extends SubsystemBase {
     SmartDashboard.putData(armPIDController);
     SmartDashboard.putData(elevatorPIDController);
     
+    
   }
 
   @Override
@@ -92,7 +98,8 @@ public class CoolArm extends SubsystemBase {
     // This method will be called once per scheduler run
     double absAngle = absAngleEncoder.getPosition();
     
-    previousTrapezoidState = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState, new TrapezoidProfile.State(angleSetpoint,0));
+    previousTrapezoidState_Elevator = elevatorTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState_Elevator, new TrapezoidProfile.State(elevatorSetpoint,0));
+    previousTrapezoidState_Angle = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState_Angle, new TrapezoidProfile.State(angleSetpoint,0));
     trapezoidTimer.restart();
 
     double anglePIDOutput = GetAnglePIDOutput(absAngle);
@@ -113,7 +120,7 @@ public class CoolArm extends SubsystemBase {
 
     if(elevatorControlEnabled){
       //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
-      SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), elevatorSetpoint),3));
+      SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), previousTrapezoidState_Elevator.position),3));
       
       if(AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && !HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP)){
         SetArmAction(ArmAction.Pickup);
@@ -138,7 +145,7 @@ public class CoolArm extends SubsystemBase {
   }
 
   public double GetAnglePIDOutput(double angle){
-    return armPIDController.calculate(angle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0);
+    return armPIDController.calculate(angle,previousTrapezoidState_Angle.position ) + armFFController.calculate( ( (previousTrapezoidState_Angle.position - 180) / 180) * Math.PI, 0);
 
   }
 
@@ -149,6 +156,10 @@ public class CoolArm extends SubsystemBase {
   public boolean AtElevatorSetpoint(double sp){
     //1.5 is the arbitrary tolerance
     return Math.abs(elevatorEncoder.getPosition() - sp) < 1.5;
+  }
+
+  public double GetElevatorSetpoint(){
+    return previousTrapezoidState_Elevator.position;
   }
 
   
@@ -190,7 +201,7 @@ public class CoolArm extends SubsystemBase {
         //newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
         //newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
         newAngleSP = CoolArmConstants.kPlaceAngleSP;
-        newElevatorSP = elevatorEncoder.getPosition();
+        newElevatorSP = elevatorSetpoint;
         break;
     }
 

@@ -15,7 +15,7 @@ import frc.robot.Constants.LEDConstants;
 public class SignalLights extends SubsystemBase {
   
   public AddressableLED LEDs;
-  public AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
+  public AddressableLEDBuffer LEDBuffer = new AddressableLEDBuffer(0);
 
   public boolean hasAlgae = false;
   public boolean hadAlgae = true;

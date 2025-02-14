@@ -396,7 +396,7 @@ public class SwerveSubsystem extends SubsystemBase
     
     
     PathPlannerPath path = new PathPlannerPath(
-      PathPlannerPath.waypointsFromPoses( endPose),
+      PathPlannerPath.waypointsFromPoses(getPose(), endPose),
      
     // return AutoBuilder.followPath(
     //   endPose, 

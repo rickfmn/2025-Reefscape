@@ -57,7 +57,7 @@ public class Robot extends TimedRobot
       VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
     }
 
-    for (int i = 6; i < 11; i++){
+    for (int i = 6; i < 12; i++){
       VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
       VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
     }

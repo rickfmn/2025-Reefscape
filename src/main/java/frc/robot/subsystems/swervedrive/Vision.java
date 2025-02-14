@@ -41,6 +41,8 @@ import org.photonvision.simulation.SimCameraProperties;
 import org.photonvision.simulation.VisionSystemSim;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.timesync.TimeSyncSingleton;
+
 import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
@@ -87,6 +89,8 @@ public class Vision
    */
   public Vision(Supplier<Pose2d> currentPose, Field2d field)
   {
+
+    TimeSyncSingleton.load();
     this.currentPose = currentPose;
     this.field2d = field;
 

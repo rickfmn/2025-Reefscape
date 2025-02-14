@@ -249,7 +249,7 @@ public class RobotContainer
       return;
     }
 
-    Command pathfindCommand = drivebase.driveToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
+    Command pathfindCommand = drivebase.createTrajectoryToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
     .onlyWhile(driverJoystick.button(buttonFinal));
     pathfindCommand.addRequirements(drivebase);
     pathfindCommand.schedule();
@@ -286,6 +286,7 @@ public class RobotContainer
   public void disabledPeriodic(){
     coolArm.SetAngleSetpoint(coolArm.absAngleEncoder.getPosition());
     coolArm.SetElevatorSetpoint(coolArm.elevatorEncoder.getPosition());
+    coolArm.SetElevatorControlEnabled(false);
     signalLights.periodic();
     //signalLights.SetSignal(LightSignal.databitsAnimated);
   }

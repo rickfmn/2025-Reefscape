@@ -156,12 +156,12 @@ public final class Constants
     public static final double kDAngle = 0;
 
     //Gains for the Arm elevator controllers, PID
-    public static final double kPElevator = 1.5// 1 is better than 0.5
+    public static final double kPElevator = 1.75// 1 is better than 0.5
     ; //1 is good, but have to be sad and go slow
-    public static final double kIElevator = 0;
+    public static final double kIElevator = 0.04;
     public static final double kDElevator = 0;
 
-    public static final double kMaxElevatorPos = -25.476;
+    public static final double kMaxElevatorPos = -25.57;
     
 
 
