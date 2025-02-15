@@ -87,7 +87,7 @@ public final class Constants
 
     public static final double kINTAKE_SPEED = 3;
     public static final double kHOLD_SPEED = 0.5;
-    public static final double kOUTTAKE_SPEED = -1;
+    public static final double kOUTTAKE_SPEED = -3;
 
     public static final double kDEPLOY_SPEED = 5;
     public static final double kRETRACT_SPEED = -2;
@@ -165,16 +165,16 @@ public final class Constants
     
 
 
-    public static final double kL1PrepAngleSP = 168;
+    public static final double kL1PrepAngleSP = 161;
     public static final double kL2PrepAngleSP = 195;
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 263;
 
-    public static final double kTravelAngleSP = 88;
-    public static final double kPickupAngleSP = 88;
+    public static final double kTravelAngleSP = 86;
+    public static final double kPickupAngleSP = 86;
     //public static final double kPlaceAngleSPChange = -30;
     public static final double kPlaceAngleSP = 165;
-    public static final double kMaxPickupBoxAngle = 100;
+    public static final double kMaxPickupBoxAngle = 110;
     
     public static final double kMaxPickupBoxElevator = -2.5;
 

@@ -57,7 +57,7 @@ public class AlgaeIntake extends SubsystemBase {
         break;
       case Retracting:
         SetAngleMotor(AlgaeIntakeConstants.kRETRACT_SPEED);
-        if(m_angleEncoder.getPosition() < AlgaeIntakeConstants.INTAKE_DEPLOY_ANGLE){
+        if(m_angleEncoder.getPosition() < 0.1){
           currentState = IntakeState.Retracted;
         }
         break;

@@ -115,6 +115,14 @@ public class CoolArm extends SubsystemBase {
       
       //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
     }
+    else if(currentAction == ArmAction.L1 && absAngle > CoolArmConstants.kMaxPickupBoxAngle){
+      SetElevatorSetpoint(CoolArmConstants.kL1PrepElevatorSP);
+    }
+
+    //this if statement is to overcome the sticky part of the arm angle control to allow us to consistently place the arm angle on the magnet
+    if(absAngle < 95 &&( currentAction == ArmAction.Pickup || currentAction == ArmAction.Travel)){
+      anglePIDOutput -= 0.2;
+    }
     
     SetAngleMotor(anglePIDOutput);
 
@@ -172,7 +180,7 @@ public class CoolArm extends SubsystemBase {
     switch(newAction){
       case L1:
         newAngleSP = CoolArmConstants.kL1PrepAngleSP;
-        newElevatorSP = CoolArmConstants.kL1PrepElevatorSP;
+        newElevatorSP = CoolArmConstants.kTravelElevatorSP;
 
         break;
       case L2:
@@ -200,7 +208,13 @@ public class CoolArm extends SubsystemBase {
 
         //newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
         //newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
-        newAngleSP = CoolArmConstants.kPlaceAngleSP;
+        if(elevatorSetpoint == CoolArmConstants.kL1PrepElevatorSP){
+          newAngleSP = CoolArmConstants.kL2PrepAngleSP;
+        }
+        else{
+          newAngleSP = CoolArmConstants.kPlaceAngleSP;
+        }
+        
         newElevatorSP = elevatorSetpoint;
         break;
     }
