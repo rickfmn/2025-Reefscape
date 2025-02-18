@@ -120,19 +120,19 @@ public final class Constants
     public static final int FOLLOWER_MOTOR_ID = 18;
     
     //Prep angle
-    public static final double CLIMB_PANGLE = 270.0;
+    public static final double CLIMB_PANGLE = 290.0;
     //Stiction angle
     public static final double CLIMB_VANGLE = 232.0;
     //Finish angle
-    public static final double CLIMB_FANGLE = 222.0;
+    public static final double CLIMB_FANGLE = 239.0;
     //Best Angle(for the rest of the match)
     public static final double CLIMB_BANGLE = 183.0;
 
 
 
-    public static final double kPREPARE_SPEED = 0.1;
+    public static final double kPREPARE_SPEED = 0.2;
     public static final double kCLIMB_SPEED = -0.5;
-    public static final double kCLIMB_STICTION_SPEED = -1.0;
+    public static final double kCLIMB_STICTION_SPEED = -0.25;
 
     public static final double kLOCKED_SERVO_POS = 1;
     

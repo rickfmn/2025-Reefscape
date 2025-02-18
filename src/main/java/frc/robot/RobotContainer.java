@@ -95,6 +95,14 @@ public class RobotContainer
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
 
+  SwerveInputStream driveAngularVelocityPrecise = SwerveInputStream.of(drivebase.getSwerveDrive(),
+                                                            () -> driverJoystick.getY() * -0.25,
+                                                            () -> driverJoystick.getX() * -0.25)
+                                                        .withControllerRotationAxis(() -> driverJoystick.getTwist() * -0.5)
+                                                        .deadband(OperatorConstants.DEADBAND)
+                                                        .scaleTranslation(0.8)
+                                                        .allianceRelativeControl(true);
+
   /**
    * Clone's the angular velocity input stream and converts it to a fieldRelative input stream.
    */
@@ -116,6 +124,9 @@ public class RobotContainer
   // left stick controls translation
   // right stick controls the angular velocity of the robot
   Command driveFieldOrientedAnglularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
+  
+  Command driveFieldOrientedAnglularVelocityPrecise = drivebase.driveFieldOriented(driveAngularVelocityPrecise);
 
   Command driveSetpointGen = drivebase.driveWithSetpointGeneratorFieldRelative(driveAngularVelocity);
 
@@ -163,15 +174,22 @@ public class RobotContainer
     autoSelector = AutoBuilder.buildAutoChooser();
 
 
-    Command simpleDriveForward = new ParallelDeadlineGroup(new WaitCommand(3),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0.5, 0, 0)), drivebase))
+    Command simpleDriveForward1 = new ParallelDeadlineGroup(new WaitCommand(6),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0.5, 0, 0)), drivebase))
+    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
+
+    Command simpleDriveForward2 = new ParallelDeadlineGroup(new WaitCommand(6),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0.5, 0, 0)), drivebase))
     .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
 
     Command simpleDriveReverse = new ParallelDeadlineGroup(new WaitCommand(3),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(-0.5, 0, 0)), drivebase))
     .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
 
-    autoSelector.addOption("Simple Forward", simpleDriveForward);
+    autoSelector.addOption("Simple Forward", simpleDriveForward1);
     
-    autoSelector.addOption("Simple L1", new ParallelCommandGroup(simpleDriveForward,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L1), coolArm)).andThen(simpleDriveReverse));
+    autoSelector.addOption("Simple L1", new ParallelCommandGroup(simpleDriveForward2,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L1), coolArm))
+    .andThen(new ParallelCommandGroup(simpleDriveReverse,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L2), coolArm))));
+
+    // autoSelector.addOption("Simple L4", new ParallelCommandGroup(simpleDriveForward,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L4), coolArm))
+    // .andThen(new ParallelCommandGroup(simpleDriveReverse,new InstantCommand(()->coolArm.SetArmAction(ArmAction.Place), coolArm))));
 
 
     Shuffleboard.getTab("Game HUD").add(autoSelector).withSize(2,1);
@@ -206,7 +224,9 @@ public class RobotContainer
     driverJoystick.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     driverJoystick.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
-    driverJoystick.trigger().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    driverJoystick.trigger().whileTrue(driveFieldOrientedAnglularVelocityPrecise);
+
+    driverJoystick.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     
     driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
@@ -274,6 +294,10 @@ public class RobotContainer
     pathfindCommand.schedule();
 
     //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
+  }
+
+  public void SetUpAutoSelector(){
+    
   }
 
 
