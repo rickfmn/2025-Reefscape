@@ -56,6 +56,8 @@ public class CoolArm extends SubsystemBase {
 
   private DigitalInput coralPickupSensor = new DigitalInput(CoolArmConstants.kSensorID);
 
+  private int pickupRetryCounter = 0;
+
   private ArmAction currentAction = ArmAction.L1;
 
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
@@ -130,8 +132,9 @@ public class CoolArm extends SubsystemBase {
       //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
       SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), previousTrapezoidState_Elevator.position),3));
       
-      if(AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && !HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP)){
+      if(AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && !HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP) && pickupRetryCounter < 5){
         SetArmAction(ArmAction.Pickup);
+        pickupRetryCounter ++;
         //this if statement should try to pick up the coral again if we fail to pick it up the first time
       }
     }
@@ -202,6 +205,9 @@ public class CoolArm extends SubsystemBase {
       case Pickup:
         newAngleSP = CoolArmConstants.kPickupAngleSP;
         newElevatorSP = CoolArmConstants.kTravelElevatorSP;
+        if(currentAction != ArmAction.Pickup){
+          pickupRetryCounter = 0;
+        }
         
         break;
       case Place:

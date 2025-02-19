@@ -130,7 +130,7 @@ public final class Constants
 
 
 
-    public static final double kPREPARE_SPEED = 0.2;
+    public static final double kPREPARE_SPEED = 0.4;
     public static final double kCLIMB_SPEED = -0.5;
     public static final double kCLIMB_STICTION_SPEED = -0.25;
 

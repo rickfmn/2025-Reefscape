@@ -130,7 +130,7 @@ public class Robot extends TimedRobot
   {
     updateAlliance();
     m_robotContainer.setMotorBrake(true);
-    m_robotContainer.updateDriveEncoders();
+    // m_robotContainer.updateDriveEncoders();
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();    
 
     // schedule the autonomous command (example)

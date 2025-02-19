@@ -29,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.AutoPickup;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoolArm;
@@ -159,6 +160,7 @@ public class RobotContainer
   {
     // Configure the trigger bindings
     configureBindings();
+    configureAutoNamedCommands();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     
@@ -193,6 +195,22 @@ public class RobotContainer
 
 
     Shuffleboard.getTab("Game HUD").add(autoSelector).withSize(2,1);
+  }
+
+
+  public void configureAutoNamedCommands(){
+    NamedCommands.registerCommand("Arm L1", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    NamedCommands.registerCommand("Arm L2", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
+    NamedCommands.registerCommand("Arm L3", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    NamedCommands.registerCommand("Arm L4", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
+
+    NamedCommands.registerCommand("Place", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm));
+    
+    NamedCommands.registerCommand("Travel Setpoint", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+
+
   }
 
 
@@ -309,8 +327,7 @@ public class RobotContainer
    */
   public Command getAutonomousCommand()
   {
-    drivebase.resetDriveEncoders();
-    updateDriveEncoders();
+    // updateDriveEncoders();
     
     // An example command will be run in autonomous
     return autoSelector.getSelected();

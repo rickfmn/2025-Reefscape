@@ -47,10 +47,10 @@ public class Climber extends SubsystemBase {
     switch(currentState){
       case Best:
 
-        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_BANGLE - 0.5){
+        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_BANGLE - 1){
           setWinch(0.1);
         }
-        else if(m_absEncoder.getPosition() > ClimberConstants.CLIMB_BANGLE + 0.5){
+        else if(m_absEncoder.getPosition() > ClimberConstants.CLIMB_BANGLE + 1){
           setWinch(-0.1);
         }
         else{
