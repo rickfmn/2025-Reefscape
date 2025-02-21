@@ -45,6 +45,7 @@ public class AlgaeIntake extends SubsystemBase {
     switch (currentState) {
       case Deployed:
         SetAngleMotor(0);
+
         break;
       case Deploying:
         SetAngleMotor(AlgaeIntakeConstants.kDEPLOY_SPEED);
@@ -54,6 +55,9 @@ public class AlgaeIntake extends SubsystemBase {
         break;
       case Retracted:
         SetAngleMotor(0);
+        if(m_angleEncoder.getPosition() > 0.1){
+          retractIntake();;
+        }
         break;
       case Retracting:
         SetAngleMotor(AlgaeIntakeConstants.kRETRACT_SPEED);

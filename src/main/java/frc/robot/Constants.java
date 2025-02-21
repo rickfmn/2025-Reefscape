@@ -60,8 +60,8 @@ public final class Constants
   public static final class VisionConstants {
     public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(10.75), Units.inchesToMeters(16.5));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
-    public static final Transform3d reefOffset_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(12), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(6),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
     public static final Pose3d[][] kReefGoalPoses = new Pose3d[23][2];
     
@@ -97,17 +97,17 @@ public final class Constants
   public static class LEDConstants
   {
 
-    public static final int LED_COUNT = 49;
+    public static final int LED_COUNT = 98;
 
-    public static final int LED_PORT = 1;
+    public static final int LED_PORT = 0;
 
     public static final LEDPattern kNoAlgaeColor = LEDPattern.solid(Color.kWheat);
     //public static final Color8Bit kNoNoteColor = new Color8Bit(Color.kWhite);
     public static final LEDPattern kYesAlgaeColor = LEDPattern.solid(Color.kGhostWhite);
     public static final LEDPattern kAlignColor = LEDPattern.solid(Color.kBlack);
-    public static final LEDPattern kClimbFinishColor = LEDPattern.rainbow(255,255).scrollAtAbsoluteSpeed(MetersPerSecond.of(20), Meters.of(1));
+    public static final LEDPattern kClimbFinishColor = LEDPattern.rainbow(255,255).scrollAtAbsoluteSpeed(MetersPerSecond.of(100), Meters.of(1));
     public static final LEDPattern kClimbReadyColor = LEDPattern.solid(Color.kPurple);
-    public static final LEDPattern kDatabitsAnimated = LEDPattern.solid(new Color(2,255,4)).breathe(Seconds.of(1));
+    public static final LEDPattern kDatabitsAnimated = LEDPattern.solid(new Color(2,255,4)).breathe(Seconds.of(5));
     public static final LEDPattern kOffColor = LEDPattern.kOff;
     public static final LEDPattern kErrorColor = LEDPattern.solid(Color.kHotPink);
     

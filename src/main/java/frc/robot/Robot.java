@@ -168,6 +168,8 @@ public class Robot extends TimedRobot
       CommandScheduler.getInstance().cancelAll();
     }
     m_robotContainer.setDriveMode();
+
+    m_robotContainer.teleopInit();
   }
 
   /**

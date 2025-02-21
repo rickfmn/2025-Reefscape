@@ -51,7 +51,10 @@ public class RobotContainer
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandJoystick driverJoystick = new CommandJoystick(0);
 
-  final         CommandJoystick copilotController = new CommandJoystick(1);
+  final         CommandJoystick copilotBoxController = new CommandJoystick(1);
+
+  
+  final         CommandJoystick copilotSNESController = new CommandJoystick(2);
 
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -261,28 +264,54 @@ public class RobotContainer
 
     //coolArm.setDefaultCommand(new RunCommand(() -> coolArm.SetAngleSetpoint(driverJoystick.getThrottle() *-90 + 180),coolArm));
 
-    copilotController.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
-    copilotController.button(7).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+    copilotBoxController.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    copilotBoxController.button(7).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
     // copilotController.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     // copilotController.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     // copilotController.povLeft().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
     // copilotController.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
-    copilotController.button(8).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    copilotBoxController.button(8).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
 
-    copilotController.axisGreaterThan(3, 0.5).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(2), ()->coolArm.SetElevatorMotor(0),coolArm));
-    copilotController.axisGreaterThan(2, 0.5).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-2),()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotBoxController.axisGreaterThan(3, 0.5).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(2), ()->coolArm.SetElevatorMotor(0),coolArm));
+    copilotBoxController.axisGreaterThan(2, 0.5).whileTrue(new StartEndCommand(()->coolArm.SetElevatorMotorManual(-2),()->coolArm.SetElevatorMotor(0),coolArm));
 
-    copilotController.button(9).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotController), coolArm));
+    copilotBoxController.button(9).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotBoxController), coolArm));
    
-    copilotController.button(4).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
-    copilotController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotBoxController.button(4).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotBoxController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
 
-    copilotController.button(6).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
+    copilotBoxController.button(6).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
     //copilotController.button(6).onTrue(new PrintCommand("Should be preparing"));
-    copilotController.button(10).onTrue(new InstantCommand(() -> climber.Climb(), climber));
-    copilotController.button(3).onTrue(new InstantCommand(() -> climber.Best(), climber));
-    copilotController.button(1).onTrue(new InstantCommand(()->coolArm.DoAction(copilotController)));
+    copilotBoxController.button(10).onTrue(new InstantCommand(() -> climber.Climb(), climber));
+    copilotBoxController.button(3).onTrue(new InstantCommand(() -> climber.Best(), climber));
+    copilotBoxController.button(1).onTrue(new InstantCommand(()->coolArm.DoAction(copilotBoxController)));
+
+
+
+
+    copilotSNESController.button(1).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    copilotSNESController.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+    // copilotController.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
+    // copilotController.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    // copilotController.povLeft().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
+
+    // copilotController.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+    copilotSNESController.button(3).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+   
+    copilotSNESController.button(5).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotSNESController.button(6).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
+
+    copilotSNESController.button(10).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
+    copilotSNESController.button(9).onTrue(new InstantCommand(() -> climber.Climb(), climber));
+    copilotSNESController.button(4).onTrue(new InstantCommand(() -> climber.Best(), climber));
+
+
+    copilotSNESController.axisGreaterThan(0, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
+    copilotSNESController.axisLessThan(0, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    copilotSNESController.axisGreaterThan(4, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    copilotSNESController.axisLessThan(4, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
+
 
 
   }
@@ -352,7 +381,7 @@ public class RobotContainer
   }
 
   public void disabledInit(){
-    signalLights.SetSignal(LightSignal.databitsAnimated);
+    signalLights.SetSignal(LightSignal.Idle);
   }
 
 
@@ -360,5 +389,10 @@ public class RobotContainer
 public void updateDriveEncoders() {
     drivebase.resetDriveEncoders();
     drivebase.synchronizeModuleEncoders();
+}
+
+
+public void teleopInit() {
+  signalLights.DisablePartyMode();
 }
 }

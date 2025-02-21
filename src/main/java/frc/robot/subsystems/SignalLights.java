@@ -20,6 +20,8 @@ public class SignalLights extends SubsystemBase {
   public boolean hasAlgae = false;
   public boolean hadAlgae = true;
 
+  public boolean inClimbMode = false;
+
 
   public LightSignal currentSignal = LightSignal.databits;
 
@@ -34,7 +36,7 @@ public class SignalLights extends SubsystemBase {
     climbPrep,
     climbFinish,
     databits,
-    databitsAnimated
+    Idle
   }
 
   /** Creates a new SignalLights. */
@@ -47,19 +49,24 @@ public class SignalLights extends SubsystemBase {
     LEDs.setLength(LEDConstants.LED_COUNT);
     //armLEDs.setData(armLEDBuffer);
     //armLEDs.start();
-    currentSignal = LightSignal.databitsAnimated;
+    currentSignal = LightSignal.Idle;
   }
 
   @Override
   public void periodic() {
-    boolean ledChanged = false;
+    boolean ledChanged = true;
     //Determine if we push LED update
     if (previousSignal != currentSignal) 
     {
       previousSignal = currentSignal;
       ledChanged = true;
 
+      if(currentSignal != LightSignal.climbFinish && currentSignal != LightSignal.Idle){
+        inClimbMode = false;
+      }
     }
+
+    
     // This method will be called once per scheduler run
     switch (currentSignal) {
 
@@ -82,14 +89,23 @@ public class SignalLights extends SubsystemBase {
         break;
       case climbPrep:      
         SetLEDPattern(LEDConstants.kClimbReadyColor);
+        
         break;
       case climbFinish:
         SetLEDPattern(LEDConstants.kClimbFinishColor);
         ledChanged = true;
+        inClimbMode = true;
         break;
 
-      case databitsAnimated:
-        SetLEDPattern(LEDConstants.kDatabitsAnimated);
+      case Idle:
+        if(!inClimbMode){
+          SetLEDPattern(LEDConstants.kDatabitsAnimated);
+        }
+        else{
+          SetLEDPattern(LEDConstants.kClimbFinishColor);
+          inClimbMode = true;
+        }
+        
         //This needs to update every loop
         ledChanged = true;
         break;
@@ -101,6 +117,8 @@ public class SignalLights extends SubsystemBase {
 
       
     }
+
+    
 
     //Only push the LED state if it has changed
     if (ledChanged)
@@ -136,6 +154,10 @@ public class SignalLights extends SubsystemBase {
   //   }
    
   // }
+
+  public void DisablePartyMode(){
+    inClimbMode = false;
+  }
 
 
   // private void PartyMode(double timer) {
