@@ -60,7 +60,6 @@ public class Climber extends SubsystemBase {
         break;
       case Climbed:
         setWinch(0);
-        //TODO: lights party mode
         break;
       case Climbing:
         double absAngle = m_absEncoder.getPosition();

@@ -22,6 +22,8 @@ public class SignalLights extends SubsystemBase {
   public boolean hadAlgae = true;
 
   public ArmAction currentArmAction = ArmAction.Travel;
+  
+  public ArmAction previousArmAction = ArmAction.Pickup;
 
   public boolean inClimbMode = false;
 
@@ -85,12 +87,22 @@ public class SignalLights extends SubsystemBase {
           
         break;
       case scoringMode:
-        if(currentArmAction == ArmAction.L4){
-          SetLEDPattern(LEDConstants.kScoreL4);
+        if(previousArmAction != currentArmAction){
+          if(currentArmAction == ArmAction.L4){
+            SetLEDPattern(LEDConstants.kScoreL4);
+          }
+          else if (currentArmAction == ArmAction.L3){
+            SetLEDPattern(LEDConstants.kScoreL3);
+          }
+          else if (currentArmAction == ArmAction.L2){
+            SetLEDPattern(LEDConstants.kScoreL2);
+          }
+          else if (currentArmAction == ArmAction.L1){
+            SetLEDPattern(LEDConstants.kScoreL1);
+          }
+          ledChanged = true;
         }
-        else{
-          SetLEDPattern(LEDConstants.kScoreL1_L2_L3);
-        }
+        
         break;
       case loadMode:
         SetLEDPattern(LEDConstants.kLoadModeColor);
@@ -122,7 +134,6 @@ public class SignalLights extends SubsystemBase {
       SetLEDPattern(LEDConstants.kErrorColor);
         ledChanged = true;
         break;
-
       
     }
 
@@ -137,6 +148,8 @@ public class SignalLights extends SubsystemBase {
     
     }
     hadAlgae = hasAlgae;
+    previousArmAction = currentArmAction;
+
   }
 
   private void SetLEDPattern(LEDPattern pattern){

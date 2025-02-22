@@ -488,6 +488,29 @@ public class SwerveSubsystem extends SubsystemBase
     return VisionConstants.kReefGoalPoses[tagIndex][lrID][scoringLevel].toPose2d();
   }
 
+  public Pose2d getBestCoralStationByPose(int position){
+
+    int redBlue = 0;
+    if(Robot.isRedAlliance){
+      redBlue = 1;
+      
+    }
+    
+    Pose2d robotPose = getPose();
+
+    int upperLowerStation = 0;//by default go to the station closer to the x axis
+    if(robotPose.getY() > reefCenterPose3d.getY()){
+      upperLowerStation = 1;
+      position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
+    }
+    
+
+    
+
+
+    return VisionConstants.kCoralStationPoses[redBlue][position][upperLowerStation].toPose2d();
+  }
+
   /**
    * Drive with {@link SwerveSetpointGenerator} from 254, implemented by PathPlanner.
    *

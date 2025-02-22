@@ -26,6 +26,12 @@
         {
           "type": "named",
           "data": {
+            "name": "AutoAlign R"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Place"
           }
         },
@@ -57,32 +63,25 @@
         {
           "type": "named",
           "data": {
+            "name": "AutoCoralStation"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "AutoPickup"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.75
+            "name": "Arm L4"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "L Feeder to L4 L"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Arm L4"
-                }
-              }
-            ]
+            "name": "AutoAlign R"
           }
         },
         {
@@ -98,22 +97,9 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Travel Setpoint"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Feeder L"
-                }
-              }
-            ]
+            "name": "AutoCoralStation"
           }
         },
         {
@@ -123,28 +109,15 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.75
+            "name": "Arm L4"
           }
         },
         {
-          "type": "parallel",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "L Feeder to L4 K"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Arm L4"
-                }
-              }
-            ]
+            "name": "AutoAlign L"
           }
         },
         {

@@ -32,6 +32,7 @@ import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AutoPickup;
+import frc.robot.commands.DynamicCommand;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoolArm;
@@ -213,10 +214,13 @@ public class RobotContainer
     NamedCommands.registerCommand("Arm L2", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     NamedCommands.registerCommand("Arm L3", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     NamedCommands.registerCommand("Arm L4", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
+    NamedCommands.registerCommand("AutoAlign R", new DynamicCommand(()->driveToBestTargetAutonomous(true)));
+    NamedCommands.registerCommand("AutoAlign L", new DynamicCommand(() -> driveToBestTargetAutonomous(false)));
 
     NamedCommands.registerCommand("Place", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm));
+    NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(()-> driveToBestCoralStationAutonomous(2)));
     
     NamedCommands.registerCommand("Travel Setpoint", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
 
@@ -346,6 +350,50 @@ public class RobotContainer
     .onlyWhile(driverJoystick.button(buttonFinal));
     pathfindCommand.addRequirements(drivebase);
     pathfindCommand.schedule();
+
+    //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
+  }
+
+  public Command driveToBestTargetAutonomous(boolean isRight){
+    //int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
+    
+    
+    int tagLRIndex = 0;
+    if(!isRight) tagLRIndex = 1;
+
+    Pose2d goalPose = drivebase.getBestReefTargetByPose(tagLRIndex);
+
+    if(goalPose == null){
+      System.out.println("Oh no, It looks like you didn't see anything");
+      return new PrintCommand("No goal pose");
+    }
+
+    Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
+    pathfindCommand.addRequirements(drivebase);
+    return pathfindCommand;
+
+    //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
+  }
+
+
+  public void driveToBestCoralStationAutonomous(int position){
+    //the position is 0 for closest to driver station, 1 for centered, and 2 for farthest away from driverstation
+    //the flipping needed to be done to account for upper or lower station is handled in getBestCoralStationByPose
+    
+    if(position > 2){
+      position = 2;
+    }
+
+    Pose2d goalPose = drivebase.getBestCoralStationByPose(position);
+
+    if(goalPose == null){
+      System.out.println("Oh no, It looks like you didn't see anything");
+      return ;
+    }
+
+    Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
+    pathfindCommand.addRequirements(drivebase);
+    pathfindCommand.schedule();;
 
     //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
   }

@@ -102,7 +102,7 @@ public class CoolArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     double absAngle = absAngleEncoder.getPosition();
-    signalLights.ReceiveArmAction(currentAction);
+    //signalLights.ReceiveArmAction(currentAction);
     
     previousTrapezoidState_Elevator = elevatorTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState_Elevator, new TrapezoidProfile.State(elevatorSetpoint,0));
     previousTrapezoidState_Angle = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState_Angle, new TrapezoidProfile.State(angleSetpoint,0));
@@ -115,14 +115,19 @@ public class CoolArm extends SubsystemBase {
         anglePIDOutput = 0;
       }
 
-      if(currentAction == ArmAction.L1){
+      if(currentAction == ArmAction.L1 || currentAction == ArmAction.L2){
         SetElevatorSetpoint(CoolArmConstants.kTravelElevatorSP);
       }
       
       //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
     }
     else if(currentAction == ArmAction.L1 && absAngle > CoolArmConstants.kMaxPickupBoxAngle){
-      SetElevatorSetpoint(CoolArmConstants.kL1PrepElevatorSP);
+      if(currentAction == ArmAction.L1){
+        SetElevatorSetpoint(CoolArmConstants.kL1PrepElevatorSP);
+      }else if (currentAction == ArmAction.L2){
+        SetElevatorSetpoint(CoolArmConstants.kL2PrepElevatorSP);
+      }
+      
     }
 
     //this if statement is to overcome the sticky part of the arm angle control to allow us to consistently place the arm angle on the magnet

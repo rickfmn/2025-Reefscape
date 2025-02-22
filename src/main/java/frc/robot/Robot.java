@@ -81,6 +81,28 @@ public class Robot extends TimedRobot
       VisionConstants.kReefGoalPoses[i][1][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
     }
 
+
+    VisionConstants.kCoralStationPoses[0][0][0] = fieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[0][0][1] = fieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[0][0][2] = fieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetRight);
+
+    
+    VisionConstants.kCoralStationPoses[0][1][0] = fieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[0][1][1] = fieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[0][1][2] = fieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetRight);
+
+    
+    VisionConstants.kCoralStationPoses[1][0][0] = fieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[1][0][1] = fieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[1][0][2] = fieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetRight);
+
+    VisionConstants.kCoralStationPoses[1][1][0] = fieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[1][1][1] = fieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[1][1][2] = fieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetRight);
+
+    
+
+
     updateAlliance();
     // VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);
 
