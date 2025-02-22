@@ -41,6 +41,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Robot;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.CoolArm;
+import frc.robot.subsystems.CoolArm.ArmAction;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
@@ -82,13 +85,17 @@ public class SwerveSubsystem extends SubsystemBase
   public       Vision              vision;
   public Pose3d reefCenterPose3d;
 
+  public CoolArm coolArm;
+
   /**
    * Initialize {@link SwerveDrive} with the directory provided.
    *
    * @param directory Directory of swerve drive config files.
    */
-  public SwerveSubsystem(File directory)
+  public SwerveSubsystem(File directory,CoolArm arm)
   {
+
+    coolArm = arm;
     // Angle conversion factor is 360 / (GEAR RATIO * ENCODER RESOLUTION)
     //  In this case the gear ratio is 12.8 motor revolutions per wheel rotation.
     //  The encoder resolution per motor revolution is 1 per motor revolution.
@@ -222,7 +229,7 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(1.25, 0.0, 0.00),//TODO: figure out if this helps
+              new PIDConstants(2.5, 0.0, 0.00),//TODO: figure out if this helps
               // Translation PID constants
               new PIDConstants(10.0, 0.0, 0.0)
               // Rotation PID constants
@@ -401,7 +408,7 @@ public class SwerveSubsystem extends SubsystemBase
     // return AutoBuilder.followPath(
     //   endPose, 
      new PathConstraints(
-      swerveDrive.getMaximumChassisVelocity(), 1,
+      swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisVelocity()/2,
       swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
      new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
        new GoalEndState(0, endPose.getRotation())); 
@@ -421,7 +428,7 @@ public class SwerveSubsystem extends SubsystemBase
     return Math.sqrt(Math.pow( velocity.vxMetersPerSecond,2) + Math.pow(velocity.vyMetersPerSecond,2));
   }
 
-  public int getBestReefTargetByPose(){
+  public Pose2d getBestReefTargetByPose(int lrID){
 
     Pose2d reefRelativePose = null;
 
@@ -458,7 +465,27 @@ public class SwerveSubsystem extends SubsystemBase
       tagIndex = fiducialIDS[5];
     }
 
-    return tagIndex;
+    int scoringLevel = 2;
+    switch (coolArm.currentAction) {
+      case L1:
+        scoringLevel = 0;
+        break;
+      case L2:
+        scoringLevel = 1;
+        break;
+      case L3:
+        scoringLevel = 2;
+        break;
+      case L4:
+        scoringLevel = 3;
+        break;
+    
+      default:
+        break;
+    }
+
+
+    return VisionConstants.kReefGoalPoses[tagIndex][lrID][scoringLevel].toPose2d();
   }
 
   /**

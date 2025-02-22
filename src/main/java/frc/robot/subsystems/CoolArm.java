@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
-import frc.robot.Constants.CoolArmConstants;;
+import frc.robot.Constants.CoolArmConstants;
+import frc.robot.subsystems.SignalLights.LightSignal;;
 
 public class CoolArm extends SubsystemBase {
 
@@ -36,7 +37,7 @@ public class CoolArm extends SubsystemBase {
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
   private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kSAngle, CoolArmConstants.kGAngle, CoolArmConstants.kVAngle);
   private PIDController armPIDController = new PIDController(CoolArmConstants.kPAngle, CoolArmConstants.kIAngle, CoolArmConstants.kDAngle);
-  private TrapezoidProfile.Constraints trapezoidConstraints_Angle = new TrapezoidProfile.Constraints((65d/0.125d), (65d/0.125d)/(0.25d*0.5d ));
+  private TrapezoidProfile.Constraints trapezoidConstraints_Angle = new TrapezoidProfile.Constraints((65d/0.0125d), (65d/0.25d)/(0.25d*0.5d ));
   private TrapezoidProfile.State previousTrapezoidState_Angle = new TrapezoidProfile.State(0, 0);
   private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints_Angle);
   private TrapezoidProfile.Constraints trapezoidConstraints_Elevator = new TrapezoidProfile.Constraints((25d/0.75d), (25d/0.75d)/(0.25 ));
@@ -58,7 +59,9 @@ public class CoolArm extends SubsystemBase {
 
   private int pickupRetryCounter = 0;
 
-  private ArmAction currentAction = ArmAction.L1;
+  public ArmAction currentAction = ArmAction.L1;
+
+  public SignalLights signalLights;
 
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
   //   new SysIdRoutine.Config(Volts.of( 0.15 ).per(Units.Seconds), Volts.of(0.7), Seconds.of(10)),
@@ -66,9 +69,9 @@ public class CoolArm extends SubsystemBase {
   //   new SysIdRoutine.Mechanism(this::voltageDrive, this::logMotors, this));
 
   /** Creates a new CoolArm. */
-  public CoolArm() {
+  public CoolArm(SignalLights lights) {
     // Creates a SysIdRoutine
-    
+    signalLights = lights;
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Absolute Angle", absAngleEncoder::getPosition);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle ProfileGoal", () -> angleSetpoint);
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Angle Setpoint", () -> previousTrapezoidState_Angle.position);
@@ -99,6 +102,7 @@ public class CoolArm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     double absAngle = absAngleEncoder.getPosition();
+    signalLights.ReceiveArmAction(currentAction);
     
     previousTrapezoidState_Elevator = elevatorTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState_Elevator, new TrapezoidProfile.State(elevatorSetpoint,0));
     previousTrapezoidState_Angle = angleTrapezoidProfile.calculate(trapezoidTimer.get(), previousTrapezoidState_Angle, new TrapezoidProfile.State(angleSetpoint,0));
@@ -122,8 +126,8 @@ public class CoolArm extends SubsystemBase {
     }
 
     //this if statement is to overcome the sticky part of the arm angle control to allow us to consistently place the arm angle on the magnet
-    if(absAngle < 95 &&( currentAction == ArmAction.Pickup || currentAction == ArmAction.Travel)){
-      anglePIDOutput -= 0.2;
+    if(absAngle < 105 &&( currentAction == ArmAction.Pickup || currentAction == ArmAction.Travel)){
+      anglePIDOutput -= 1.5;
     }
     
     SetAngleMotor(anglePIDOutput);
@@ -178,7 +182,9 @@ public class CoolArm extends SubsystemBase {
   public void SetArmAction(ArmAction newAction){
     double newAngleSP = absAngleEncoder.getPosition();
     double newElevatorSP = elevatorEncoder.getPosition();
-
+    
+    LightSignal newSignal = LightSignal.scoringMode;
+    signalLights.ReceiveArmAction(newAction);
 
     switch(newAction){
       case L1:
@@ -201,6 +207,7 @@ public class CoolArm extends SubsystemBase {
       case Travel:
         newAngleSP = CoolArmConstants.kTravelAngleSP;
         newElevatorSP = CoolArmConstants.kTravelElevatorSP;
+        newSignal = LightSignal.loadMode;
         break;
       case Pickup:
         newAngleSP = CoolArmConstants.kPickupAngleSP;
@@ -208,6 +215,7 @@ public class CoolArm extends SubsystemBase {
         if(currentAction != ArmAction.Pickup){
           pickupRetryCounter = 0;
         }
+        newSignal = LightSignal.loadMode;
         
         break;
       case Place:
@@ -230,7 +238,7 @@ public class CoolArm extends SubsystemBase {
     if(newAction == ArmAction.Pickup){
       SetElevatorMotorManual(-3);
     }
-
+    signalLights.SetSignal(newSignal);
     currentAction = newAction;
   }
 

@@ -49,17 +49,36 @@ public class Robot extends TimedRobot
   public void robotInit()
   {
     AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-    Transform3d rightOffset = VisionConstants.reefOffset_Right;
-    Transform3d leftOffset = VisionConstants.reefOffset_Left;
+    
 
     for (int i = 17; i < 23; i++){
-      VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
-      VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
+      VisionConstants.kReefGoalPoses[i][0][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Left);
+      VisionConstants.kReefGoalPoses[i][1][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Right);
+
+      VisionConstants.kReefGoalPoses[i][0][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Left);
+      VisionConstants.kReefGoalPoses[i][1][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Right);
+
+      VisionConstants.kReefGoalPoses[i][0][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Left);
+      VisionConstants.kReefGoalPoses[i][1][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Right);
+
+      VisionConstants.kReefGoalPoses[i][0][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Left);
+      VisionConstants.kReefGoalPoses[i][1][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
+
+      
     }
 
     for (int i = 6; i < 12; i++){
-      VisionConstants.kReefGoalPoses[i][0] = fieldLayout.getTagPose(i).get().transformBy(rightOffset);
-      VisionConstants.kReefGoalPoses[i][1] = fieldLayout.getTagPose(i).get().transformBy(leftOffset);
+      VisionConstants.kReefGoalPoses[i][0][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Left);
+      VisionConstants.kReefGoalPoses[i][1][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Right);
+
+      VisionConstants.kReefGoalPoses[i][0][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Left);
+      VisionConstants.kReefGoalPoses[i][1][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Right);
+
+      VisionConstants.kReefGoalPoses[i][0][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Left);
+      VisionConstants.kReefGoalPoses[i][1][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Right);
+
+      VisionConstants.kReefGoalPoses[i][0][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Left);
+      VisionConstants.kReefGoalPoses[i][1][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
     }
 
     updateAlliance();

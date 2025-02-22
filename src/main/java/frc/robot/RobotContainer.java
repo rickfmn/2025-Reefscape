@@ -8,6 +8,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -48,6 +50,7 @@ import swervelib.SwerveInputStream;
 public class RobotContainer
 {
 
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   final         CommandJoystick driverJoystick = new CommandJoystick(0);
 
@@ -56,18 +59,22 @@ public class RobotContainer
   
   final         CommandJoystick copilotSNESController = new CommandJoystick(2);
 
+  private final SignalLights signalLights = new SignalLights();
+
+
+  
+  private final CoolArm coolArm = new CoolArm(signalLights);
+
   // The robot's subsystems and commands are defined here...
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/Abyss"));
+                                                                                "swerve/Abyss"),coolArm);
 
   private final SendableChooser<Command> autoSelector;
   // private final Vision vision = drivebase.vision;
 
-  private final SignalLights signalLights = new SignalLights();
   private final Climber climber = new Climber(signalLights);
   private final AlgaeIntake algaeIntake = new AlgaeIntake(signalLights);
 
-  private final CoolArm coolArm = new CoolArm();
   // Applies deadbands and inverts controls because joysticks
   // are back-right positive while robot
   // controls are front-left positive
@@ -174,7 +181,7 @@ public class RobotContainer
     // Shuffleboard.getTab("testing").addDouble("Distance to Tag 16", vision::getLatestTag16Distance);
     // driverJoystick.button(14).onTrue(new InstantCommand( () -> this.getTag16Distance()  )) ;
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
-    Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef", drivebase::getBestReefTargetByPose);
+    //Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef",()-> drivebase.getBestReefTargetByPose());
     
     autoSelector = AutoBuilder.buildAutoChooser();
 
@@ -233,8 +240,8 @@ public class RobotContainer
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
 
-    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), ()-> System.out.println("Lined Up Right")));
-    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), () -> System.out.println("Lined UP Left?")));
+    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), ()-> System.out.println("Lined Up Right"),drivebase));
+    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), () -> System.out.println("Lined UP Left?"),drivebase));
     driverJoystick.button(7).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
     // Command autoAim = drivebase.aimAtSpeaker(5);
     // autoAim.addRequirements(drivebase);
@@ -318,10 +325,8 @@ public class RobotContainer
 
   public void driveToBestTarget(boolean isRight){
     //int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
-    int targetID = drivebase.getBestReefTargetByPose();
+    
 
-//TODO: force vision update of odometry
-    System.out.println("Best Target ID(Remember this may not be the latest result) " + targetID);
 
     int button = 3;
     if(isRight) button = 4;
@@ -330,12 +335,14 @@ public class RobotContainer
     int tagLRIndex = 0;
     if(!isRight) tagLRIndex = 1;
 
-    if(targetID == 0){
+    Pose2d goalPose = drivebase.getBestReefTargetByPose(tagLRIndex);
+
+    if(goalPose == null){
       System.out.println("Oh no, It looks like you didn't see anything");
       return;
     }
 
-    Command pathfindCommand = drivebase.createTrajectoryToPose(VisionConstants.kReefGoalPoses[targetID][tagLRIndex].toPose2d())
+    Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose)
     .onlyWhile(driverJoystick.button(buttonFinal));
     pathfindCommand.addRequirements(drivebase);
     pathfindCommand.schedule();

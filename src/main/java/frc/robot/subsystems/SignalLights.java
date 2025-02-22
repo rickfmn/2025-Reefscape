@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
+import frc.robot.subsystems.CoolArm.ArmAction;
 
 public class SignalLights extends SubsystemBase {
   
@@ -19,6 +20,8 @@ public class SignalLights extends SubsystemBase {
 
   public boolean hasAlgae = false;
   public boolean hadAlgae = true;
+
+  public ArmAction currentArmAction = ArmAction.Travel;
 
   public boolean inClimbMode = false;
 
@@ -31,8 +34,8 @@ public class SignalLights extends SubsystemBase {
 
   public enum LightSignal {
     hasAlgae,
-    rightAlign,
-    leftAlign,
+    scoringMode,
+    loadMode,
     climbPrep,
     climbFinish,
     databits,
@@ -81,11 +84,16 @@ public class SignalLights extends SubsystemBase {
         }
           
         break;
-      case leftAlign:
-        SetLEDPattern(LEDConstants.kAlignColor);
+      case scoringMode:
+        if(currentArmAction == ArmAction.L4){
+          SetLEDPattern(LEDConstants.kScoreL4);
+        }
+        else{
+          SetLEDPattern(LEDConstants.kScoreL1_L2_L3);
+        }
         break;
-      case rightAlign:
-        SetLEDPattern(LEDConstants.kAlignColor);
+      case loadMode:
+        SetLEDPattern(LEDConstants.kLoadModeColor);
         break;
       case climbPrep:      
         SetLEDPattern(LEDConstants.kClimbReadyColor);
@@ -206,6 +214,10 @@ public class SignalLights extends SubsystemBase {
 
   public void ReceiveIntakeData(boolean algae){
     hasAlgae = algae;
+  }
+
+  public void ReceiveArmAction(ArmAction action){
+    currentArmAction = action;
   }
 
   public void SetSignal(LightSignal signal){

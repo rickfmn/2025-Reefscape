@@ -560,7 +560,7 @@ public class Vision
 
       if(bestTarget == null) return;
 
-      if(VisionConstants.kReefGoalPoses[bestTarget.fiducialId][0] != null){
+      if(VisionConstants.kReefGoalPoses[bestTarget.fiducialId][0][2] != null){
         latestBestTrackedTarget = bestTarget;
       }
     }
