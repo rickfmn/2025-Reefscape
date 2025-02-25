@@ -221,7 +221,7 @@ public class RobotContainer
     NamedCommands.registerCommand("Place", new AutonomousPlace(coolArm));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm));
-    //NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(()-> driveToBestCoralStationAutonomous(2)));
+    NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
     //TODO: uncomment the previous line and fixit
     NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
 
@@ -382,10 +382,10 @@ public class RobotContainer
   }
 
 
-  public void driveToBestCoralStationAutonomous(int position){
+  public Command driveToBestCoralStationAutonomous(){
     //the position is 0 for closest to driver station, 1 for centered, and 2 for farthest away from driverstation
     //the flipping needed to be done to account for upper or lower station is handled in getBestCoralStationByPose
-    
+    int position = 2;
     if(position > 2){
       position = 2;
     }
@@ -394,12 +394,12 @@ public class RobotContainer
 
     if(goalPose == null){
       System.out.println("Oh no, It looks like you didn't see anything");
-      return ;
+      return new PrintCommand("Oh no, It looks like you didn't see anything");
     }
 
     Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
     pathfindCommand.addRequirements(drivebase);
-    pathfindCommand.schedule();;
+    return pathfindCommand;
 
     //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
   }
