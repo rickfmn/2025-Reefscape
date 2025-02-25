@@ -25,6 +25,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -37,7 +38,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants;
 import frc.robot.Robot;
@@ -47,6 +53,7 @@ import frc.robot.subsystems.CoolArm.ArmAction;
 import frc.robot.subsystems.swervedrive.Vision.Cameras;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -66,6 +73,8 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase
 {
+
+  public Pose2d goalPose2d;
 
   /**
    * Swerve drive object.
@@ -111,6 +120,8 @@ public class SwerveSubsystem extends SubsystemBase
     System.out.println("}");
 
     Shuffleboard.getTab("Debug 1").addDouble("Gyro Angle", this::GetGyroYaw);
+    Shuffleboard.getTab("Debug 1").addDoubleArray("Pose Error", this::getPoseError);
+
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -145,6 +156,7 @@ public class SwerveSubsystem extends SubsystemBase
     setupPathPlanner();
     
     SmartDashboard.putData(getSwerveController().thetaController);
+    goalPose2d = getPose();
   }
 
   // @Override
@@ -185,6 +197,12 @@ public class SwerveSubsystem extends SubsystemBase
       vision.updatePoseEstimation(swerveDrive);
       vision.updateVisionField();
     }
+  }
+
+  public double[] getPoseError(){
+    Transform2d poseError = goalPose2d.minus(getPose());
+    double[] errorList = {poseError.getX(),poseError.getY()};
+    return errorList;
   }
 
   @Override
@@ -229,10 +247,12 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(2.5, 0.0, 0.00),//TODO: figure out if this helps
+              new PIDConstants(1.5, 0.0, 0.00),//TODO: figure out if this helps
               // Translation PID constants
-              new PIDConstants(10.0, 0.0, 0.0)
+              new PIDConstants(5, 0.0, 0.0)
               // Rotation PID constants
+
+              //1.5 & 5 are ok at least
           ),
           config,
           // The robot configuration
@@ -400,19 +420,25 @@ public class SwerveSubsystem extends SubsystemBase
 
     // Transform2d halfPoseOffset = new Transform2d(getPose(), endPose);
     // Pose2d halfPose = endPose.plus(halfPoseOffset.times(-0.5));
+    Pose2d robotPose = getPose();
+
+    if(robotPose.getTranslation().getDistance(endPose.getTranslation()) < 0.05) return new PrintCommand("Too close to the endpoint, canceling");
+
+    if(robotPose == null) return new PrintCommand("For some reason you don't have a position, createTrajectoryToPose failed");
     
     
     PathPlannerPath path = new PathPlannerPath(
-      PathPlannerPath.waypointsFromPoses(getPose(), endPose),
+      PathPlannerPath.waypointsFromPoses(robotPose, endPose),
      
     // return AutoBuilder.followPath(
     //   endPose, 
      new PathConstraints(
-      swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisVelocity()/2,
+      swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisVelocity()/5,
       swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
      new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
        new GoalEndState(0, endPose.getRotation())); 
        
+    goalPose2d = endPose;
     
 
     path.preventFlipping = true;
@@ -499,16 +525,27 @@ public class SwerveSubsystem extends SubsystemBase
     Pose2d robotPose = getPose();
 
     int upperLowerStation = 0;//by default go to the station closer to the x axis
-    if(robotPose.getY() > reefCenterPose3d.getY()){
+    if(robotPose.getY() > Constants.REEF_POSE3D_BLUE.getY()){
       upperLowerStation = 1;
-      position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
+      //position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
     }
     
 
     
 
 
-    return VisionConstants.kCoralStationPoses[redBlue][position][upperLowerStation].toPose2d();
+    return VisionConstants.kCoralStationPoses[redBlue][upperLowerStation][position].toPose2d();
+    //return VisionConstants.kCoralStationPoses[0][2][1].toPose2d();
+  }
+
+  public Command BackupFromReefAutonomous(){
+    final int curveDirection = (getPose().getY() > Constants.REEF_POSE3D_BLUE.getY()) ? -1 : 1;//by default go to the station closer to the x axis
+    
+
+    Command driveCommand = new ParallelDeadlineGroup(new WaitCommand(2),new RunCommand(() -> setChassisSpeeds(new ChassisSpeeds(-1, 0.5 *curveDirection, 0)), this))
+    .andThen(new InstantCommand(()-> setChassisSpeeds(new ChassisSpeeds(-1,0,0))));
+
+    return driveCommand;
   }
 
   /**

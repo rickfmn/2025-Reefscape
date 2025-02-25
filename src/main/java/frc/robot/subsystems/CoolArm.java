@@ -37,7 +37,7 @@ public class CoolArm extends SubsystemBase {
   public SparkAbsoluteEncoder absAngleEncoder = angleMotor.getAbsoluteEncoder();
   private ArmFeedforward armFFController = new ArmFeedforward(CoolArmConstants.kSAngle, CoolArmConstants.kGAngle, CoolArmConstants.kVAngle);
   private PIDController armPIDController = new PIDController(CoolArmConstants.kPAngle, CoolArmConstants.kIAngle, CoolArmConstants.kDAngle);
-  private TrapezoidProfile.Constraints trapezoidConstraints_Angle = new TrapezoidProfile.Constraints((65d/0.0125d), (65d/0.25d)/(0.25d*0.5d ));
+  private TrapezoidProfile.Constraints trapezoidConstraints_Angle = new TrapezoidProfile.Constraints((65d/0.25d), (65d/0.25d)/(0.25d*0.5d ));
   private TrapezoidProfile.State previousTrapezoidState_Angle = new TrapezoidProfile.State(0, 0);
   private TrapezoidProfile angleTrapezoidProfile = new TrapezoidProfile(trapezoidConstraints_Angle);
   private TrapezoidProfile.Constraints trapezoidConstraints_Elevator = new TrapezoidProfile.Constraints((25d/0.75d), (25d/0.75d)/(0.25 ));
@@ -121,7 +121,7 @@ public class CoolArm extends SubsystemBase {
       
       //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
     }
-    else if(currentAction == ArmAction.L1 && absAngle > CoolArmConstants.kMaxPickupBoxAngle){
+    else if(absAngle > CoolArmConstants.kMaxPickupBoxAngle){
       if(currentAction == ArmAction.L1){
         SetElevatorSetpoint(CoolArmConstants.kL1PrepElevatorSP);
       }else if (currentAction == ArmAction.L2){
@@ -178,6 +178,10 @@ public class CoolArm extends SubsystemBase {
     return Math.abs(elevatorEncoder.getPosition() - sp) < 1.5;
   }
 
+  public boolean AtElevatorAndArmSetpoints(){
+    return (AtAngleSetpoint(angleSetpoint) && AtElevatorSetpoint(elevatorSetpoint));
+  }
+
   public double GetElevatorSetpoint(){
     return previousTrapezoidState_Elevator.position;
   }
@@ -227,7 +231,7 @@ public class CoolArm extends SubsystemBase {
 
         //newAngleSP += CoolArmConstants.kPlaceAngleSPChange;
         //newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
-        if(elevatorSetpoint == CoolArmConstants.kL1PrepElevatorSP){
+        if(currentAction == ArmAction.L1){
           newAngleSP = CoolArmConstants.kL2PrepAngleSP;
         }
         else{

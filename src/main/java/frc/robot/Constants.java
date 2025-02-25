@@ -64,21 +64,22 @@ public final class Constants
     public static final Transform3d reefOffset_L2_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
     
-    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(6), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(-6), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(4), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(-8), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(12), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(12), Units.inchesToMeters(6), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+
 
     public static final Pose3d[][][] kReefGoalPoses = new Pose3d[23][2][4];
 
 
-    public static final Transform3d coralStationOffsetRight = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
-    public static final Transform3d coralStationOffsetLeft = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
-    public static final Transform3d coralStationOffsetCenter = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
+    public static final Transform3d coralStationOffsetRight = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
+    public static final Transform3d coralStationOffsetLeft = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(-12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
+    public static final Transform3d coralStationOffsetCenter = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
 
     public static final Pose3d[][][] kCoralStationPoses = new Pose3d[2][2][3];
     
@@ -116,7 +117,7 @@ public final class Constants
   public static class LEDConstants
   {
 
-    public static final int LED_COUNT = 98;
+    public static final int LED_COUNT = 49;
 
     public static final int LED_PORT = 0;
 
@@ -135,7 +136,7 @@ public final class Constants
     public static final LEDPattern kScoreL1 = LEDPattern.solid(Color.kLightGoldenrodYellow).mask(LEDPattern.progressMaskLayer(()->0.25));
 
 
-    public static final LEDPattern kLoadModeColor = LEDPattern.solid(Color.kDarkSlateBlue);
+    public static final LEDPattern kLoadModeColor = LEDPattern.solid(Color.kDodgerBlue);
     
   }
 
@@ -192,7 +193,7 @@ public final class Constants
 
 
     public static final double kL1PrepAngleSP = 161;
-    public static final double kL2PrepAngleSP = 229;
+    public static final double kL2PrepAngleSP = 200;
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 263;
 
@@ -208,7 +209,7 @@ public final class Constants
 
 
     public static final double kL1PrepElevatorSP = 0;
-    public static final double kL2PrepElevatorSP = -1.07;
+    public static final double kL2PrepElevatorSP = 0;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
     public static final double kTravelElevatorSP = -4.3;

@@ -32,6 +32,7 @@ import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.AutoPickup;
+import frc.robot.commands.AutonomousPlace;
 import frc.robot.commands.DynamicCommand;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
@@ -217,10 +218,13 @@ public class RobotContainer
     NamedCommands.registerCommand("AutoAlign R", new DynamicCommand(()->driveToBestTargetAutonomous(true)));
     NamedCommands.registerCommand("AutoAlign L", new DynamicCommand(() -> driveToBestTargetAutonomous(false)));
 
-    NamedCommands.registerCommand("Place", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    NamedCommands.registerCommand("Place", new AutonomousPlace(coolArm));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm));
-    NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(()-> driveToBestCoralStationAutonomous(2)));
+    //NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(()-> driveToBestCoralStationAutonomous(2)));
+    //TODO: uncomment the previous line and fixit
+    NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
+
     
     NamedCommands.registerCommand("Travel Setpoint", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
 
@@ -262,6 +266,8 @@ public class RobotContainer
     
     driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+
+    driverJoystick.button(14).whileTrue(new StartEndCommand(()->drivebase.BackupFromReefAutonomous(),()-> System.out.println("button not pressed"),drivebase));
     
 
     // driverJoystick.button(5).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(0.1), () -> coolArm.SetElevatorMotor(0), coolArm));
