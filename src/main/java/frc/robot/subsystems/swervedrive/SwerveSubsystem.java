@@ -42,6 +42,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
@@ -541,11 +542,11 @@ public class SwerveSubsystem extends SubsystemBase
   public Command BackupFromReefAutonomous(){
     final int curveDirection = (getPose().getY() > Constants.REEF_POSE3D_BLUE.getY()) ? -1 : 1;//by default go to the station closer to the x axis
     
-
-    Command driveCommand = new ParallelDeadlineGroup(new WaitCommand(2),new RunCommand(() -> setChassisSpeeds(new ChassisSpeeds(-1, 0.5 *curveDirection, 0)), this))
+    Command driveBackwards = new ParallelDeadlineGroup(new WaitCommand(0.5),new RunCommand(() -> setChassisSpeeds(new ChassisSpeeds(-2, 0, 0)), this));
+    Command driveCommand = new ParallelDeadlineGroup(new WaitCommand(0.5),new RunCommand(() -> setChassisSpeeds(new ChassisSpeeds(-0.5, 2 *curveDirection, 0)), this))
     .andThen(new InstantCommand(()-> setChassisSpeeds(new ChassisSpeeds(-1,0,0))));
 
-    return driveCommand;
+    return new SequentialCommandGroup(driveBackwards,driveCommand);
   }
 
   /**

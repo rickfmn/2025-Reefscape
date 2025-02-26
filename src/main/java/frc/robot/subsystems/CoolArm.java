@@ -141,7 +141,7 @@ public class CoolArm extends SubsystemBase {
       //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
       SetElevatorMotor(-1 * Math.min(elevatorPIDController.calculate(elevatorEncoder.getPosition(), previousTrapezoidState_Elevator.position),3));
       
-      if(AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && !HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP) && pickupRetryCounter < 5){
+      if(AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP) && pickupRetryCounter < 5){
         SetArmAction(ArmAction.Pickup);
         pickupRetryCounter ++;
         //this if statement should try to pick up the coral again if we fail to pick it up the first time
@@ -299,7 +299,7 @@ public class CoolArm extends SubsystemBase {
 // }
 
   public boolean HasCoralInPickupBin(){
-    return coralPickupSensor.get();
+    return !coralPickupSensor.get();
   }
 
   public void DoAction(CommandJoystick copilotController) {

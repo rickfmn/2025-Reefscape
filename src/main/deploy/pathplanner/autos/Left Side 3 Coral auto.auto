@@ -61,15 +61,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "AutoCoralStation"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoPickup"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoCoralStation"
+                }
+              }
+            ]
           }
         },
         {
@@ -91,21 +98,22 @@
           }
         },
         {
-          "type": "wait",
+          "type": "deadline",
           "data": {
-            "waitTime": 0.25
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoCoralStation"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoPickup"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoCoralStation"
+                }
+              }
+            ]
           }
         },
         {

@@ -222,7 +222,6 @@ public class RobotContainer
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm));
     NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
-    //TODO: uncomment the previous line and fixit
     NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
 
     
@@ -399,7 +398,7 @@ public class RobotContainer
 
     Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
     pathfindCommand.addRequirements(drivebase);
-    return pathfindCommand;
+    return pathfindCommand.andThen(new InstantCommand(()->drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
 
     //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
   }
