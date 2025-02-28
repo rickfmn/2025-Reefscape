@@ -434,6 +434,38 @@ public class SwerveSubsystem extends SubsystemBase
     // return AutoBuilder.followPath(
     //   endPose, 
      new PathConstraints(
+      swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisVelocity()/2.5,
+      swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
+     new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),
+       new GoalEndState(0, endPose.getRotation())); 
+       
+    goalPose2d = endPose;
+    
+
+    path.preventFlipping = true;
+    return AutoBuilder.followPath(path);
+
+    
+    
+  }
+
+  public Command createTrajectoryToPoseReducedAccel(Pose2d endPose){
+
+    // Transform2d halfPoseOffset = new Transform2d(getPose(), endPose);
+    // Pose2d halfPose = endPose.plus(halfPoseOffset.times(-0.5));
+    Pose2d robotPose = getPose();
+
+    if(robotPose.getTranslation().getDistance(endPose.getTranslation()) < 0.05) return new PrintCommand("Too close to the endpoint, canceling");
+
+    if(robotPose == null) return new PrintCommand("For some reason you don't have a position, createTrajectoryToPose failed");
+    
+    
+    PathPlannerPath path = new PathPlannerPath(
+      PathPlannerPath.waypointsFromPoses(robotPose, endPose),
+     
+    // return AutoBuilder.followPath(
+    //   endPose, 
+     new PathConstraints(
       swerveDrive.getMaximumChassisVelocity(), swerveDrive.getMaximumChassisVelocity()/5,
       swerveDrive.getMaximumChassisAngularVelocity(), Units.degreesToRadians(720)),
      new IdealStartingState(getSpeedMagnitudeMpS(), getHeading()),

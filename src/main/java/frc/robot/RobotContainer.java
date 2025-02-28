@@ -215,8 +215,8 @@ public class RobotContainer
     NamedCommands.registerCommand("Arm L2", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     NamedCommands.registerCommand("Arm L3", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     NamedCommands.registerCommand("Arm L4", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
-    NamedCommands.registerCommand("AutoAlign R", new DynamicCommand(()->driveToBestTargetAutonomous(true)));
-    NamedCommands.registerCommand("AutoAlign L", new DynamicCommand(() -> driveToBestTargetAutonomous(false)));
+    NamedCommands.registerCommand("AutoAlign R", new DynamicCommand(()->driveToBestTargetAutonomous(true,true)));
+    NamedCommands.registerCommand("AutoAlign L", new DynamicCommand(() -> driveToBestTargetAutonomous(false,true)));
 
     NamedCommands.registerCommand("Place", new AutonomousPlace(coolArm));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
@@ -359,7 +359,7 @@ public class RobotContainer
     //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
   }
 
-  public Command driveToBestTargetAutonomous(boolean isRight){
+  public Command driveToBestTargetAutonomous(boolean isRight, boolean reducedAcceleration){
     //int targetID = Vision.Cameras.APRIL_CAM.getLatestBestFiducialIDSeen();
     
     
@@ -372,8 +372,15 @@ public class RobotContainer
       System.out.println("Oh no, It looks like you didn't see anything");
       return new PrintCommand("No goal pose");
     }
+    Command pathfindCommand = new PrintCommand("ERROR: Not in Auto or Teleop?");
 
-    Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
+    if(reducedAcceleration){
+      pathfindCommand = drivebase.createTrajectoryToPoseReducedAccel(goalPose);
+    }
+    else{
+      pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
+    }
+    
     pathfindCommand.addRequirements(drivebase);
     return pathfindCommand;
 
