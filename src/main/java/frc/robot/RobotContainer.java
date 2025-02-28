@@ -71,7 +71,8 @@ public class RobotContainer
   private final SwerveSubsystem       drivebase  = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/Abyss"),coolArm);
 
-  private final SendableChooser<Command> autoSelector;
+  private SendableChooser<Command> autoSelector;
+  private Command simpleL1Auto;
   // private final Vision vision = drivebase.vision;
 
   private final Climber climber = new Climber(signalLights);
@@ -173,6 +174,7 @@ public class RobotContainer
     // Configure the trigger bindings
     configureBindings();
     configureAutoNamedCommands();
+    SetUpAutoSelector();
     DriverStation.silenceJoystickConnectionWarning(true);
     NamedCommands.registerCommand("test", Commands.print("I EXIST"));
     
@@ -185,22 +187,7 @@ public class RobotContainer
     //driverJoystick.button(14).onTrue(new InstantCommand( () -> drivebase.()  )) ;
     //Shuffleboard.getTab("Tab 7").addDouble("Angle to Reef",()-> drivebase.getBestReefTargetByPose());
     
-    autoSelector = AutoBuilder.buildAutoChooser();
-
-
-    Command simpleDriveForward1 = new ParallelDeadlineGroup(new WaitCommand(6),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0.5, 0, 0)), drivebase))
-    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
-
-    Command simpleDriveForward2 = new ParallelDeadlineGroup(new WaitCommand(6),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0.5, 0, 0)), drivebase))
-    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
-
-    Command simpleDriveReverse = new ParallelDeadlineGroup(new WaitCommand(3),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(-0.5, 0, 0)), drivebase))
-    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
-
-    autoSelector.addOption("Simple Forward", simpleDriveForward1);
     
-    autoSelector.addOption("Simple L1", new ParallelCommandGroup(simpleDriveForward2,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L1), coolArm))
-    .andThen(new ParallelCommandGroup(simpleDriveReverse,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L2), coolArm))));
 
     // autoSelector.addOption("Simple L4", new ParallelCommandGroup(simpleDriveForward,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L4), coolArm))
     // .andThen(new ParallelCommandGroup(simpleDriveReverse,new InstantCommand(()->coolArm.SetArmAction(ArmAction.Place), coolArm))));
@@ -227,6 +214,19 @@ public class RobotContainer
     
     NamedCommands.registerCommand("Travel Setpoint", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
 
+    NamedCommands.registerCommand("Debug Print", new PrintCommand("Debug Named Command Print"));
+
+    Command simpleDriveForward2 = new ParallelDeadlineGroup(new WaitCommand(3),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(1, 0, 0)), drivebase))
+    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
+
+    Command simpleDriveReverse = new ParallelDeadlineGroup(new WaitCommand(1.5),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(-0.5, 1, -0.5)), drivebase))
+    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
+
+    simpleL1Auto = new ParallelCommandGroup(simpleDriveForward2,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L1), coolArm))
+    .andThen(new ParallelCommandGroup(simpleDriveReverse,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L2), coolArm)));
+
+    NamedCommands.registerCommand("Simple L1", simpleL1Auto);
+
 
   }
 
@@ -247,8 +247,8 @@ public class RobotContainer
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
 
-    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), ()-> System.out.println("Lined Up Right"),drivebase));
-    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), () -> System.out.println("Lined UP Left?"),drivebase));
+    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
+    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
     driverJoystick.button(7).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
     // Command autoAim = drivebase.aimAtSpeaker(5);
     // autoAim.addRequirements(drivebase);
@@ -337,8 +337,8 @@ public class RobotContainer
     
 
 
-    int button = 3;
-    if(isRight) button = 4;
+    int button = 4;
+    if(isRight) button = 3;
     final int buttonFinal = button;
     
     int tagLRIndex = 0;
@@ -405,13 +405,25 @@ public class RobotContainer
 
     Command pathfindCommand = drivebase.createTrajectoryToPose(goalPose);
     pathfindCommand.addRequirements(drivebase);
-    return pathfindCommand.andThen(new InstantCommand(()->drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
+    return pathfindCommand.andThen(new InstantCommand(()->drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0)))).andThen(new PrintCommand("At Coral Station"));
 
     //System.out.println("Has the pathfinding command finished: " + pathfindCommand.isFinished());
   }
 
   public void SetUpAutoSelector(){
+    autoSelector = AutoBuilder.buildAutoChooser();
+
+
+    Command simpleDriveForward1 = new ParallelDeadlineGroup(new WaitCommand(6),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0.5, 0, 0)), drivebase))
+    .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
+
     
+
+    autoSelector.addOption("Simple Forward", simpleDriveForward1);
+
+    
+    
+    autoSelector.addOption("Simple L1", simpleL1Auto);
   }
 
 

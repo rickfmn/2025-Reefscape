@@ -119,8 +119,13 @@ public class Climber extends SubsystemBase {
   }
 
   public void Climb(){
-    currentState = ClimbState.Climbing;
-    LockServo();
+    if(currentState == ClimbState.Prepared){
+      currentState = ClimbState.Climbing;
+      LockServo();
+    }
+    else{
+      System.out.println("Not Prepared yet, cannot climb");
+    }
   }
 
   //go to the position for the coral intake mode

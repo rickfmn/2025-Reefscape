@@ -33,6 +33,7 @@ public class AutoPickup extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    System.out.println("Picked up Coral");
     coolArm.SetArmAction(ArmAction.Pickup);
   }
 

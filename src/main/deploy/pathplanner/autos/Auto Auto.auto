@@ -48,32 +48,25 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.5
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Arm L4"
+                }
+              },
               {
                 "type": "named",
                 "data": {
                   "name": "AutoAlign L"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Arm L4"
-                      }
-                    }
-                  ]
                 }
               }
             ]
@@ -115,28 +108,21 @@
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "wait",
                 "data": {
-                  "name": "AutoAlign R"
+                  "waitTime": 0.5
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Arm L4"
-                      }
-                    }
-                  ]
+                  "name": "Arm L4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlign R"
                 }
               }
             ]

@@ -39,6 +39,6 @@ public class DynamicCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !CommandScheduler.getInstance().isScheduled(dynamicCommand);
+    return !dynamicCommand.isFinished();
   }
 }
