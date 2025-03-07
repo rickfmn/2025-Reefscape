@@ -119,7 +119,7 @@ public class SignalLights extends SubsystemBase {
 
       case Idle:
         if(!inClimbMode){
-          SetLEDPattern(LEDConstants.kDatabitsAnimated);
+          SetLEDPattern(LEDConstants.kAnimatedIdle);
         }
         else{
           SetLEDPattern(LEDConstants.kClimbFinishColor);
@@ -144,6 +144,7 @@ public class SignalLights extends SubsystemBase {
     {
       LEDs.setData(LEDBuffer);
       LEDs.start(); 
+      
       
     
     }

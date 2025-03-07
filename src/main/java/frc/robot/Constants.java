@@ -13,6 +13,10 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
+
+import java.util.Map;
+import java.util.TreeMap;
+
 import static edu.wpi.first.units.Units.Meters;
 
 import edu.wpi.first.wpilibj.LEDPattern;
@@ -126,7 +130,8 @@ public final class Constants
     public static final LEDPattern kYesAlgaeColor = LEDPattern.solid(Color.kGhostWhite);
     public static final LEDPattern kClimbFinishColor = LEDPattern.rainbow(255,255).scrollAtAbsoluteSpeed(MetersPerSecond.of(100), Meters.of(1));
     public static final LEDPattern kClimbReadyColor = LEDPattern.solid(Color.kPurple);
-    public static final LEDPattern kDatabitsAnimated = LEDPattern.solid(new Color(2,255,4)).breathe(Seconds.of(5));
+    public static final Color kDatabitsColor = new Color(2,255,4);
+    public static final LEDPattern kDatabitsAnimated = LEDPattern.solid(kDatabitsColor).breathe(Seconds.of(5));
     public static final LEDPattern kOffColor = LEDPattern.kOff;
     public static final LEDPattern kErrorColor = LEDPattern.solid(Color.kHotPink);
 
@@ -137,6 +142,8 @@ public final class Constants
 
 
     public static final LEDPattern kLoadModeColor = LEDPattern.solid(Color.kDodgerBlue);
+
+    public static final LEDPattern kAnimatedIdle = LEDPattern.steps(Map.of(0.00, kDatabitsColor, 0.3, Color.fromHSV(0, 0, 40))).scrollAtAbsoluteSpeed(MetersPerSecond.of(20), Meters.of(1));
     
   }
 
@@ -218,7 +225,7 @@ public final class Constants
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;
     public static final int kSensorID = 10;
-    public static final double kElevatorFeedForward = 0.1;
+    public static final double kElevatorFeedForward = 0.2;
 
     
   }
