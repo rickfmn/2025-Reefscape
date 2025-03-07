@@ -219,7 +219,8 @@ public class RobotContainer
     Command simpleDriveForward2 = new ParallelDeadlineGroup(new WaitCommand(3),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(1, 0, 0)), drivebase))
     .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
 
-    Command simpleDriveReverse = new ParallelDeadlineGroup(new WaitCommand(1.5),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(-0.5, 1, -0.5)), drivebase))
+    Command simpleDriveReverse = new ParallelDeadlineGroup(new WaitCommand(1.5),new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(-0.5, -1, 
+    0.5)), drivebase))
     .andThen(new InstantCommand(()-> drivebase.setChassisSpeeds(new ChassisSpeeds(0,0,0))));
 
     simpleL1Auto = new ParallelCommandGroup(simpleDriveForward2,new InstantCommand(()->coolArm.SetArmAction(ArmAction.L1), coolArm))

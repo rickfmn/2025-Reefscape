@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.Optional;
+
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -182,7 +184,10 @@ public class Robot extends TimedRobot
   }
 
   public void updateAlliance(){
-    isRedAlliance = DriverStation.getAlliance().get() == Alliance.Red; 
+    Optional<Alliance> myAlliance = DriverStation.getAlliance();
+    if(myAlliance.isPresent()){
+      isRedAlliance = myAlliance.get() == Alliance.Red;
+    }
   }
 
   /**

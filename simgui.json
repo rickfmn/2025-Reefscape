@@ -59,6 +59,8 @@
       "/SmartDashboard/Motors": "Alerts",
       "/SmartDashboard/PIDController[12]": "PIDController",
       "/SmartDashboard/PIDController[1]": "PIDController",
+      "/SmartDashboard/PIDController[2]": "PIDController",
+      "/SmartDashboard/PIDController[3]": "PIDController",
       "/SmartDashboard/Pigeon 2 (v6) [13]": "Gyro",
       "/SmartDashboard/Pigeon 2 [13]": "Gyro",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",

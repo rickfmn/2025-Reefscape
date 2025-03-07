@@ -7,7 +7,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Arm L4"
+            "name": "Arm L2"
           }
         },
         {
@@ -29,7 +29,7 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "race",
           "data": {
             "commands": [
               {
@@ -85,7 +85,7 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "race",
           "data": {
             "commands": [
               {

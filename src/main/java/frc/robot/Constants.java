@@ -64,8 +64,8 @@ public final class Constants
     public static final Transform3d reefOffset_L2_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
     
-    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(3), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(-9), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(3), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(-9), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-7), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
@@ -213,9 +213,12 @@ public final class Constants
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
     public static final double kTravelElevatorSP = -4.3;//4.3
+    
+    public static final double kTravelHighElevatorSP = -8.3;//4.3
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;
     public static final int kSensorID = 10;
+    public static final double kElevatorFeedForward = 0.1;
 
     
   }
