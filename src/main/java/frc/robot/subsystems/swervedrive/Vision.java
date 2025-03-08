@@ -106,8 +106,8 @@ public class Vision
 
       openSimCameraViews();
     }
-    Shuffleboard.getTab("Tab 7").addInteger("LatestBestFiducialIDSeen", Cameras.APRIL_CAM::getLatestBestFiducialIDSeen);
-    Shuffleboard.getTab("Tab 7").addDouble("LatestBestTargetyaw", Cameras.APRIL_CAM::getLatestTargetYaw);
+    Shuffleboard.getTab("Tab 7").addInteger("LatestBestFiducialIDSeen", Cameras.APRIL_CAM_R::getLatestBestFiducialIDSeen);
+    Shuffleboard.getTab("Tab 7").addDouble("LatestBestTargetyaw", Cameras.APRIL_CAM_R::getLatestTargetYaw);
     
   }
 
@@ -357,9 +357,14 @@ public class Vision
     /**
      * Front April Tag Camera
      */
-    APRIL_CAM("April_Camera",
-               new Rotation3d(0, Units.degreesToRadians(0), Units.degreesToRadians(0)),
-               VisionConstants.KAprilCamFromGyro,
+    APRIL_CAM_R("April_Cam_R",
+               new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(17), Units.degreesToRadians(7)),
+               VisionConstants.KAprilCamR,
+               VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
+
+    APRIL_CAM_L("April_Cam_L",
+               new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(17), Units.degreesToRadians(-7)),
+               VisionConstants.KAprilCamL,
                VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 
     /**

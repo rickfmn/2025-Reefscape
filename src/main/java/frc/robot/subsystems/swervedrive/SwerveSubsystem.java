@@ -248,7 +248,7 @@ public class SwerveSubsystem extends SubsystemBase
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(1.5, 0.0, 0.00),//TODO: figure out if this helps
+              new PIDConstants(1.0, 0.0, 0.00),//TODO: figure out if this helps
               // Translation PID constants
               new PIDConstants(5, 0.0, 0.0)
               // Rotation PID constants

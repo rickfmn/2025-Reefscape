@@ -37,6 +37,7 @@ public class Robot extends TimedRobot
   public Robot()
   {
     instance = this;
+    
   }
 
   public static Robot getInstance()

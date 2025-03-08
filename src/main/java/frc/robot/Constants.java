@@ -62,18 +62,19 @@ public final class Constants
   }
 
   public static final class VisionConstants {
-    public static final Translation3d KAprilCamFromGyro = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(10.75), Units.inchesToMeters(16.5));
+    public static final Translation3d KAprilCamL = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(9.75), Units.inchesToMeters(14.5));
+    public static final Translation3d KAprilCamR = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(-9.75), Units.inchesToMeters(14.5));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
     public static final Transform3d reefOffset_L2_L3_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
     
-    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(3), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(-9), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-7), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-7), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
@@ -199,7 +200,7 @@ public final class Constants
     
 
 
-    public static final double kL1PrepAngleSP = 161;
+    public static final double kL1PrepAngleSP = 153;
     public static final double kL2PrepAngleSP = 200;
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 263;
@@ -219,7 +220,7 @@ public final class Constants
     public static final double kL2PrepElevatorSP = 0;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
-    public static final double kTravelElevatorSP = -4.3;//4.3
+    public static final double kTravelElevatorSP = -5.3;//4.3
     
     public static final double kTravelHighElevatorSP = -8.3;//4.3
     public static final double kPickupElevatorSP = 0;

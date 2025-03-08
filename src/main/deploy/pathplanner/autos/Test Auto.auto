@@ -5,30 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Arm L4"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlign L"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoBackupFromReef"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -63,12 +39,6 @@
           "type": "named",
           "data": {
             "name": "AutoAlign L"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place"
           }
         }
       ]

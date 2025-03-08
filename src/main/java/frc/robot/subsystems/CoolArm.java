@@ -236,6 +236,10 @@ public class CoolArm extends SubsystemBase {
           newAngleSP = CoolArmConstants.kL2PrepAngleSP;
           newElevatorSP = elevatorSetpoint;
         }
+        else if(currentAction == ArmAction.L2){
+          newAngleSP = CoolArmConstants.kPlaceAngleSP-10;
+          newElevatorSP = elevatorSetpoint;
+        }
         else if (currentAction == ArmAction.Travel){
           System.out.println("Moving Up");
           newAngleSP = CoolArmConstants.kTravelAngleSP;

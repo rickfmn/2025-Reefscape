@@ -104,7 +104,7 @@ public class RobotContainer
   SwerveInputStream driveAngularVelocity = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                                 () -> driverJoystick.getY() * -1,
                                                                 () -> driverJoystick.getX() * -1)
-                                                            .withControllerRotationAxis(() -> driverJoystick.getTwist() * -0.5)
+                                                            .withControllerRotationAxis(() -> driverJoystick.getTwist() * -0.65)
                                                             .deadband(OperatorConstants.DEADBAND)
                                                             .scaleTranslation(0.8)
                                                             .allianceRelativeControl(true);
@@ -112,7 +112,7 @@ public class RobotContainer
   SwerveInputStream driveAngularVelocityPrecise = SwerveInputStream.of(drivebase.getSwerveDrive(),
                                                             () -> driverJoystick.getY() * -0.25,
                                                             () -> driverJoystick.getX() * -0.25)
-                                                        .withControllerRotationAxis(() -> driverJoystick.getTwist() * -0.5)
+                                                        .withControllerRotationAxis(() -> driverJoystick.getTwist() * -0.65)
                                                         .deadband(OperatorConstants.DEADBAND)
                                                         .scaleTranslation(0.8)
                                                         .allianceRelativeControl(true);
@@ -422,7 +422,6 @@ public class RobotContainer
 
     autoSelector.addOption("Simple Forward", simpleDriveForward1);
 
-    
     
     autoSelector.addOption("Simple L1", simpleL1Auto);
   }
