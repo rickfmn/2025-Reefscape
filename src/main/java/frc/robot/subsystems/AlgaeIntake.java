@@ -35,6 +35,7 @@ public class AlgaeIntake extends SubsystemBase {
   /** Creates a new AlgaeIntake. */
   public AlgaeIntake(SignalLights lights) {
     signalLights = lights;
+    m_angleEncoder.setPosition(0);
   }
 
   @Override

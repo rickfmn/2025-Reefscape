@@ -57,6 +57,7 @@ public class ActiveDriveToReefPose extends Command {
     goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
     
     poseError = drivetrain.getPose().minus(goalPose2d);
+    drivetrain.goalPose2d = goalPose2d;
     
     double translationErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
     previousPositionState.position = translationErrorMagnitude;

@@ -54,7 +54,7 @@ public final class Constants
  public static final class AutonConstants
  {
 
-   public static final double positionKP = 0.001;
+   public static final double positionKP = 3.0;
    public static final double positionKI = 0.00;
    public static final double positionKD = 0.00;
 
@@ -62,7 +62,7 @@ public final class Constants
    public static final TrapezoidProfile.Constraints rotationPIDConstraints = new Constraints(2/*radians per second */, 2 /*radians per second per second*/);
 
 
-   public static final double rotationKP = 3.0;
+   public static final double rotationKP = 4.0;
    public static final double rotationKI = 0.00;
    public static final double rotationKD = 0.00;
 
@@ -76,8 +76,8 @@ public final class Constants
   }
 
   public static final class VisionConstants {
-    public static final Translation3d KAprilCamL = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(9.75), Units.inchesToMeters(14.5));
-    public static final Translation3d KAprilCamR = new Translation3d(Units.inchesToMeters(7.75), Units.inchesToMeters(-9.75), Units.inchesToMeters(14.5));
+    public static final Translation3d KAprilCamL = new Translation3d(Units.inchesToMeters(8), Units.inchesToMeters(9.5), Units.inchesToMeters(13.23));
+    public static final Translation3d KAprilCamR = new Translation3d(Units.inchesToMeters(8), Units.inchesToMeters(-9.875), Units.inchesToMeters(13.23));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
     public static final Transform3d reefOffset_L2_L3_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
