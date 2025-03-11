@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.ActiveDriveToReefPose;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.AutonomousPlace;
 import frc.robot.commands.DynamicCommand;
@@ -267,7 +268,7 @@ public class RobotContainer
     driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
 
-    driverJoystick.button(14).whileTrue(new StartEndCommand(()->drivebase.BackupFromReefAutonomous(),()-> System.out.println("button not pressed"),drivebase));
+    driverJoystick.button(14).whileTrue(new ActiveDriveToReefPose(drivebase));
     
 
     // driverJoystick.button(5).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(0.1), () -> coolArm.SetElevatorMotor(0), coolArm));

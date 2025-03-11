@@ -358,12 +358,12 @@ public class Vision
      * Front April Tag Camera
      */
     APRIL_CAM_R("April_Cam_R",
-               new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(17), Units.degreesToRadians(7)),
+               new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(15), Units.degreesToRadians(15)),
                VisionConstants.KAprilCamR,
                VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1)),
 
     APRIL_CAM_L("April_Cam_L",
-               new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(17), Units.degreesToRadians(-7)),
+               new Rotation3d(Units.degreesToRadians(0), Units.degreesToRadians(15), Units.degreesToRadians(-15)),
                VisionConstants.KAprilCamL,
                VecBuilder.fill(4, 4, 8), VecBuilder.fill(0.5, 0.5, 1));
 

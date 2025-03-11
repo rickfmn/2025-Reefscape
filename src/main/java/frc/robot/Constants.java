@@ -10,12 +10,16 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
 
 import java.util.Map;
 import java.util.TreeMap;
+
+import com.pathplanner.lib.config.PIDConstants;
 
 import static edu.wpi.first.units.Units.Meters;
 
@@ -47,12 +51,22 @@ public final class Constants
   
   // Maximum speed of the robot in meters per second, used to limit acceleration.
 
-//  public static final class AutonConstants
-//  {
-//
-//    public static final PIDConstants TRANSLATION_PID = new PIDConstants(0.7, 0, 0);
-//    public static final PIDConstants ANGLE_PID       = new PIDConstants(0.4, 0, 0.01);
-//  }
+ public static final class AutonConstants
+ {
+
+   public static final double positionKP = 0.001;
+   public static final double positionKI = 0.00;
+   public static final double positionKD = 0.00;
+
+   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/2/*meters per second */, 2 /*meters per second per second*/);
+   public static final TrapezoidProfile.Constraints rotationPIDConstraints = new Constraints(2/*radians per second */, 2 /*radians per second per second*/);
+
+
+   public static final double rotationKP = 3.0;
+   public static final double rotationKI = 0.00;
+   public static final double rotationKD = 0.00;
+
+ }
 
   public static final class DrivebaseConstants
   {
@@ -73,8 +87,8 @@ public final class Constants
     public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(30), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(30), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
