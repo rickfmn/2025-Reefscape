@@ -21,11 +21,16 @@ public class SignalLights extends SubsystemBase {
   public boolean hasAlgae = false;
   public boolean hadAlgae = true;
 
+
   public ArmAction currentArmAction = ArmAction.Travel;
   
   public ArmAction previousArmAction = ArmAction.Pickup;
 
   public boolean inClimbMode = false;
+
+  public boolean autoAligned = false;
+  
+  public boolean wasAutoAligned = true;
 
 
   public LightSignal currentSignal = LightSignal.databits;
@@ -87,19 +92,39 @@ public class SignalLights extends SubsystemBase {
           
         break;
       case scoringMode:
-        if(previousArmAction != currentArmAction){
-          if(currentArmAction == ArmAction.L4){
-            SetLEDPattern(LEDConstants.kScoreL4);
+        if(previousArmAction != currentArmAction || wasAutoAligned != autoAligned){
+          
+          if(autoAligned){
+            System.out.println("aligned and lights know it");
+            if(currentArmAction == ArmAction.L4){
+              SetLEDPattern(LEDConstants.kScoreL4_aligned);
+            }
+            else if (currentArmAction == ArmAction.L3){
+              SetLEDPattern(LEDConstants.kScoreL3_aligned);
+            }
+            else if (currentArmAction == ArmAction.L2){
+              SetLEDPattern(LEDConstants.kScoreL2_aligned);
+            }
+            else if (currentArmAction == ArmAction.L1){
+              SetLEDPattern(LEDConstants.kScoreL1_aligned);
+            }
           }
-          else if (currentArmAction == ArmAction.L3){
-            SetLEDPattern(LEDConstants.kScoreL3);
+          else{
+            if(currentArmAction == ArmAction.L4){
+              SetLEDPattern(LEDConstants.kScoreL4_notAligned);
+            }
+            else if (currentArmAction == ArmAction.L3){
+              SetLEDPattern(LEDConstants.kScoreL3_notAligned);
+            }
+            else if (currentArmAction == ArmAction.L2){
+              SetLEDPattern(LEDConstants.kScoreL2_notAligned);
+            }
+            else if (currentArmAction == ArmAction.L1){
+              SetLEDPattern(LEDConstants.kScoreL1_notAligned);
+            }
           }
-          else if (currentArmAction == ArmAction.L2){
-            SetLEDPattern(LEDConstants.kScoreL2);
-          }
-          else if (currentArmAction == ArmAction.L1){
-            SetLEDPattern(LEDConstants.kScoreL1);
-          }
+
+          
           ledChanged = true;
         }
         
@@ -149,6 +174,7 @@ public class SignalLights extends SubsystemBase {
     
     }
     hadAlgae = hasAlgae;
+    wasAutoAligned = autoAligned;
     previousArmAction = currentArmAction;
 
   }

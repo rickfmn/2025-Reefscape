@@ -18,12 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutonConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ActiveDriveToReefPose extends Command {
 
   private SwerveSubsystem drivetrain;
+  private SignalLights signalLights;
   private Pose2d goalPose2d = Pose2d.kZero;
   private boolean isRight = true;
   private Transform2d poseError = Transform2d.kZero;
@@ -40,8 +42,10 @@ public class ActiveDriveToReefPose extends Command {
   //TODO: add a trapezoid profile to the rotation
 
   /** Creates a new ActiveDriveToGoalPose. */
-  public ActiveDriveToReefPose(SwerveSubsystem swerveSubsystem) {
+  public ActiveDriveToReefPose(SwerveSubsystem swerveSubsystem,SignalLights lights,boolean rightReef) {
     drivetrain = swerveSubsystem;
+    signalLights = lights;
+    isRight = rightReef;
 
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -77,13 +81,13 @@ public class ActiveDriveToReefPose extends Command {
 
     //drivetrain.setChassisSpeeds(new ChassisSpeeds(-1 * translationError.getX(),-1 * translationError.getY(), -1 * poseError.getRotation().getRadians()));
 
-    // TrapezoidProfile.State currentPositionState = new TrapezoidProfile.State(translationErrorMagnitude,drivetrain.getSpeedMagnitudeMpS());
+    TrapezoidProfile.State currentPositionState = new TrapezoidProfile.State(translationErrorMagnitude,drivetrain.getSpeedMagnitudeMpS());
 
-    // previousPositionState = positionTrapezoidProfile.calculate(loopTimer.get(), currentPositionState, new State(0,0));
+    previousPositionState = positionTrapezoidProfile.calculate(loopTimer.get(), previousPositionState, new State(0,0));
 
-    // double positionPIDOutput = positionController.calculate(translationErrorMagnitude, previousPositionState.position);
+    double positionPIDOutput = positionController.calculate(translationErrorMagnitude, previousPositionState.position);
 
-    double positionPIDOutput = positionController.calculate(translationErrorMagnitude, 0);
+    // double positionPIDOutput = positionController.calculate(translationErrorMagnitude, 0);
 
     Translation2d translationSpeeds = new Translation2d(positionPIDOutput, angleToGoalPose);
 
@@ -102,9 +106,27 @@ public class ActiveDriveToReefPose extends Command {
     drivetrain.lock();
   }
 
+
+  public boolean atToleranceFromGoal(){
+    double angleError = poseError.getRotation().getDegrees();
+    double positionErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
+    
+
+    
+    return (Math.abs(angleError) < 15) && positionErrorMagnitude < 0.5;
+    
+  }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    
+    System.out.println(signalLights.autoAligned);
+    boolean aligned = atToleranceFromGoal();
+    if(aligned && !signalLights.autoAligned){
+      System.out.println("Aligned");
+    }
+    signalLights.autoAligned = aligned;
     return false;
     
   }

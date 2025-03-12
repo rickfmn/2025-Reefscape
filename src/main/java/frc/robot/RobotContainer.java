@@ -203,8 +203,8 @@ public class RobotContainer
     NamedCommands.registerCommand("Arm L2", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     NamedCommands.registerCommand("Arm L3", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     NamedCommands.registerCommand("Arm L4", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
-    NamedCommands.registerCommand("AutoAlign R", new DynamicCommand(()->driveToBestTargetAutonomous(true,true)));
-    NamedCommands.registerCommand("AutoAlign L", new DynamicCommand(() -> driveToBestTargetAutonomous(false,true)));
+    NamedCommands.registerCommand("AutoAlign R", new ActiveDriveToReefPose(drivebase,signalLights, true));
+    NamedCommands.registerCommand("AutoAlign L", new ActiveDriveToReefPose(drivebase,signalLights, false));
 
     NamedCommands.registerCommand("Place", new AutonomousPlace(coolArm));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
@@ -249,8 +249,12 @@ public class RobotContainer
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
 
-    driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
-    driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
+    // driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
+    // driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
+    driverJoystick.button(4).whileTrue(new ActiveDriveToReefPose(drivebase,signalLights, true));
+    driverJoystick.button(3).whileTrue(new ActiveDriveToReefPose(drivebase,signalLights, false));
+    
+    
     driverJoystick.button(7).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
     // Command autoAim = drivebase.aimAtSpeaker(5);
     // autoAim.addRequirements(drivebase);
@@ -268,7 +272,7 @@ public class RobotContainer
     driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
 
-    driverJoystick.button(14).whileTrue(new ActiveDriveToReefPose(drivebase));
+    // driverJoystick.button(14).whileTrue(new ActiveDriveToReefPose(drivebase));
     
 
     // driverJoystick.button(5).whileTrue(new StartEndCommand(() -> coolArm.SetElevatorMotor(0.1), () -> coolArm.SetElevatorMotor(0), coolArm));

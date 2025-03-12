@@ -87,8 +87,8 @@ public final class Constants
     public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(30), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(30), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(28), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(28), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
@@ -150,10 +150,18 @@ public final class Constants
     public static final LEDPattern kOffColor = LEDPattern.kOff;
     public static final LEDPattern kErrorColor = LEDPattern.solid(Color.kHotPink);
 
-    public static final LEDPattern kScoreL4 = LEDPattern.solid(Color.kLightGoldenrodYellow).mask(LEDPattern.progressMaskLayer(()->1.0)); 
-    public static final LEDPattern kScoreL3 = LEDPattern.solid(Color.kLightGoldenrodYellow).mask(LEDPattern.progressMaskLayer(()->0.75));
-    public static final LEDPattern kScoreL2 = LEDPattern.solid(Color.kLightGoldenrodYellow).mask(LEDPattern.progressMaskLayer(()->0.5));
-    public static final LEDPattern kScoreL1 = LEDPattern.solid(Color.kLightGoldenrodYellow).mask(LEDPattern.progressMaskLayer(()->0.25));
+    //public static final LEDPattern kScoreL4_notAligned = LEDPattern.steps(Map.of(0.00, Color.kLightGoldenrodYellow, 1, Color.kBlack));
+    public static final LEDPattern kScoreL4_notAligned = LEDPattern.steps(Map.of(0.00, Color.kDarkGoldenrod, 1.0, Color.kBlack)); 
+    public static final LEDPattern kScoreL3_notAligned = LEDPattern.steps(Map.of(0.00, Color.kDarkGoldenrod, 0.75, Color.kBlack));
+    public static final LEDPattern kScoreL2_notAligned = LEDPattern.steps(Map.of(0.00, Color.kDarkGoldenrod, 0.5, Color.kBlack));    
+    public static final LEDPattern kScoreL1_notAligned = LEDPattern.steps(Map.of(0.00, Color.kDarkGoldenrod, 0.25, Color.kBlack));
+
+
+    
+    public static final LEDPattern kScoreL4_aligned = LEDPattern.steps(Map.of(0.00, kDatabitsColor, 1, Color.kBlack)); 
+    public static final LEDPattern kScoreL3_aligned = LEDPattern.steps(Map.of(0.00, kDatabitsColor, 0.75, Color.kBlack)); 
+    public static final LEDPattern kScoreL2_aligned = LEDPattern.steps(Map.of(0.00, kDatabitsColor, 0.5, Color.kBlack)); 
+    public static final LEDPattern kScoreL1_aligned = LEDPattern.steps(Map.of(0.00, kDatabitsColor, 0.25, Color.kBlack)); 
 
 
     public static final LEDPattern kLoadModeColor = LEDPattern.solid(Color.kDodgerBlue);
@@ -225,12 +233,12 @@ public final class Constants
     public static final double kPlaceAngleSP = 165;
     public static final double kMaxPickupBoxAngle = 110;
     
-    public static final double kMaxPickupBoxElevator = -2.5;
+    public static final double kMaxPickupBoxElevator = -4.5;
 
 
 
 
-    public static final double kL1PrepElevatorSP = 0;
+    public static final double kL1PrepElevatorSP = -2.0;
     public static final double kL2PrepElevatorSP = 0;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
@@ -239,6 +247,8 @@ public final class Constants
     public static final double kTravelHighElevatorSP = -8.3;//4.3
     public static final double kPickupElevatorSP = 0;
     public static final double kPlaceElevatorSPChange = 0;
+
+
     public static final int kSensorID = 10;
     public static final double kElevatorFeedForward = 0.2;
 
