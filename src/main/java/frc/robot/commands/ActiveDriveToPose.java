@@ -22,7 +22,7 @@ import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ActiveDriveToReefPose extends Command {
+public class ActiveDriveToPose extends Command {
 
   private SwerveSubsystem drivetrain;
   private SignalLights signalLights;
@@ -31,6 +31,7 @@ public class ActiveDriveToReefPose extends Command {
   private Transform2d poseError = Transform2d.kZero;
 
   private Timer loopTimer = new Timer();
+  private boolean inAuto = true;
 
   private PIDController positionController = new PIDController(AutonConstants.positionKP, AutonConstants.positionKI, AutonConstants.positionKD);
   private TrapezoidProfile.State previousPositionState = new State(0, 0);
@@ -39,13 +40,17 @@ public class ActiveDriveToReefPose extends Command {
   private PIDController rotationController = new PIDController(AutonConstants.rotationKP, AutonConstants.rotationKI, AutonConstants.rotationKD);
   private TrapezoidProfile.State previousRotationState = new State(0, 0);
   private TrapezoidProfile positionRotationProfile = new TrapezoidProfile(AutonConstants.rotationPIDConstraints);
+  private boolean targetIsReef = false;
   //TODO: add a trapezoid profile to the rotation
 
   /** Creates a new ActiveDriveToGoalPose. */
-  public ActiveDriveToReefPose(SwerveSubsystem swerveSubsystem,SignalLights lights,boolean rightReef) {
+  public ActiveDriveToPose(SwerveSubsystem swerveSubsystem,SignalLights lights,boolean rightReef,boolean inAutonomous,boolean reefTarget) {
     drivetrain = swerveSubsystem;
     signalLights = lights;
     isRight = rightReef;
+
+    inAuto = inAutonomous;
+    targetIsReef = reefTarget;
 
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -58,7 +63,12 @@ public class ActiveDriveToReefPose extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
+    if(targetIsReef){
+      goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
+    }
+    else{
+      goalPose2d = drivetrain.getBestCoralStationByPose(0);
+    }
     
     poseError = drivetrain.getPose().minus(goalPose2d);
     drivetrain.goalPose2d = goalPose2d;
@@ -112,8 +122,13 @@ public class ActiveDriveToReefPose extends Command {
     double positionErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
     
 
+    if(targetIsReef){
+      return (Math.abs(angleError) < 1.0) && positionErrorMagnitude < 0.02;
     
-    return (Math.abs(angleError) < 15) && positionErrorMagnitude < 0.5;
+    }
+    else{
+      return (Math.abs(angleError) < 5) && positionErrorMagnitude < 0.05;
+    }
     
   }
 
@@ -123,11 +138,15 @@ public class ActiveDriveToReefPose extends Command {
     
     System.out.println(signalLights.autoAligned);
     boolean aligned = atToleranceFromGoal();
-    if(aligned && !signalLights.autoAligned){
-      System.out.println("Aligned");
-    }
+
     signalLights.autoAligned = aligned;
-    return false;
+
+    if(inAuto){
+      return aligned;
+    }
+    else{
+      return false;
+    }
     
   }
 }

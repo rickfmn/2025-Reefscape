@@ -47,6 +47,8 @@ public class CoolArm extends SubsystemBase {
   private double angleSetpoint = 5;
   private double elevatorSetpoint = 0;
 
+  private Timer pickupTimoutTimer = new Timer();
+
 
   private SparkMax elevatorMotor = new SparkMax(CoolArmConstants.elevatorCANID, MotorType.kBrushless);
   public RelativeEncoder elevatorEncoder = elevatorMotor.getEncoder();
@@ -160,6 +162,10 @@ public class CoolArm extends SubsystemBase {
       }
       //System.out.println("Made it to the lower limit");
     }
+
+    if(pickupTimoutTimer.hasElapsed(0.6) && currentAction == ArmAction.Pickup){
+      SetElevatorControlEnabled(true);
+    }
     
     
   }
@@ -170,12 +176,12 @@ public class CoolArm extends SubsystemBase {
   }
 
   public boolean AtAngleSetpoint(double sp){
-    return Math.abs(absAngleEncoder.getPosition() - sp) < 3;
+    return Math.abs(absAngleEncoder.getPosition() - sp) < 6;
   }
 
   public boolean AtElevatorSetpoint(double sp){
     //1.5 is the arbitrary tolerance
-    return Math.abs(elevatorEncoder.getPosition() - sp) < 1.5;
+    return Math.abs(elevatorEncoder.getPosition() - sp) < 3;
   }
 
   public boolean AtElevatorAndArmSetpoints(){
@@ -267,6 +273,7 @@ public class CoolArm extends SubsystemBase {
     SetElevatorSetpoint(newElevatorSP); 
     if(newAction == ArmAction.Pickup){
       SetElevatorMotorManual(-3);
+      pickupTimoutTimer.restart();
     }
     signalLights.SetSignal(newSignal);
     currentAction = newAction;

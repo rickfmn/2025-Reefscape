@@ -13,16 +13,15 @@ import frc.robot.subsystems.CoolArm.ArmAction;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class AutoPickup extends Command {
+public class AutoPlace extends Command {
 
   private CoolArm coolArm;
-  private SwerveSubsystem drivetrain;
-  private Timer pickupTimer = new Timer();
-  
-  /** Creates a new AutoPickup. */
-  public AutoPickup(CoolArm arm,SwerveSubsystem swerve) {
+  private SwerveSubsystem swerveSubsystem;
+  private Timer backupDelayTimer = new Timer();
+  /** Creates a new AutoPlace. */
+  public AutoPlace(CoolArm arm, SwerveSubsystem swerve) {
     coolArm = arm;
-    drivetrain = swerve;
+    swerveSubsystem = swerve;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm,swerve);
   }
@@ -30,38 +29,36 @@ public class AutoPickup extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    coolArm.SetArmAction(ArmAction.Travel);
-    pickupTimer.stop();
-    pickupTimer.reset();
+    coolArm.SetArmAction(ArmAction.Place);
+    backupDelayTimer.restart();
+    driveReverse();
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    if(coolArm.HasCoralInPickupBin()){
-      
-      if(!pickupTimer.isRunning()){
-        
-      coolArm.SetArmAction(ArmAction.Pickup);
-      }
-      pickupTimer.restart();
-    }
-
-    if(pickupTimer.isRunning()){
-      drivetrain.setChassisSpeeds(new ChassisSpeeds(1,0,0));
-    }
+    driveReverse();
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.25)) || pickupTimer.hasElapsed(2);
+    return coolArm.AtElevatorAndArmSetpoints() || backupDelayTimer.hasElapsed(2);
+  }
+
+  public void driveReverse(){
+    if(backupDelayTimer.hasElapsed(0.5)){
+      swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-0.5,0,0));
+
+    }
+    else{
+      swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(0,0,0));
+
+    }
   }
 }

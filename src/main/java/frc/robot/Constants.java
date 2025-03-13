@@ -55,7 +55,7 @@ public final class Constants
  {
 
    public static final double positionKP = 3.0;
-   public static final double positionKI = 0.00;
+   public static final double positionKI = 0.001;
    public static final double positionKD = 0.00;
 
    public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/2/*meters per second */, 2 /*meters per second per second*/);
@@ -83,22 +83,22 @@ public final class Constants
     public static final Transform3d reefOffset_L2_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
     
-    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(16), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(28), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(28), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(18.0), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(18.0), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(28.5), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(28.5), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
 
     public static final Pose3d[][][] kReefGoalPoses = new Pose3d[23][2][4];
 
 
-    public static final Transform3d coralStationOffsetRight = new Transform3d(Units.inchesToMeters(12), Units.inchesToMeters(12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
-    public static final Transform3d coralStationOffsetLeft = new Transform3d(Units.inchesToMeters(12), Units.inchesToMeters(-12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
-    public static final Transform3d coralStationOffsetCenter = new Transform3d(Units.inchesToMeters(12), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
+    public static final Transform3d coralStationOffsetRight = new Transform3d(Units.inchesToMeters(24), Units.inchesToMeters(12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
+    public static final Transform3d coralStationOffsetLeft = new Transform3d(Units.inchesToMeters(24), Units.inchesToMeters(-12), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
+    public static final Transform3d coralStationOffsetCenter = new Transform3d(Units.inchesToMeters(24), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
 
     public static final Pose3d[][][] kCoralStationPoses = new Pose3d[2][2][3];
     
