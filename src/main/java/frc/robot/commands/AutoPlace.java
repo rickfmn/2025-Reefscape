@@ -48,12 +48,12 @@ public class AutoPlace extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coolArm.AtElevatorAndArmSetpoints() || backupDelayTimer.hasElapsed(2);
+    return coolArm.AtElevatorAndArmSetpoints() || backupDelayTimer.hasElapsed(0.5);
   }
 
   public void driveReverse(){
-    if(backupDelayTimer.hasElapsed(0.5)){
-      swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-0.5,0,0));
+    if(backupDelayTimer.hasElapsed(0.25)){
+      swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-2,0,0));
 
     }
     else{

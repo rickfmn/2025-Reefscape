@@ -54,7 +54,14 @@ public class ActiveDriveToPose extends Command {
 
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(swerveSubsystem);
+    
+    if( !(inAutonomous && !reefTarget) ){
+      addRequirements(swerveSubsystem);
+    }
+    
+    
+    
+    
     SmartDashboard.putData(positionController);
     
     SmartDashboard.putData(rotationController);
@@ -123,7 +130,7 @@ public class ActiveDriveToPose extends Command {
     
 
     if(targetIsReef){
-      return (Math.abs(angleError) < 1.0) && positionErrorMagnitude < 0.02;
+      return (Math.abs(angleError) < 2.0) && positionErrorMagnitude < 0.02;
     
     }
     else{
@@ -136,7 +143,6 @@ public class ActiveDriveToPose extends Command {
   @Override
   public boolean isFinished() {
     
-    System.out.println(signalLights.autoAligned);
     boolean aligned = atToleranceFromGoal();
 
     signalLights.autoAligned = aligned;

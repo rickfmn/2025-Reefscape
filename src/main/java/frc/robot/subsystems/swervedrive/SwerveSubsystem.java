@@ -123,6 +123,8 @@ public class SwerveSubsystem extends SubsystemBase
     Shuffleboard.getTab("Debug 1").addDouble("Gyro Angle", this::GetGyroYaw);
     Shuffleboard.getTab("Debug 1").addDoubleArray("Pose Error", this::getPoseError);
 
+    Shuffleboard.getTab("Field Cal").addDoubleArray("Best Tag Offset", this::getInchesOffsetFromBestTarget);
+
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
     SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -204,6 +206,53 @@ public class SwerveSubsystem extends SubsystemBase
     Transform2d poseError = goalPose2d.minus(getPose());
     double[] errorList = {poseError.getX(),poseError.getY()};
     return errorList;
+  }
+
+  public double[] getInchesOffsetFromBestTarget(){
+    
+    Pose2d reefRelativePose = null;
+
+    if(Robot.isRedAlliance){
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_RED);
+    }
+    else{
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_BLUE);
+    }
+  
+    double angleToReef = Units.radiansToDegrees(Math.atan2(reefRelativePose.getY(), reefRelativePose.getX()) );
+    int tagIndex = 0;
+
+    int[] fiducialIDS = Constants.REEF_FIDUCIALIDS_BLUE;
+    if(Robot.isRedAlliance) fiducialIDS = Constants.REEF_FIDUCIALIDS_RED;
+
+
+    if(angleToReef > 150 || angleToReef < -150){
+      tagIndex = fiducialIDS[0];
+    }
+    else if(angleToReef > 90 && angleToReef < 150){
+      tagIndex = fiducialIDS[1];
+    }
+    else if(angleToReef > 30 && angleToReef < 90){
+      tagIndex = fiducialIDS[2];
+    }
+    else if(angleToReef > -30 && angleToReef < 30){
+      tagIndex = fiducialIDS[3];
+    }
+    else if(angleToReef > -90 && angleToReef < -30){
+      tagIndex = fiducialIDS[4];
+    }
+    else if(angleToReef > -150 && angleToReef < -90){
+      tagIndex = fiducialIDS[5];
+    }
+    Pose2d tagPose = Pose2d.kZero;
+    if(aprilTagFieldLayout.getTagPose(tagIndex).isPresent()){
+      tagPose = aprilTagFieldLayout.getTagPose(tagIndex).get().toPose2d();
+    }
+
+    Transform2d offsetTransform  = getPose().minus(tagPose);
+    double[] transformDoubles = {Math.round(Units.metersToInches(offsetTransform.getX())*100d) / 100d,Math.round(Units.metersToInches(offsetTransform.getY()) * 100d) / 100d,Math.round(offsetTransform.getRotation().getDegrees() * 100d) / 100d};
+
+    return transformDoubles;
   }
 
   @Override

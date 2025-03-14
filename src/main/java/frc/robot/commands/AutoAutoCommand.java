@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.CoolArm;
@@ -24,23 +25,25 @@ public class AutoAutoCommand extends SequentialCommandGroup {
     Command armL41 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
     Command autoAlign1L = new ActiveDriveToPose(swerve, lights, true, true,true);
     Command place1 = new AutoPlace(arm, swerve);
-    Command autoCoralStation1 = new ActiveDriveToPose(swerve, lights, false, true, false);
-    Command autoPickup1 = new AutoPickup(arm,swerve);
+    Command autoCoralStation1 = new AutoCoralStationRoutine(swerve, lights,arm);
     Command armL42 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
     Command autoAlign2L = new ActiveDriveToPose(swerve, lights, false, true,true);
     Command place2 = new AutoPlace(arm, swerve);
+    Command autoCoralStation2 = new AutoCoralStationRoutine(swerve, lights,arm);
+    Command armL43 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
+    Command autoAlign3L = new ActiveDriveToPose(swerve, lights, false, true,true);
+    
+
 
 
     addCommands(
-      armL41,
-      autoAlign1L,
+      new SequentialCommandGroup(armL41,autoAlign1L),
       place1,
-      //new ParallelDeadlineGroup(autoPickup1, autoCoralStation1),
       autoCoralStation1,
-      autoPickup1,
-      armL42,
-      autoAlign2L,
-      place2
+      new SequentialCommandGroup(armL42,autoAlign2L),
+      place2,
+      autoCoralStation2,
+      new SequentialCommandGroup(armL43,autoAlign3L)
     );
   }
 }

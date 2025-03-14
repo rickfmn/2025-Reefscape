@@ -58,7 +58,7 @@ public final class Constants
    public static final double positionKI = 0.001;
    public static final double positionKD = 0.00;
 
-   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/2/*meters per second */, 2 /*meters per second per second*/);
+   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/*meters per second */, 4 /*meters per second per second*/);
    public static final TrapezoidProfile.Constraints rotationPIDConstraints = new Constraints(2/*radians per second */, 2 /*radians per second per second*/);
 
 
@@ -222,7 +222,7 @@ public final class Constants
     
 
 
-    public static final double kL1PrepAngleSP = 153;
+    public static final double kL1PrepAngleSP = 149;
     public static final double kL2PrepAngleSP = 200;
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 263;
