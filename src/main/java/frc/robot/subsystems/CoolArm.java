@@ -200,7 +200,7 @@ public class CoolArm extends SubsystemBase {
     
     LightSignal newSignal = LightSignal.scoringMode;
     signalLights.ReceiveArmAction(newAction);
-    //signalLights.autoAligned = false;
+    signalLights.autoAligned = false;
 
     switch(newAction){
       case L1:
