@@ -596,6 +596,49 @@ public class SwerveSubsystem extends SubsystemBase
     return VisionConstants.kReefGoalPoses[tagIndex][lrID][scoringLevel].toPose2d();
   }
 
+
+  public Pose2d getBestAlgaeRemovalTargetByPose(){
+
+    Pose2d reefRelativePose = null;
+
+    if(Robot.isRedAlliance){
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_RED);
+    }
+    else{
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_BLUE);
+    }
+  
+    double angleToReef = Units.radiansToDegrees(Math.atan2(reefRelativePose.getY(), reefRelativePose.getX()) );
+    int tagIndex = 0;
+
+    int[] fiducialIDS = Constants.REEF_FIDUCIALIDS_BLUE;
+    if(Robot.isRedAlliance) fiducialIDS = Constants.REEF_FIDUCIALIDS_RED;
+
+
+    if(angleToReef > 150 || angleToReef < -150){
+      tagIndex = fiducialIDS[0];
+    }
+    else if(angleToReef > 90 && angleToReef < 150){
+      tagIndex = fiducialIDS[1];
+    }
+    else if(angleToReef > 30 && angleToReef < 90){
+      tagIndex = fiducialIDS[2];
+    }
+    else if(angleToReef > -30 && angleToReef < 30){
+      tagIndex = fiducialIDS[3];
+    }
+    else if(angleToReef > -90 && angleToReef < -30){
+      tagIndex = fiducialIDS[4];
+    }
+    else if(angleToReef > -150 && angleToReef < -90){
+      tagIndex = fiducialIDS[5];
+    }
+
+
+
+    return VisionConstants.kReefGoalPoses[tagIndex][0][0].toPose2d();
+  }
+
   public Pose2d getBestCoralStationByPose(int position){
 
     int redBlue = 0;
@@ -609,7 +652,7 @@ public class SwerveSubsystem extends SubsystemBase
     int upperLowerStation = 0;//by default go to the station closer to the x axis
     if(robotPose.getY() > Constants.REEF_POSE3D_BLUE.getY()){
       upperLowerStation = 1;
-      //position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
+      position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
     }
     
 

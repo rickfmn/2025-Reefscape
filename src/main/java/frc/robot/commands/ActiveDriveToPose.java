@@ -24,6 +24,16 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ActiveDriveToPose extends Command {
 
+
+  public enum GoalType {
+    Reef_Right,
+    Reef_Left,
+    Coral_Station,
+    Algae_Removal
+  }
+
+  private GoalType goalType = GoalType.Algae_Removal;
+
   private SwerveSubsystem drivetrain;
   private SignalLights signalLights;
   private Pose2d goalPose2d = Pose2d.kZero;
@@ -40,22 +50,27 @@ public class ActiveDriveToPose extends Command {
   private PIDController rotationController = new PIDController(AutonConstants.rotationKP, AutonConstants.rotationKI, AutonConstants.rotationKD);
   private TrapezoidProfile.State previousRotationState = new State(0, 0);
   private TrapezoidProfile positionRotationProfile = new TrapezoidProfile(AutonConstants.rotationPIDConstraints);
-  private boolean targetIsReef = false;
   //TODO: add a trapezoid profile to the rotation
 
   /** Creates a new ActiveDriveToGoalPose. */
-  public ActiveDriveToPose(SwerveSubsystem swerveSubsystem,SignalLights lights,boolean rightReef,boolean inAutonomous,boolean reefTarget) {
+  public ActiveDriveToPose(SwerveSubsystem swerveSubsystem,SignalLights lights,boolean inAutonomous, GoalType goal) {
     drivetrain = swerveSubsystem;
     signalLights = lights;
-    isRight = rightReef;
+
+    goalType = goal;
+
+    isRight = false;
+    if(goalType == GoalType.Reef_Right){
+      isRight = true;
+    }
 
     inAuto = inAutonomous;
-    targetIsReef = reefTarget;
+    
 
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     // Use addRequirements() here to declare subsystem dependencies.
     
-    if( !(inAutonomous && !reefTarget) ){
+    if( !(inAutonomous && (goalType == GoalType.Coral_Station)) ){
       addRequirements(swerveSubsystem);
     }
     
@@ -70,11 +85,14 @@ public class ActiveDriveToPose extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if(targetIsReef){
+    if(goalType == GoalType.Reef_Left || goalType == GoalType.Reef_Right){
       goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
     }
-    else{
+    else if (goalType == GoalType.Coral_Station){
       goalPose2d = drivetrain.getBestCoralStationByPose(0);
+    }
+    else{
+      goalPose2d = drivetrain.getBestAlgaeRemovalTargetByPose();
     }
     
     poseError = drivetrain.getPose().minus(goalPose2d);
@@ -134,7 +152,7 @@ public class ActiveDriveToPose extends Command {
     double positionErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
     
 
-    if(targetIsReef){
+    if(goalType == GoalType.Coral_Station){
       return (Math.abs(angleError) < 2.0) && positionErrorMagnitude < 0.02;
     
     }

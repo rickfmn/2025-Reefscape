@@ -9,6 +9,7 @@ import java.nio.channels.Pipe;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.ActiveDriveToPose.GoalType;
 import frc.robot.subsystems.CoolArm;
 import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.CoolArm.ArmAction;
@@ -33,7 +34,7 @@ public class AutoCoralStationRoutine extends Command {
     signalLights = lights;
     coolArm = arm;
 
-    activeDriveToCoralStation =  new ActiveDriveToPose(drivetrain, signalLights, false, true, false);
+    activeDriveToCoralStation =  new ActiveDriveToPose(drivetrain, signalLights, true, GoalType.Coral_Station);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain,signalLights);
   }
@@ -45,11 +46,15 @@ public class AutoCoralStationRoutine extends Command {
     coolArm.SetArmAction(ArmAction.Travel);
     pickupTimer.reset();
     pickupTimer.stop();
+    
+    //System.out.println("Do I have Coral? " + hasCoral);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
+
     hasCoral = coralSensorDebounceTimer.hasElapsed(0.125);
     if(activeDriveToCoralStation.isFinished() && !pickupTimer.isRunning()){
       drivetrain.setChassisSpeeds(new ChassisSpeeds(-0.25,0,0));
@@ -88,7 +93,9 @@ public class AutoCoralStationRoutine extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    //System.out.println("done already" + interrupted);
+  }
 
   // Returns true when the command should end.
   @Override

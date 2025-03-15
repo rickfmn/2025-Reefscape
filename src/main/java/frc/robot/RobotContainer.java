@@ -36,6 +36,7 @@ import frc.robot.commands.AutoAutoCommand;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.AutonomousPlace;
 import frc.robot.commands.DynamicCommand;
+import frc.robot.commands.ActiveDriveToPose.GoalType;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoolArm;
@@ -204,8 +205,8 @@ public class RobotContainer
     NamedCommands.registerCommand("Arm L2", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     NamedCommands.registerCommand("Arm L3", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     NamedCommands.registerCommand("Arm L4", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
-    NamedCommands.registerCommand("AutoAlign R", new ActiveDriveToPose(drivebase,signalLights, true,true,true));
-    NamedCommands.registerCommand("AutoAlign L", new ActiveDriveToPose(drivebase,signalLights, false,true,true));
+    NamedCommands.registerCommand("AutoAlign R", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Right));
+    NamedCommands.registerCommand("AutoAlign L", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Left));
 
     NamedCommands.registerCommand("Place", new AutonomousPlace(coolArm));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
@@ -252,8 +253,8 @@ public class RobotContainer
 
     // driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
     // driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
-    driverJoystick.button(4).whileTrue(new ActiveDriveToPose(drivebase,signalLights, true,false,true));
-    driverJoystick.button(3).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,false,true));
+    driverJoystick.button(4).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Right));
+    driverJoystick.button(3).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Left));
     
     
     driverJoystick.button(7).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LEDConstants;
@@ -33,6 +34,8 @@ public class SignalLights extends SubsystemBase {
   
   public boolean wasAutoAligned = true;
 
+  private LightSignal storedSignal = LightSignal.Idle;
+
 
   public LightSignal currentSignal = LightSignal.databits;
 
@@ -47,6 +50,7 @@ public class SignalLights extends SubsystemBase {
     climbPrep,
     climbFinish,
     databits,
+    climbTime,
     Idle
   }
 
@@ -58,6 +62,7 @@ public class SignalLights extends SubsystemBase {
     LEDBuffer = new AddressableLEDBuffer(LEDConstants.LED_COUNT);
     //SetArmLEDBufferToSolidColor(LEDConstants.kDatabitsColor);
     LEDs.setLength(LEDConstants.LED_COUNT);
+    //Shuffleboard.getTab("Debug 2").addDouble("Driverstation Match Time", DriverStation.);
     //armLEDs.setData(armLEDBuffer);
     //armLEDs.start();
     currentSignal = LightSignal.Idle;
@@ -66,6 +71,19 @@ public class SignalLights extends SubsystemBase {
   @Override
   public void periodic() {
     boolean ledChanged = true;
+
+    double matchTime = DriverStation.getMatchTime();
+    if(matchTime < 17 && matchTime > 15){
+      //System.out.println(matchTime);
+      if(currentSignal != LightSignal.climbTime){
+        storedSignal = currentSignal;
+      }
+      currentSignal = LightSignal.climbTime;
+    }
+    else if (currentSignal == LightSignal.climbTime){
+      currentSignal = storedSignal;
+    }
+
     //Determine if we push LED update
     if (previousSignal != currentSignal) 
     {
@@ -76,6 +94,7 @@ public class SignalLights extends SubsystemBase {
         inClimbMode = false;
       }
     }
+    
 
     
     // This method will be called once per scheduler run
@@ -135,6 +154,9 @@ public class SignalLights extends SubsystemBase {
         break;
       case climbPrep:      
         SetLEDPattern(LEDConstants.kClimbReadyColor);
+        break;
+      case climbTime:      
+        SetLEDPattern(LEDConstants.kClimbTimeBlink);
         
         break;
       case climbFinish:

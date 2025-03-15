@@ -89,8 +89,8 @@ public final class Constants
     public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(28.5), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_Left = new Transform3d(Units.inchesToMeters(28.5), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L1_Right = new Transform3d(Units.inchesToMeters(22.5), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L1_Left = new Transform3d(Units.inchesToMeters(22.5), Units.inchesToMeters(0), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
 
     public static final Pose3d[][][] kReefGoalPoses = new Pose3d[23][2][4];
@@ -145,6 +145,7 @@ public final class Constants
     public static final LEDPattern kYesAlgaeColor = LEDPattern.solid(Color.kGhostWhite);
     public static final LEDPattern kClimbFinishColor = LEDPattern.rainbow(255,255).scrollAtAbsoluteSpeed(MetersPerSecond.of(100), Meters.of(1));
     public static final LEDPattern kClimbReadyColor = LEDPattern.solid(Color.kPurple);
+    public static final LEDPattern kClimbTimeBlink = LEDPattern.solid(Color.kPurple).blink(Seconds.of(0.25));
     public static final Color kDatabitsColor = new Color(2,255,4);
     public static final LEDPattern kDatabitsAnimated = LEDPattern.solid(kDatabitsColor).breathe(Seconds.of(5));
     public static final LEDPattern kOffColor = LEDPattern.kOff;
@@ -233,6 +234,7 @@ public final class Constants
     public static final double kPickupAngleSP = 86;
     //public static final double kPlaceAngleSPChange = -30;
     public static final double kPlaceAngleSP = 165;
+    public static final double kL4PlaceAngleSP = 175;
     public static final double kMaxPickupBoxAngle = 110;
     
     public static final double kMaxPickupBoxElevator = -4.5;
@@ -241,7 +243,7 @@ public final class Constants
 
 
     public static final double kL1PrepElevatorSP = -2.0;
-    public static final double kL2PrepElevatorSP = 0;
+    public static final double kL2PrepElevatorSP = -2.0;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
     public static final double kTravelElevatorSP = -5.3;//4.3
