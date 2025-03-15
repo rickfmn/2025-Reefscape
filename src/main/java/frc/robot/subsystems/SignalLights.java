@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -144,7 +145,12 @@ public class SignalLights extends SubsystemBase {
 
       case Idle:
         if(!inClimbMode){
-          SetLEDPattern(LEDConstants.kAnimatedIdle);
+          if(DriverStation.isDSAttached() || DriverStation.isFMSAttached()){
+            SetLEDPattern(LEDConstants.kAnimatedIdle);
+          }
+          else{
+            SetLEDPattern(LEDConstants.kAnimatedIdle_Disconnected);
+          }
         }
         else{
           SetLEDPattern(LEDConstants.kClimbFinishColor);

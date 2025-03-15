@@ -27,11 +27,11 @@ public class AutoAutoCommand extends SequentialCommandGroup {
     Command place1 = new AutoPlace(arm, swerve);
     Command autoCoralStation1 = new AutoCoralStationRoutine(swerve, lights,arm);
     Command armL42 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
-    Command autoAlign2L = new ActiveDriveToPose(swerve, lights, false, true,true);
+    Command autoAlign2L = new ActiveDriveToPose(swerve, lights, true, true,true);
     Command place2 = new AutoPlace(arm, swerve);
     Command autoCoralStation2 = new AutoCoralStationRoutine(swerve, lights,arm);
     Command armL43 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
-    Command autoAlign3L = new ActiveDriveToPose(swerve, lights, true, true,true);
+    Command autoAlign3L = new ActiveDriveToPose(swerve, lights, false, true,true);
     
 
 

@@ -83,8 +83,8 @@ public final class Constants
     public static final Transform3d reefOffset_L2_L3_Left = new Transform3d(Units.inchesToMeters(29), Units.inchesToMeters(-6), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
 
     
-    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(18.0), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
-    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(18.0), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Right = new Transform3d(Units.inchesToMeters(18.26), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
+    public static final Transform3d reefOffset_L4_Left = new Transform3d(Units.inchesToMeters(18.26), Units.inchesToMeters(-6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Right = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L3_Left = new Transform3d(Units.inchesToMeters(26.5), Units.inchesToMeters(-6.5), Units.inchesToMeters(-12),new Rotation3d(0, 0, Math.PI));
     public static final Transform3d reefOffset_L2_Right = new Transform3d(Units.inchesToMeters(28.5), Units.inchesToMeters(6.5), Units.inchesToMeters(12),new Rotation3d(0, 0, Math.PI));
@@ -167,7 +167,9 @@ public final class Constants
     public static final LEDPattern kLoadModeColor = LEDPattern.solid(Color.kDodgerBlue);
 
     public static final LEDPattern kAnimatedIdle = LEDPattern.steps(Map.of(0.00, kDatabitsColor, 0.3, Color.fromHSV(0, 0, 40))).scrollAtAbsoluteSpeed(MetersPerSecond.of(20), Meters.of(1));
-    
+
+    public static final LEDPattern kAnimatedIdle_Disconnected = LEDPattern.steps(Map.of(0.00, Color.fromHSV(0, 0, 40), 0.3, kDatabitsColor)).scrollAtAbsoluteSpeed(MetersPerSecond.of(20), Meters.of(1));
+
   }
 
   public static class ClimberConstants
