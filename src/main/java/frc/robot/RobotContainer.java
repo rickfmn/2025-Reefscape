@@ -36,6 +36,7 @@ import frc.robot.commands.AutoAutoCommand;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.AutonomousPlace;
 import frc.robot.commands.DynamicCommand;
+import frc.robot.commands.LevelOneScoring;
 import frc.robot.commands.ActiveDriveToPose.GoalType;
 import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.Climber;
@@ -262,7 +263,7 @@ public class RobotContainer
     // autoAim.addRequirements(drivebase);
     // driverJoystick.button(3).whileTrue(autoAim);
 
-    driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    driverJoystick.button(5).whileTrue(new LevelOneScoring(coolArm, climber));
     driverJoystick.button(10).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     driverJoystick.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     driverJoystick.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
@@ -302,14 +303,14 @@ public class RobotContainer
 
     copilotBoxController.button(9).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotBoxController), coolArm));
    
-    copilotBoxController.button(4).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
-    copilotBoxController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotBoxController.button(4).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake()));
+    copilotBoxController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake()));
 
     copilotBoxController.button(6).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
     //copilotController.button(6).onTrue(new PrintCommand("Should be preparing"));
     copilotBoxController.button(10).onTrue(new InstantCommand(() -> climber.Climb(), climber));
     copilotBoxController.button(3).onTrue(new InstantCommand(() -> climber.Best(), climber));
-    copilotBoxController.button(1).onTrue(new InstantCommand(()->coolArm.DoAction(copilotBoxController)));
+    copilotBoxController.button(1).onTrue(new InstantCommand(()->DoSelectedLevelPreparation()));
 
 
 
@@ -323,8 +324,8 @@ public class RobotContainer
     // copilotController.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
     copilotSNESController.button(3).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
    
-    copilotSNESController.button(5).whileTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(), algaeIntake));
-    copilotSNESController.button(6).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(), algaeIntake));
+    copilotSNESController.button(5).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake()));
+    copilotSNESController.button(6).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake()));
 
     copilotSNESController.button(10).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
     copilotSNESController.button(9).onTrue(new InstantCommand(() -> climber.Climb(), climber));
@@ -333,11 +334,30 @@ public class RobotContainer
 
     copilotSNESController.axisGreaterThan(0, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     copilotSNESController.axisLessThan(0, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
-    copilotSNESController.axisGreaterThan(4, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
+    copilotSNESController.axisGreaterThan(4, 0.5).whileTrue(new LevelOneScoring(coolArm, climber));
     copilotSNESController.axisLessThan(4, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
 
 
+  }
+
+  public void DoSelectedLevelPreparation(){
+    ArmAction newAction = coolArm.currentAction;
+    if(copilotBoxController.povUp().getAsBoolean()){
+      Command levelOne = new LevelOneScoring(coolArm, climber).onlyWhile(()->copilotBoxController.button(1).getAsBoolean());
+      levelOne.schedule();
+    }    
+    else if(copilotBoxController.povRight().getAsBoolean()){
+      newAction = ArmAction.L2;
+    }
+    else if(copilotBoxController.povDown().getAsBoolean()){
+      newAction = ArmAction.L3;
+    }
+    else if(copilotBoxController.povLeft().getAsBoolean()){
+      newAction = ArmAction.L4;
+    }
+
+    coolArm.SetArmAction(newAction);
   }
 
   public void driveToBestTarget(boolean isRight){

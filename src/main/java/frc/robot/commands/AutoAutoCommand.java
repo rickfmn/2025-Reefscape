@@ -44,6 +44,8 @@ public class AutoAutoCommand extends SequentialCommandGroup {
     Command autoCoralStation2 = new AutoCoralStationRoutine(swerve, lights,arm);
     Command armL43 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
     Command autoAlign3L = new ActiveDriveToPose(swerve, lights, true, GoalType.Reef_Right);
+
+    Command place3 = new AutoPlace(arm, swerve);
     
 
 
@@ -65,7 +67,8 @@ public class AutoAutoCommand extends SequentialCommandGroup {
       algaeRemovePlace2,
 
       autoCoralStation2,
-      new SequentialCommandGroup(armL43,autoAlign3L)
+      new SequentialCommandGroup(armL43,autoAlign3L),
+      place3
     );
   }
 }

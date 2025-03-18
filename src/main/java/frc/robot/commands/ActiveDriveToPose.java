@@ -42,6 +42,8 @@ public class ActiveDriveToPose extends Command {
 
   private Timer loopTimer = new Timer();
   private boolean inAuto = true;
+  private boolean atTolerance = false;
+  private Timer timeAtTolerance = new Timer();
 
   private PIDController positionController = new PIDController(AutonConstants.positionKP, AutonConstants.positionKI, AutonConstants.positionKD);
   private TrapezoidProfile.State previousPositionState = new State(0, 0);
@@ -94,13 +96,15 @@ public class ActiveDriveToPose extends Command {
     else{
       goalPose2d = drivetrain.getBestAlgaeRemovalTargetByPose();
     }
+
+    atTolerance = false;
     
     poseError = drivetrain.getPose().minus(goalPose2d);
     drivetrain.goalPose2d = goalPose2d;
     
     double translationErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
     previousPositionState.position = translationErrorMagnitude;
-    previousPositionState.velocity = drivetrain.getSpeedMagnitudeMpS();
+    previousPositionState.velocity = -drivetrain.getSpeedMagnitudeMpS();
     loopTimer.restart();
   }
 
@@ -136,6 +140,7 @@ public class ActiveDriveToPose extends Command {
 
 
     drivetrain.setChassisSpeeds(rrSpeeds);
+    // drivetrain.drive(translationSpeeds, rotationPIDOutput, false);
 
     loopTimer.restart();
   }
@@ -162,11 +167,25 @@ public class ActiveDriveToPose extends Command {
     
   }
 
+  public boolean readyToPlace(){
+    boolean nowAtTolerance = atToleranceFromGoal();
+    if(!atTolerance && nowAtTolerance){
+      timeAtTolerance.restart();
+    }
+    else if (!nowAtTolerance){
+      timeAtTolerance.reset();
+      timeAtTolerance.stop();
+    }
+    atTolerance = nowAtTolerance;
+
+    return timeAtTolerance.hasElapsed(0.125);
+  }
+
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     
-    boolean aligned = atToleranceFromGoal();
+    boolean aligned = readyToPlace();
 
     signalLights.autoAligned = aligned;
 

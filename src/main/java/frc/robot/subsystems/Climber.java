@@ -21,7 +21,9 @@ public class Climber extends SubsystemBase {
     Preparing,
     Prepared,
     Climbing,
-    Climbed
+    Climbed,
+    L1_Preparing,
+    L1_Finished
   }
 
   private SparkMax m_winchLeader = new SparkMax(ClimberConstants.LEADER_MOTOR_ID, MotorType.kBrushless);
@@ -48,10 +50,10 @@ public class Climber extends SubsystemBase {
       case Best:
 
         if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_BANGLE - 1){
-          setWinch(0.1);
+          setWinch(0.3);
         }
         else if(m_absEncoder.getPosition() > ClimberConstants.CLIMB_BANGLE + 1){
-          setWinch(-0.1);
+          setWinch(-0.3);
         }
         else{
           setWinch(0);
@@ -97,6 +99,21 @@ public class Climber extends SubsystemBase {
         }
 
         break;
+      case L1_Preparing:
+        if(m_absEncoder.getPosition() < ClimberConstants.CLIMB_LANGLE - 1){
+          setWinch(0.3);
+        }
+        else if(m_absEncoder.getPosition() > ClimberConstants.CLIMB_LANGLE + 1){
+          setWinch(-0.3);
+        }
+        else{
+          setWinch(0);
+          currentState = ClimbState.L1_Finished;
+        }
+        break;
+      case L1_Finished:
+        setWinch(0);
+        break;
       default:
 
         setWinch(0);
@@ -132,6 +149,11 @@ public class Climber extends SubsystemBase {
   public void Best(){
     currentState = ClimbState.Best;
     ReleaseServo();
+  }
+
+  public void Level1Preparation(){
+    ReleaseServo();
+    currentState = ClimbState.L1_Preparing;
   }
 
   public void LockServo(){

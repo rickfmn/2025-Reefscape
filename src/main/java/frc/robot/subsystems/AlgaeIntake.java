@@ -106,6 +106,7 @@ public class AlgaeIntake extends SubsystemBase {
     retractIntake();
     signalLights.SetSignal(LightSignal.databits);
     isIntaking = false;
+    //System.out.println("intake angle "+ m_angleEncoder.getPosition());
   }
 
   public void Intake(){

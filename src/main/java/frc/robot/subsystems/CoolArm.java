@@ -147,10 +147,17 @@ public class CoolArm extends SubsystemBase {
       //have to reverse this because the setvoltage is reversed and we have to invert this because the PID is smart enough to figure out which way to go
       SetElevatorMotor(-1 * (elevatorPIDController.calculate(elevatorEncoder.getPosition(), previousTrapezoidState_Elevator.position) ) + CoolArmConstants.kElevatorFeedForward);
       
-      if((AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP) && pickupRetryCounter < 5) && pickupRetryTimer.hasElapsed(0.25)){
-        SetArmAction(ArmAction.Pickup);
-        pickupRetryCounter ++;
+      if((AtElevatorSetpoint(CoolArmConstants.kTravelElevatorSP) && currentAction == ArmAction.Pickup && HasCoralInPickupBin() && AtAngleSetpoint(CoolArmConstants.kTravelAngleSP) && pickupRetryCounter < 3)){
+        if(pickupRetryTimer.hasElapsed(0.5) && pickupRetryTimer.isRunning()){
+          SetArmAction(ArmAction.Pickup);
+          pickupRetryCounter ++;
         //this if statement should try to pick up the coral again if we fail to pick it up the first time
+        }
+        else{
+          pickupRetryTimer.restart();
+        }
+        
+        
       }
     }
 
@@ -249,20 +256,18 @@ public class CoolArm extends SubsystemBase {
         }
         else if(currentAction == ArmAction.L2){
           newAngleSP = CoolArmConstants.kPlaceAngleSP-10;
-          newElevatorSP = elevatorSetpoint;
+          newElevatorSP = 0;
         }
         else if (currentAction == ArmAction.L4){
           newAngleSP = CoolArmConstants.kL4PlaceAngleSP;
           newElevatorSP = elevatorSetpoint;
         }
         else if (currentAction == ArmAction.Travel){
-          System.out.println("Moving Up");
           newAngleSP = CoolArmConstants.kTravelAngleSP;
           newElevatorSP = CoolArmConstants.kTravelHighElevatorSP;
           
         }
         else if (currentAction != ArmAction.Place){
-          System.out.println("Current Action: " + currentAction.toString());
           newAngleSP = CoolArmConstants.kPlaceAngleSP;
           newElevatorSP = elevatorSetpoint;
         }
@@ -271,7 +276,6 @@ public class CoolArm extends SubsystemBase {
           newElevatorSP = elevatorSetpoint;
         }
 
-        System.out.println("Cases Ran: "+ ifCasesRan);
         
         
         break;
@@ -282,7 +286,9 @@ public class CoolArm extends SubsystemBase {
     if(newAction == ArmAction.Pickup){
       SetElevatorMotorManual(-6);
       pickupTimoutTimer.restart();
-      pickupRetryTimer.restart();
+      pickupRetryTimer.reset();
+      pickupRetryTimer.stop();
+      
     }
     signalLights.SetSignal(newSignal);
     currentAction = newAction;

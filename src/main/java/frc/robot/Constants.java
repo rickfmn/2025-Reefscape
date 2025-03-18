@@ -184,7 +184,9 @@ public final class Constants
     //Stiction angle
     public static final double CLIMB_VANGLE = 232.0;
     //Finish angle
-    public static final double CLIMB_FANGLE = 239.0;
+    public static final double CLIMB_FANGLE = 239;//239
+
+    public static final double CLIMB_LANGLE = 220.0;
     //Best Angle(for the rest of the match)
     public static final double CLIMB_BANGLE = 183.0;
 
@@ -225,7 +227,7 @@ public final class Constants
     
 
 
-    public static final double kL1PrepAngleSP = 149;
+    public static final double kL1PrepAngleSP = 86;//149
     public static final double kL2PrepAngleSP = 200;
     public static final double kL3PrepAngleSP = 229;
     public static final double kL4PrepAngleSP = 263;
@@ -233,7 +235,7 @@ public final class Constants
     public static final double kTravelAngleSP = 86;
     public static final double kPickupAngleSP = 86;
     //public static final double kPlaceAngleSPChange = -30;
-    public static final double kPlaceAngleSP = 165;
+    public static final double kPlaceAngleSP = 170;
     public static final double kL4PlaceAngleSP = 175;
     public static final double kMaxPickupBoxAngle = 110;
     
@@ -242,11 +244,11 @@ public final class Constants
 
 
 
-    public static final double kL1PrepElevatorSP = -2.0;
-    public static final double kL2PrepElevatorSP = -2.0;
+    public static final double kL1PrepElevatorSP = -2.0;//-2
+    public static final double kL2PrepElevatorSP = -4.5;
     public static final double kL3PrepElevatorSP = -8.37;//-10 at 0.5 p
     public static final double kL4PrepElevatorSP = -25.6;
-    public static final double kTravelElevatorSP = -5.3;//4.3
+    public static final double kTravelElevatorSP = -7.3;//4.3
     
     public static final double kTravelHighElevatorSP = -8.3;//4.3
     public static final double kPickupElevatorSP = 0;
