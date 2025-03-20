@@ -4,7 +4,14 @@
 
 package frc.robot;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -33,6 +40,8 @@ public class Robot extends TimedRobot
   private Timer disabledTimer;
 
   public static boolean isRedAlliance = false;
+
+  public static final AprilTagFieldLayout aprilTagFieldLayout = attemptLoadLayout("2025 Custom Field.json");
 
   public Robot()
   {
@@ -140,6 +149,29 @@ public class Robot extends TimedRobot
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+  }
+
+  public static AprilTagFieldLayout loadFromResource(String resourcePath) throws IOException {
+    InputStream stream = Robot.class.getResourceAsStream(resourcePath);
+    if (stream == null) {
+      // Class.getResourceAsStream() returns null if the resource does not exist.
+      throw new IOException("Could not locate resource: " + resourcePath);
+    }
+    InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
+    try {
+      return new ObjectMapper().readerFor(Robot.class).readValue(reader);
+    } catch (IOException e) {
+      throw new IOException("Failed to load AprilTagFieldLayout: " + resourcePath);
+    }
+  }
+
+  public static AprilTagFieldLayout attemptLoadLayout(String resource){
+    try {
+      return loadFromResource(resource);
+    } catch (Exception e) {
+      System.out.println(e.toString());
+      return AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+    }
   }
 
   /**

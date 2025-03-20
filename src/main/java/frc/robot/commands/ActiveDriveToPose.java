@@ -158,11 +158,11 @@ public class ActiveDriveToPose extends Command {
     
 
     if(goalType == GoalType.Coral_Station){
-      return (Math.abs(angleError) < 2.0) && positionErrorMagnitude < 0.02;
+      return (Math.abs(angleError) < 5.0) && positionErrorMagnitude < 0.05;
     
     }
     else{
-      return (Math.abs(angleError) < 5) && positionErrorMagnitude < 0.05;
+      return (Math.abs(angleError) < 1.0) && positionErrorMagnitude < 0.02;
     }
     
   }
