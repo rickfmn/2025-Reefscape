@@ -21,7 +21,7 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoAutoCommand extends SequentialCommandGroup {
   /** Creates a new AutoAutoCommand. */
-  public AutoAutoCommand(SwerveSubsystem swerve,SignalLights lights,CoolArm arm) {
+  public AutoAutoCommand(SwerveSubsystem swerve,SignalLights lights,CoolArm arm,boolean doAlgaeRemoval) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     Command armL41 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
@@ -48,9 +48,8 @@ public class AutoAutoCommand extends SequentialCommandGroup {
     Command place3 = new AutoPlace(arm, swerve);
     
 
-
-
-    addCommands(
+    if(doAlgaeRemoval){
+      addCommands(
       new SequentialCommandGroup(armL41,autoAlign1L),
       place1,
 
@@ -70,5 +69,26 @@ public class AutoAutoCommand extends SequentialCommandGroup {
       new SequentialCommandGroup(armL43,autoAlign3L),
       place3
     );
+    }
+    else{
+      addCommands(
+      new SequentialCommandGroup(armL41,autoAlign1L),
+      place1,
+
+   
+
+      autoCoralStation1,
+      new SequentialCommandGroup(armL42,autoAlign2L),
+      place2,
+
+      
+
+      autoCoralStation2,
+      new SequentialCommandGroup(armL43,autoAlign3L),
+      place3
+    );
+    }
+
+    
   }
 }

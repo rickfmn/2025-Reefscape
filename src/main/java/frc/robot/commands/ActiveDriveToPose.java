@@ -91,7 +91,7 @@ public class ActiveDriveToPose extends Command {
       goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
     }
     else if (goalType == GoalType.Coral_Station){
-      goalPose2d = drivetrain.getBestCoralStationByPose(0);
+      goalPose2d = drivetrain.getBestCoralStationByPose(1);
     }
     else{
       goalPose2d = drivetrain.getBestAlgaeRemovalTargetByPose();
@@ -158,7 +158,7 @@ public class ActiveDriveToPose extends Command {
     
 
     if(goalType == GoalType.Coral_Station){
-      return (Math.abs(angleError) < 5.0) && positionErrorMagnitude < 0.05;
+      return (Math.abs(angleError) < 10.0) && positionErrorMagnitude < 0.20;
     
     }
     else{

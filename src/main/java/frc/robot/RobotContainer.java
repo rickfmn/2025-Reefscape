@@ -452,7 +452,9 @@ public class RobotContainer
     
     autoSelector.addOption("Simple L1", simpleL1Auto);
 
-    autoSelector.addOption("Auto Auto Command", new AutoAutoCommand(drivebase, signalLights, coolArm));
+    autoSelector.addOption("Auto Auto Command", new AutoAutoCommand(drivebase, signalLights, coolArm,true));
+    
+    autoSelector.addOption("Auto Auto Command - No Algae", new AutoAutoCommand(drivebase, signalLights, coolArm,false));
   }
 
 

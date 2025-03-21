@@ -4,11 +4,13 @@
 
 package frc.robot;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Optional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +19,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -41,7 +44,7 @@ public class Robot extends TimedRobot
 
   public static boolean isRedAlliance = false;
 
-  public static final AprilTagFieldLayout aprilTagFieldLayout = attemptLoadLayout("2025 Custom Field.json");
+  public static final AprilTagFieldLayout aprilTagFieldLayout = Constants.useCustomApriltagLayout ? AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape) : getCustomAprilTagFieldLayout();
 
   public Robot()
   {
@@ -60,57 +63,57 @@ public class Robot extends TimedRobot
   @Override
   public void robotInit()
   {
-    AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    ;
     
 
     for (int i = 17; i < 23; i++){
-      VisionConstants.kReefGoalPoses[i][0][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Left);
-      VisionConstants.kReefGoalPoses[i][1][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Right);
+      VisionConstants.kReefGoalPoses[i][0][3] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Left);
+      VisionConstants.kReefGoalPoses[i][1][3] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Right);
 
-      VisionConstants.kReefGoalPoses[i][0][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Left);
-      VisionConstants.kReefGoalPoses[i][1][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Right);
+      VisionConstants.kReefGoalPoses[i][0][2] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Left);
+      VisionConstants.kReefGoalPoses[i][1][2] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Right);
 
-      VisionConstants.kReefGoalPoses[i][0][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Left);
-      VisionConstants.kReefGoalPoses[i][1][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Right);
+      VisionConstants.kReefGoalPoses[i][0][1] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Left);
+      VisionConstants.kReefGoalPoses[i][1][1] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Right);
 
-      VisionConstants.kReefGoalPoses[i][0][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Left);
-      VisionConstants.kReefGoalPoses[i][1][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
+      VisionConstants.kReefGoalPoses[i][0][0] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Left);
+      VisionConstants.kReefGoalPoses[i][1][0] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
 
       
     }
 
     for (int i = 6; i < 12; i++){
-      VisionConstants.kReefGoalPoses[i][0][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Left);
-      VisionConstants.kReefGoalPoses[i][1][3] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Right);
+      VisionConstants.kReefGoalPoses[i][0][3] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Left);
+      VisionConstants.kReefGoalPoses[i][1][3] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L4_Right);
 
-      VisionConstants.kReefGoalPoses[i][0][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Left);
-      VisionConstants.kReefGoalPoses[i][1][2] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Right);
+      VisionConstants.kReefGoalPoses[i][0][2] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Left);
+      VisionConstants.kReefGoalPoses[i][1][2] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L3_Right);
 
-      VisionConstants.kReefGoalPoses[i][0][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Left);
-      VisionConstants.kReefGoalPoses[i][1][1] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Right);
+      VisionConstants.kReefGoalPoses[i][0][1] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Left);
+      VisionConstants.kReefGoalPoses[i][1][1] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L2_Right);
 
-      VisionConstants.kReefGoalPoses[i][0][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Left);
-      VisionConstants.kReefGoalPoses[i][1][0] = fieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
+      VisionConstants.kReefGoalPoses[i][0][0] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Left);
+      VisionConstants.kReefGoalPoses[i][1][0] = aprilTagFieldLayout.getTagPose(i).get().transformBy(VisionConstants.reefOffset_L1_Right);
     }
 
 
-    VisionConstants.kCoralStationPoses[0][0][0] = fieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[0][0][1] = fieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[0][0][2] = fieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[0][0][0] = aprilTagFieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[0][0][1] = aprilTagFieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[0][0][2] = aprilTagFieldLayout.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetRight);
 
     
-    VisionConstants.kCoralStationPoses[0][1][0] = fieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[0][1][1] = fieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[0][1][2] = fieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[0][1][0] = aprilTagFieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[0][1][1] = aprilTagFieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[0][1][2] = aprilTagFieldLayout.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetRight);
 
     
-    VisionConstants.kCoralStationPoses[1][0][0] = fieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[1][0][1] = fieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[1][0][2] = fieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[1][0][0] = aprilTagFieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[1][0][1] = aprilTagFieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[1][0][2] = aprilTagFieldLayout.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetRight);
 
-    VisionConstants.kCoralStationPoses[1][1][0] = fieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[1][1][1] = fieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[1][1][2] = fieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[1][1][0] = aprilTagFieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetLeft);
+    VisionConstants.kCoralStationPoses[1][1][1] = aprilTagFieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetCenter);
+    VisionConstants.kCoralStationPoses[1][1][2] = aprilTagFieldLayout.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetRight);
 
     
 
@@ -151,27 +154,59 @@ public class Robot extends TimedRobot
     CommandScheduler.getInstance().run();
   }
 
-  public static AprilTagFieldLayout loadFromResource(String resourcePath) throws IOException {
-    InputStream stream = Robot.class.getResourceAsStream(resourcePath);
-    if (stream == null) {
-      // Class.getResourceAsStream() returns null if the resource does not exist.
-      throw new IOException("Could not locate resource: " + resourcePath);
+  public static AprilTagFieldLayout attemptLoadLayout(){
+    String fieldJson = null;
+    AprilTagFieldLayout layout;
+    String fieldLayoutUsed = "No field";
+
+    try
+    {
+    InputStream stream = Robot.class.getResourceAsStream("2025 Custom Field.json");
+    BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+    StringBuilder builder = new StringBuilder();
+    String line;
+    while ((line = reader.readLine()) != null) 
+    {
+    builder.append(line).append("\n");
     }
-    InputStreamReader reader = new InputStreamReader(stream, StandardCharsets.UTF_8);
-    try {
-      return new ObjectMapper().readerFor(Robot.class).readValue(reader);
-    } catch (IOException e) {
-      throw new IOException("Failed to load AprilTagFieldLayout: " + resourcePath);
+    fieldJson = builder.toString();
+
+    if (fieldJson != null ) 
+    {
+      layout = new AprilTagFieldLayout(fieldJson);
+      fieldLayoutUsed = "Custom Field";
     }
+    else
+    {
+      layout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+      fieldLayoutUsed = "Default Field, Case 1";
+    }
+    }catch (Exception e) {
+      System.out.println(e.toString());
+      fieldLayoutUsed = "Default Field, Case 2";
+      layout =  AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+    }
+
+
+    System.out.println("Loaded Field: " + fieldLayoutUsed);
+    return layout;
+    
   }
 
-  public static AprilTagFieldLayout attemptLoadLayout(String resource){
+  public static AprilTagFieldLayout getCustomAprilTagFieldLayout(){
+    String fieldLayoutUsed = "No field";
+    AprilTagFieldLayout customLayout = null;
     try {
-      return loadFromResource(resource);
+      fieldLayoutUsed = "Custom Field";
+      customLayout = new AprilTagFieldLayout(Filesystem.getDeployDirectory() + "/2025CustomField.json");
     } catch (Exception e) {
+      
       System.out.println(e.toString());
-      return AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
+      fieldLayoutUsed = "Default Field, Case 2";
+      customLayout =  AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
     }
+    System.out.println(fieldLayoutUsed);
+    return customLayout;
   }
 
   /**
