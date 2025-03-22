@@ -18,10 +18,12 @@ public class AutoPlace extends Command {
   private CoolArm coolArm;
   private SwerveSubsystem swerveSubsystem;
   private Timer backupDelayTimer = new Timer();
+  private boolean algaeRemoval = false;
   /** Creates a new AutoPlace. */
-  public AutoPlace(CoolArm arm, SwerveSubsystem swerve) {
+  public AutoPlace(CoolArm arm, SwerveSubsystem swerve,boolean attemptAlgaeRemoval) {
     coolArm = arm;
     swerveSubsystem = swerve;
+    algaeRemoval = attemptAlgaeRemoval;
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm,swerve);
   }
@@ -48,12 +50,19 @@ public class AutoPlace extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return coolArm.AtElevatorAndArmSetpoints() || backupDelayTimer.hasElapsed(0.75);
+    return coolArm.AtElevatorAndArmSetpoints() || (algaeRemoval ? backupDelayTimer.hasElapsed(1.35) : backupDelayTimer.hasElapsed(1));
   }
 
   public void driveReverse(){
-    if(backupDelayTimer.hasElapsed(0.5)){
-      swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-2,0,0));
+    if(algaeRemoval ? backupDelayTimer.hasElapsed(0.75) : backupDelayTimer.hasElapsed(0.5)){
+      if(algaeRemoval){
+        swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-2,1,0.25));
+
+      }
+      else{
+        swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-2,0,0));
+
+      }
 
     }
     else{

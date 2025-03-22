@@ -26,26 +26,26 @@ public class AutoAutoCommand extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     Command armL41 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
     Command autoAlign1L = new ActiveDriveToPose(swerve, lights, true, GoalType.Reef_Right);
-    Command place1 = new AutoPlace(arm, swerve);
+    Command place1 = new AutoPlace(arm, swerve,doAlgaeRemoval);
 
     Command autoAlignAlgaeRemoval1 = new ActiveDriveToPose(swerve, lights, true, GoalType.Algae_Removal);
     Command armL4Algae = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
-    Command algaeRemovePlace1 = new AutoPlace(arm, swerve);
+    Command algaeRemovePlace1 = new AutoPlace(arm, swerve,false);
 
     Command autoCoralStation1 = new AutoCoralStationRoutine(swerve, lights,arm);
     Command armL42 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
     Command autoAlign2L = new ActiveDriveToPose(swerve, lights, true, GoalType.Reef_Left);
-    Command place2 = new AutoPlace(arm, swerve);
+    Command place2 = new AutoPlace(arm, swerve,false);
 
     Command autoAlignAlgaeRemoval2 = new ActiveDriveToPose(swerve, lights, true, GoalType.Algae_Removal);
     Command armL31 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L3), arm);
-    Command algaeRemovePlace2 = new AutoPlace(arm, swerve);
+    Command algaeRemovePlace2 = new AutoPlace(arm, swerve,false);
 
     Command autoCoralStation2 = new AutoCoralStationRoutine(swerve, lights,arm);
     Command armL43 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
     Command autoAlign3L = new ActiveDriveToPose(swerve, lights, true, GoalType.Reef_Right);
 
-    Command place3 = new AutoPlace(arm, swerve);
+    Command place3 = new AutoPlace(arm, swerve,false);
     
 
     if(doAlgaeRemoval){
@@ -53,9 +53,9 @@ public class AutoAutoCommand extends SequentialCommandGroup {
       new SequentialCommandGroup(armL41,autoAlign1L),
       place1,
 
-      armL4Algae,
-      autoAlignAlgaeRemoval1,
-      algaeRemovePlace1,
+      // armL4Algae,
+      // autoAlignAlgaeRemoval1,
+      // algaeRemovePlace1,
 
       autoCoralStation1,
       new SequentialCommandGroup(armL42,autoAlign2L),

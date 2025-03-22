@@ -91,7 +91,7 @@ public class ActiveDriveToPose extends Command {
       goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
     }
     else if (goalType == GoalType.Coral_Station){
-      goalPose2d = drivetrain.getBestCoralStationByPose(1);
+      goalPose2d = drivetrain.getBestCoralStationByPose(0);
     }
     else{
       goalPose2d = drivetrain.getBestAlgaeRemovalTargetByPose();
@@ -148,7 +148,7 @@ public class ActiveDriveToPose extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.lock();
+    drivetrain.setChassisSpeeds(new ChassisSpeeds(0,0,0));
   }
 
 
@@ -190,6 +190,9 @@ public class ActiveDriveToPose extends Command {
     signalLights.autoAligned = aligned;
 
     if(inAuto){
+      if(goalType == GoalType.Coral_Station){
+        return atTolerance;
+      }
       return aligned;
     }
     else{
