@@ -33,6 +33,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.ActiveDriveToPose;
 import frc.robot.commands.AutoAutoCommand;
+import frc.robot.commands.AutoCoralStationRoutine;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.AutonomousPlace;
 import frc.robot.commands.DynamicCommand;
@@ -251,6 +252,8 @@ public class RobotContainer
     drivebase.setDefaultCommand(driveFieldOrientedAnglularVelocity);
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
+
+    driverJoystick.button(12).whileTrue(new AutoCoralStationRoutine(drivebase, signalLights, coolArm));
 
     // driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
     // driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));

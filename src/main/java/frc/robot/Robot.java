@@ -44,7 +44,7 @@ public class Robot extends TimedRobot
 
   public static boolean isRedAlliance = false;
 
-  public static final AprilTagFieldLayout aprilTagFieldLayout = Constants.useCustomApriltagLayout ? AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape) : getCustomAprilTagFieldLayout();
+  public static final AprilTagFieldLayout aprilTagFieldLayout = Constants.useCustomApriltagLayout ?  getCustomAprilTagFieldLayout() : AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
   public Robot()
   {

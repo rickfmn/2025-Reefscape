@@ -37,7 +37,7 @@ import swervelib.math.Matter;
  */
 public final class Constants
 {
-  public static boolean useCustomApriltagLayout = false;
+  public static final boolean useCustomApriltagLayout = false;
 
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
