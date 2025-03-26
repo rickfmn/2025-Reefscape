@@ -35,7 +35,9 @@ import frc.robot.commands.ActiveDriveToPose;
 import frc.robot.commands.AutoAutoCommand;
 import frc.robot.commands.AutoCoralStationRoutine;
 import frc.robot.commands.AutoPickup;
+import frc.robot.commands.AutoPlace;
 import frc.robot.commands.AutonomousPlace;
+import frc.robot.commands.CenterAlgaeAuto;
 import frc.robot.commands.DynamicCommand;
 import frc.robot.commands.LevelOneScoring;
 import frc.robot.commands.ActiveDriveToPose.GoalType;
@@ -209,8 +211,10 @@ public class RobotContainer
     NamedCommands.registerCommand("Arm L4", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
     NamedCommands.registerCommand("AutoAlign R", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Right));
     NamedCommands.registerCommand("AutoAlign L", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Left));
+    NamedCommands.registerCommand("AutoAlign Algae",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
 
-    NamedCommands.registerCommand("Place", new AutonomousPlace(coolArm));
+
+    NamedCommands.registerCommand("Place", new AutoPlace(coolArm, drivebase, false));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm,drivebase));
     NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
@@ -458,6 +462,11 @@ public class RobotContainer
     autoSelector.addOption("Auto Auto Command", new AutoAutoCommand(drivebase, signalLights, coolArm,true));
     
     autoSelector.addOption("Auto Auto Command - No Algae", new AutoAutoCommand(drivebase, signalLights, coolArm,false));
+    
+    // autoSelector.addOption("Center Algae Removal", new CenterAlgaeAuto(drivebase, signalLights, coolArm, true));
+
+    
+    // autoSelector.addOption("Center Auto - No Algae Removal", new CenterAlgaeAuto(drivebase, signalLights, coolArm, false));
   }
 
 
