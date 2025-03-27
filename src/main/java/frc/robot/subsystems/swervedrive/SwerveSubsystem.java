@@ -129,7 +129,9 @@ public class SwerveSubsystem extends SubsystemBase
     Shuffleboard.getTab("Debug 1").addDouble("Gyro Angle", this::GetGyroYaw);
     Shuffleboard.getTab("Debug 1").addDoubleArray("Pose Error", this::getPoseError);
 
-    Shuffleboard.getTab("Field Cal").addDoubleArray("Best Tag Offset", this::getInchesOffsetFromBestTarget);
+    Shuffleboard.getTab("Field Cal").addDouble("Best Tag ID", this::getCurrentFiducialIDTarget);
+    
+    Shuffleboard.getTab("Field Cal").addDouble("Angle To Reef", this::getAngleToReef);
 
 
     // Configure the Telemetry before creating the SwerveDrive to avoid unnecessary objects being created.
@@ -214,7 +216,7 @@ public class SwerveSubsystem extends SubsystemBase
     return errorList;
   }
 
-  public double[] getInchesOffsetFromBestTarget(){
+  public double getCurrentFiducialIDTarget(){
     
     Pose2d reefRelativePose = null;
 
@@ -230,6 +232,13 @@ public class SwerveSubsystem extends SubsystemBase
 
     int[] fiducialIDS = Constants.REEF_FIDUCIALIDS_BLUE;
     if(Robot.isRedAlliance) fiducialIDS = Constants.REEF_FIDUCIALIDS_RED;
+
+    // if (Robot.isRedAlliance){
+    //   angleToReef -= 30;
+    //   if(angleToReef < -180){
+    //     angleToReef += 360;
+    //   }
+    // }
 
 
     if(angleToReef > 150 || angleToReef < -150){
@@ -250,15 +259,9 @@ public class SwerveSubsystem extends SubsystemBase
     else if(angleToReef > -150 && angleToReef < -90){
       tagIndex = fiducialIDS[5];
     }
-    Pose2d tagPose = Pose2d.kZero;
-    if(aprilTagFieldLayout.getTagPose(tagIndex).isPresent()){
-      tagPose = aprilTagFieldLayout.getTagPose(tagIndex).get().toPose2d();
-    }
+    
 
-    Transform2d offsetTransform  = getPose().minus(tagPose);
-    double[] transformDoubles = {Math.round(Units.metersToInches(offsetTransform.getX())*100d) / 100d,Math.round(Units.metersToInches(offsetTransform.getY()) * 100d) / 100d,Math.round(offsetTransform.getRotation().getDegrees() * 100d) / 100d};
-
-    return transformDoubles;
+    return tagIndex;
   }
 
   @Override
@@ -542,6 +545,20 @@ public class SwerveSubsystem extends SubsystemBase
     return Math.sqrt(Math.pow( velocity.vxMetersPerSecond,2) + Math.pow(velocity.vyMetersPerSecond,2));
   }
 
+  public double getAngleToReef(){
+    Pose2d reefRelativePose = null;
+
+    if(Robot.isRedAlliance){
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_RED);
+    }
+    else{
+      reefRelativePose = getPose().relativeTo(Constants.REEF_POSE3D_BLUE);
+    }
+  
+    double angleToReef = Units.radiansToDegrees(Math.atan2(reefRelativePose.getY(), reefRelativePose.getX()) );
+    return angleToReef;
+  }
+
   public Pose2d getBestReefTargetByPose(int lrID){
 
     Pose2d reefRelativePose = null;
@@ -578,6 +595,7 @@ public class SwerveSubsystem extends SubsystemBase
     else if(angleToReef > -150 && angleToReef < -90){
       tagIndex = fiducialIDS[5];
     }
+    
 
     int scoringLevel = 2;
     switch (coolArm.currentAction) {

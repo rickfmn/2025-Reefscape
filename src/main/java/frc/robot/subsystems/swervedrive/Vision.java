@@ -105,8 +105,7 @@ public class Vision
 
       openSimCameraViews();
     }
-    Shuffleboard.getTab("Tab 7").addInteger("LatestBestFiducialIDSeen", Cameras.APRIL_CAM_R::getLatestBestFiducialIDSeen);
-    Shuffleboard.getTab("Tab 7").addDouble("LatestBestTargetyaw", Cameras.APRIL_CAM_R::getLatestTargetYaw);
+    
     
   }
 
