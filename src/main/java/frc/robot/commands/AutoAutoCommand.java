@@ -25,7 +25,7 @@ public class AutoAutoCommand extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     Command armL41 = new InstantCommand(()-> arm.SetArmAction(ArmAction.L4), arm);
-    Command autoAlign1L = new ActiveDriveToPose(swerve, lights, true, GoalType.Reef_Right);
+    Command autoAlign1L = new ActiveDriveToPose(swerve, lights, true, GoalType.Reef_Left);
     Command place1 = new AutoPlace(arm, swerve,doAlgaeRemoval);
 
     Command autoAlignAlgaeRemoval1 = new ActiveDriveToPose(swerve, lights, true, GoalType.Algae_Removal);

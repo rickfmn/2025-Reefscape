@@ -134,6 +134,10 @@ public class ActiveDriveToPose extends Command {
 
     Translation2d translationSpeeds = new Translation2d(positionPIDOutput, angleToGoalPose);
 
+    if( (translationErrorMagnitude < 1 && translationError.getY() >0.02 ) && (goalType == GoalType.Reef_Left || goalType == GoalType.Reef_Right)){
+      translationSpeeds = new Translation2d(0, translationSpeeds.getY() * 2);
+    }
+
     double rotationPIDOutput = rotationController.calculate(poseError.getRotation().getRadians(), 0);
     
     ChassisSpeeds rrSpeeds = new ChassisSpeeds(translationSpeeds.getX(),translationSpeeds.getY(), rotationPIDOutput);

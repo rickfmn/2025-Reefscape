@@ -65,7 +65,7 @@ public class AutoCoralStationRoutine extends Command {
       drivetrain.setChassisSpeeds(new ChassisSpeeds(1,0,0));
     }
 
-    if(hasCoral || routineTimeoutTimer.hasElapsed(8)){
+    if(hasCoral || routineTimeoutTimer.hasElapsed(6)){
       
       if(!pickupTimer.isRunning())
       {
@@ -102,6 +102,6 @@ public class AutoCoralStationRoutine extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.5)) || pickupTimer.hasElapsed(1);
+    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.5)) || pickupTimer.hasElapsed(1) || routineTimeoutTimer.hasElapsed(8);
   }
 }
