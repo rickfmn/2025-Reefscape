@@ -37,7 +37,7 @@ import swervelib.math.Matter;
  */
 public final class Constants
 {
-  public static final boolean useCustomApriltagLayout = false;
+  public static final boolean useCustomApriltagLayout = true;
 
   public static final double ROBOT_MASS = (148 - 20.3) * 0.453592; // 32lbs * kg per pound
   public static final Matter CHASSIS    = new Matter(new Translation3d(0, 0, Units.inchesToMeters(8)), ROBOT_MASS);
@@ -59,7 +59,7 @@ public final class Constants
    public static final double positionKI = 0.001;
    public static final double positionKD = 0.00;
 
-   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/*meters per second */, 6 /*meters per second per second*/);
+   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/*meters per second */, 8 /*meters per second per second*/);
    public static final TrapezoidProfile.Constraints rotationPIDConstraints = new Constraints(2/*radians per second */, 2 /*radians per second per second*/);
 
 
@@ -189,7 +189,7 @@ public final class Constants
 
     public static final double CLIMB_LANGLE = 220.0;
     //Best Angle(for the rest of the match)
-    public static final double CLIMB_BANGLE = 183.0;
+    public static final double CLIMB_BANGLE = 185.0;
 
 
 

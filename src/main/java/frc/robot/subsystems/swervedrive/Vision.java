@@ -57,7 +57,7 @@ public class Vision
   /**
    * April Tag Field Layout of the year.
    */
-  public static final AprilTagFieldLayout fieldLayout                     = Robot.aprilTagFieldLayout;
+  public static final AprilTagFieldLayout fieldLayout                     = Robot.aprilTagFieldLayout_SelectTags;
   /**
    * Ambiguity defined as a value between (0,1). Used in {@link Vision#filterPose}.
    */

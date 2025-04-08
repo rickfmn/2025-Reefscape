@@ -48,6 +48,14 @@ public class ActiveDriveToPose extends Command {
   private PIDController positionController = new PIDController(AutonConstants.positionKP, AutonConstants.positionKI, AutonConstants.positionKD);
   private TrapezoidProfile.State previousPositionState = new State(0, 0);
   private TrapezoidProfile positionTrapezoidProfile = new TrapezoidProfile(AutonConstants.positionPIDConstraints);
+
+  private PIDController positionXController = new PIDController(AutonConstants.positionKP, AutonConstants.positionKI, AutonConstants.positionKD);
+  private TrapezoidProfile.State previousPositionXState = new State(0, 0);
+  private TrapezoidProfile positionXTrapezoidProfile = new TrapezoidProfile(AutonConstants.positionPIDConstraints);
+
+  private PIDController positionYController = new PIDController(AutonConstants.positionKP, AutonConstants.positionKI, AutonConstants.positionKD);
+  private TrapezoidProfile.State previousPositionYState = new State(0, 0);
+  private TrapezoidProfile positionYTrapezoidProfile = new TrapezoidProfile(AutonConstants.positionPIDConstraints);
   
   private PIDController rotationController = new PIDController(AutonConstants.rotationKP, AutonConstants.rotationKI, AutonConstants.rotationKD);
   private TrapezoidProfile.State previousRotationState = new State(0, 0);
@@ -79,7 +87,7 @@ public class ActiveDriveToPose extends Command {
     
     
     
-    SmartDashboard.putData(positionController);
+    //SmartDashboard.putData(positionController);
     
     SmartDashboard.putData(rotationController);
   }
@@ -102,9 +110,14 @@ public class ActiveDriveToPose extends Command {
     poseError = drivetrain.getPose().minus(goalPose2d);
     drivetrain.goalPose2d = goalPose2d;
     
-    double translationErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
-    previousPositionState.position = translationErrorMagnitude;
-    previousPositionState.velocity = -drivetrain.getSpeedMagnitudeMpS();
+    ChassisSpeeds currentSpeeds = drivetrain.getRobotVelocity();
+
+    previousPositionXState.position = poseError.getX();
+    previousPositionXState.velocity = -currentSpeeds.vxMetersPerSecond;//might need to be negative
+
+    previousPositionYState.position = poseError.getY();
+    previousPositionYState.velocity = currentSpeeds.vyMetersPerSecond;//might need to be negative
+
     loopTimer.restart();
   }
 
@@ -116,31 +129,45 @@ public class ActiveDriveToPose extends Command {
     Translation2d translationError = poseError.getTranslation();
 
     Rotation2d angleToGoalPose = translationError.getAngle();
-    double translationErrorMagnitude = translationError.getDistance(Translation2d.kZero);
 
     //drivetrain.setChassisSpeeds(new ChassisSpeeds(-1 * translationError.getX(),-1 * translationError.getY(), -1 * poseError.getRotation().getRadians()));
 
-    TrapezoidProfile.State currentPositionState = new TrapezoidProfile.State(translationErrorMagnitude,drivetrain.getSpeedMagnitudeMpS());
+    // previousPositionState = positionTrapezoidProfile.calculate(loopTimer.get(), previousPositionState, new State(0,0));
 
-    previousPositionState = positionTrapezoidProfile.calculate(loopTimer.get(), previousPositionState, new State(0,0));
+    // double positionPIDOutput = positionController.calculate(translationErrorMagnitude, previousPositionState.position);
 
-    double positionPIDOutput = positionController.calculate(translationErrorMagnitude, previousPositionState.position);
+    previousPositionXState = positionXTrapezoidProfile.calculate(loopTimer.get(), previousPositionXState, new State(0,0));
+    double positionXPIDOutput = positionXController.calculate(translationError.getX(), previousPositionXState.position);
+
+    previousPositionYState = positionYTrapezoidProfile.calculate(loopTimer.get(), previousPositionYState, new State(0,0));
+    double positionYPIDOutput = positionYController.calculate(translationError.getY(), previousPositionYState.position);
 
     // double positionPIDOutput = positionController.calculate(translationErrorMagnitude, 0);
 
-    if(!atToleranceFromGoal()){
-      positionPIDOutput -= 0.05;
-    }
+    // if(!atToleranceFromGoal()){
+    //   positionPIDOutput -= 0.05;
+    // }
 
-    Translation2d translationSpeeds = new Translation2d(positionPIDOutput, angleToGoalPose);
+    if(!atTolerance){
 
-    if( (translationErrorMagnitude < 1 && translationError.getY() >0.02 ) && (goalType == GoalType.Reef_Left || goalType == GoalType.Reef_Right)){
-      translationSpeeds = new Translation2d(0, translationSpeeds.getY() * 2);
+      if(Math.abs(poseError.getX()) > 0.05){
+        positionXPIDOutput = Math.max(0.1, Math.abs(positionXPIDOutput)) * Math.signum(positionXPIDOutput);
+      }
+
+      if(Math.abs(poseError.getY()) > 0.05){
+        positionYPIDOutput = Math.max(0.1, Math.abs(positionYPIDOutput)) * Math.signum(positionYPIDOutput);
+
+      }
+
+
     }
+    
+
+
 
     double rotationPIDOutput = rotationController.calculate(poseError.getRotation().getRadians(), 0);
     
-    ChassisSpeeds rrSpeeds = new ChassisSpeeds(translationSpeeds.getX(),translationSpeeds.getY(), rotationPIDOutput);
+    ChassisSpeeds rrSpeeds = new ChassisSpeeds(positionXPIDOutput,positionYPIDOutput, rotationPIDOutput);
 
 
     drivetrain.setChassisSpeeds(rrSpeeds);

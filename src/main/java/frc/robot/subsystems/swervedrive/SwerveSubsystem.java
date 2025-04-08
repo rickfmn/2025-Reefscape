@@ -87,7 +87,7 @@ public class SwerveSubsystem extends SubsystemBase
   /**
    * AprilTag field layout.
    */
-  private final AprilTagFieldLayout aprilTagFieldLayout = Robot.aprilTagFieldLayout;
+  private final AprilTagFieldLayout aprilTagFieldLayout = Robot.aprilTagFieldLayout_SelectTags;
   // private final AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
 
