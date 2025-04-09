@@ -4,64 +4,95 @@
 
 package frc.robot.commands;
 
+import java.nio.channels.Pipe;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.ActiveDriveToPose.GoalType;
 import frc.robot.subsystems.CoolArm;
+import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.CoolArm.ArmAction;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoPickup extends Command {
-
   private CoolArm coolArm;
-  private SwerveSubsystem drivetrain;
+
   private Timer pickupTimer = new Timer();
-  
-  /** Creates a new AutoPickup. */
-  public AutoPickup(CoolArm arm,SwerveSubsystem swerve) {
+  private Timer coralSensorDebounceTimer = new Timer();
+  private Timer routineTimeoutTimer = new Timer();
+
+  private boolean hasCoral = false;
+  private boolean hadCoralInPickupBin = false;
+
+  /** Creates a new AutoCoralStationRoutine. */
+  public AutoPickup(CoolArm arm) {
+
     coolArm = arm;
-    drivetrain = swerve;
+
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(arm,swerve);
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     coolArm.SetArmAction(ArmAction.Travel);
-    pickupTimer.stop();
     pickupTimer.reset();
+    pickupTimer.stop();
+    routineTimeoutTimer.restart();
+    hasCoral = false;
+    hadCoralInPickupBin = false;
+    
+    //System.out.println("Do I have Coral? " + hasCoral);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
+
+    hasCoral = coralSensorDebounceTimer.hasElapsed(0.125);
+    
+
+    if(hasCoral || routineTimeoutTimer.hasElapsed(6)){
+      
+      if(!pickupTimer.isRunning())
+      {
+        coolArm.SetArmAction(ArmAction.Pickup);
+      }
+
+
+
+
+      pickupTimer.restart();
+
+      
+    }
 
     if(coolArm.HasCoralInPickupBin()){
-      
-      if(!pickupTimer.isRunning()){
-        
-      coolArm.SetArmAction(ArmAction.Pickup);
+      if(!hadCoralInPickupBin){
+        coralSensorDebounceTimer.restart();
       }
-      pickupTimer.restart();
     }
-
-    if(pickupTimer.isRunning()){
-      drivetrain.setChassisSpeeds(new ChassisSpeeds(1,0,0));
+    else{
+      coralSensorDebounceTimer.reset();
+      coralSensorDebounceTimer.stop();
     }
+    hadCoralInPickupBin = coolArm.HasCoralInPickupBin();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-
+    //System.out.println("done already" + interrupted);
+    System.out.println("Command was interrupted : " + routineTimeoutTimer.hasElapsed(8));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.25)) || pickupTimer.hasElapsed(2);
+    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.5)) || pickupTimer.hasElapsed(1) || routineTimeoutTimer.hasElapsed(8);
   }
 }

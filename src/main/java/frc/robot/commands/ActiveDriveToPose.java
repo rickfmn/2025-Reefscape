@@ -116,7 +116,7 @@ public class ActiveDriveToPose extends Command {
     previousPositionXState.velocity = -currentSpeeds.vxMetersPerSecond;//might need to be negative
 
     previousPositionYState.position = poseError.getY();
-    previousPositionYState.velocity = currentSpeeds.vyMetersPerSecond;//might need to be negative
+    previousPositionYState.velocity = -currentSpeeds.vyMetersPerSecond;//might need to be negative
 
     loopTimer.restart();
   }
@@ -128,39 +128,34 @@ public class ActiveDriveToPose extends Command {
     poseError = currentPose.minus(goalPose2d);
     Translation2d translationError = poseError.getTranslation();
 
-    Rotation2d angleToGoalPose = translationError.getAngle();
+    ChassisSpeeds currentSpeeds = drivetrain.getRobotVelocity();
 
-    //drivetrain.setChassisSpeeds(new ChassisSpeeds(-1 * translationError.getX(),-1 * translationError.getY(), -1 * poseError.getRotation().getRadians()));
 
-    // previousPositionState = positionTrapezoidProfile.calculate(loopTimer.get(), previousPositionState, new State(0,0));
+    // TrapezoidProfile.State currentPositionXState = new State(translationError.getX(), -currentSpeeds.vxMetersPerSecond);
+    
+    // TrapezoidProfile.State currentPositionYState = new State(translationError.getY(), -currentSpeeds.vyMetersPerSecond);
 
-    // double positionPIDOutput = positionController.calculate(translationErrorMagnitude, previousPositionState.position);
 
     previousPositionXState = positionXTrapezoidProfile.calculate(loopTimer.get(), previousPositionXState, new State(0,0));
-    double positionXPIDOutput = positionXController.calculate(translationError.getX(), previousPositionXState.position);
+    double positionXPIDOutput = positionXController.calculate(translationError.getX(), 0);
 
     previousPositionYState = positionYTrapezoidProfile.calculate(loopTimer.get(), previousPositionYState, new State(0,0));
-    double positionYPIDOutput = positionYController.calculate(translationError.getY(), previousPositionYState.position);
+    double positionYPIDOutput = positionYController.calculate(translationError.getY(), 0);
 
-    // double positionPIDOutput = positionController.calculate(translationErrorMagnitude, 0);
 
-    // if(!atToleranceFromGoal()){
-    //   positionPIDOutput -= 0.05;
+    // if(!atTolerance){
+
+    //   if(Math.abs(poseError.getX()) > 0.05){
+    //     positionXPIDOutput = Math.max(0.1, Math.abs(positionXPIDOutput)) * Math.signum(positionXPIDOutput);
+    //   }
+
+    //   if(Math.abs(poseError.getY()) > 0.05){
+    //     positionYPIDOutput = Math.max(0.1, Math.abs(positionYPIDOutput)) * Math.signum(positionYPIDOutput);
+
+    //   }
+
+
     // }
-
-    if(!atTolerance){
-
-      if(Math.abs(poseError.getX()) > 0.05){
-        positionXPIDOutput = Math.max(0.1, Math.abs(positionXPIDOutput)) * Math.signum(positionXPIDOutput);
-      }
-
-      if(Math.abs(poseError.getY()) > 0.05){
-        positionYPIDOutput = Math.max(0.1, Math.abs(positionYPIDOutput)) * Math.signum(positionYPIDOutput);
-
-      }
-
-
-    }
     
 
 
@@ -193,7 +188,7 @@ public class ActiveDriveToPose extends Command {
     
     }
     else{
-      return (Math.abs(angleError) < 1.0) && positionErrorMagnitude < 0.02;
+      return (Math.abs(angleError) < 1.0) && positionErrorMagnitude < 0.035;
     }
     
   }
@@ -209,7 +204,7 @@ public class ActiveDriveToPose extends Command {
     }
     atTolerance = nowAtTolerance;
 
-    return timeAtTolerance.hasElapsed(0.125);
+    return timeAtTolerance.hasElapsed(0.15);
   }
 
   // Returns true when the command should end.

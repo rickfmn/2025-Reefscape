@@ -61,7 +61,7 @@ public class Vision
   /**
    * Ambiguity defined as a value between (0,1). Used in {@link Vision#filterPose}.
    */
-  private final       double              maximumAmbiguity                = 0.25;
+  private final       double              maximumAmbiguity                = VisionConstants.maximumPoseAmbiguity;
   /**
    * Photon Vision Simulation
    */
@@ -601,8 +601,13 @@ public class Vision
       Optional<EstimatedRobotPose> visionEst = Optional.empty();
       for (var change : resultsList)
       {
-        visionEst = poseEstimator.update(change);
+        PhotonTrackedTarget bestTarget = change.getBestTarget();
+        
+        if(bestTarget != null && bestTarget.getPoseAmbiguity() < VisionConstants.maximumPoseAmbiguity){
+          visionEst = poseEstimator.update(change);
+        }
         updateEstimationStdDevs(visionEst, change.getTargets());
+
         
       }
       estimatedRobotPose = visionEst;

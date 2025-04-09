@@ -212,13 +212,15 @@ public class RobotContainer
     NamedCommands.registerCommand("AutoAlign R", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Right));
     NamedCommands.registerCommand("AutoAlign L", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Left));
     NamedCommands.registerCommand("AutoAlign Algae",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
+    
+    NamedCommands.registerCommand("AutoAlign Station",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Coral_Station));
 
 
     NamedCommands.registerCommand("Place", new AutoPlace(coolArm, drivebase, false));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
-    NamedCommands.registerCommand("AutoPickup", new AutoPickup(coolArm,drivebase));
-    NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
-    NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
+    NamedCommands.registerCommand("AutoPickup", new AutoPickup( coolArm));
+    //NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
+    //NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
 
     
     NamedCommands.registerCommand("Travel Setpoint", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));

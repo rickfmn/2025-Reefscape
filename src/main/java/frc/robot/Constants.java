@@ -77,6 +77,9 @@ public final class Constants
   }
 
   public static final class VisionConstants {
+
+    public static final double maximumPoseAmbiguity = 0.35;
+
     public static final Translation3d KAprilCamL = new Translation3d(Units.inchesToMeters(8), Units.inchesToMeters(9.5), Units.inchesToMeters(13.23));
     public static final Translation3d KAprilCamR = new Translation3d(Units.inchesToMeters(8), Units.inchesToMeters(-9.875), Units.inchesToMeters(13.23));
     //public static final Translation3d KAprilCamFromGyro = new Translation3d(0, 0, 0);
