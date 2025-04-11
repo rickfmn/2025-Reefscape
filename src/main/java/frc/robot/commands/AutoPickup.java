@@ -87,12 +87,11 @@ public class AutoPickup extends Command {
   @Override
   public void end(boolean interrupted) {
     //System.out.println("done already" + interrupted);
-    System.out.println("Command was interrupted : " + routineTimeoutTimer.hasElapsed(8));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.5)) || pickupTimer.hasElapsed(1) || routineTimeoutTimer.hasElapsed(8);
+    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.25)) || pickupTimer.hasElapsed(0.5) || routineTimeoutTimer.hasElapsed(6);
   }
 }

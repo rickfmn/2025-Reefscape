@@ -5,168 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Arm L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Far Processer Side to Reef"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Arm L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlign L"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Place"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPickup"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Far to Processer Side Station"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AutoAlign Station"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Arm L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Processer Side Station to Close"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Arm L4"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoAlign L"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Place"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AutoPickup"
-                }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "Close to Processer Side Station"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "AutoAlign Station"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Arm L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Processer Side Station to Close"
-          }
-        },
-        {
           "type": "sequential",
           "data": {
             "commands": [
@@ -180,6 +18,81 @@
                 "type": "named",
                 "data": {
                   "name": "AutoAlign R"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Place"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoPickup"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "Non-Processer Center to Side Station Sneak"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign Station"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Non-Processer Side Station to Center"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Arm L4"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AutoAlign L"
                 }
               },
               {
