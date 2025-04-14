@@ -145,6 +145,17 @@ public class Climber extends SubsystemBase {
     }
   }
 
+  public void PrepareOrClimb(){
+    if(currentState == ClimbState.Prepared || currentState == ClimbState.Climbing){
+      System.out.println("climbing");
+      Climb();
+    }
+    else{
+      System.out.println("preparing");
+      Prepare();
+    }
+  }
+
   //go to the position for the coral intake mode
   public void Best(){
     currentState = ClimbState.Best;

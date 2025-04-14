@@ -259,30 +259,35 @@ public class RobotContainer
 
     driverJoystick.button(13).onTrue(Commands.runOnce(drivebase::zeroGyro));
 
-    driverJoystick.button(12).whileTrue(new AutoCoralStationRoutine(drivebase, signalLights, coolArm));
-
     // driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
     // driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
     driverJoystick.button(4).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Right));
     driverJoystick.button(3).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Left));
+    driverJoystick.trigger().whileTrue(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
     
     
-    driverJoystick.button(7).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
+    driverJoystick.button(12).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
     // Command autoAim = drivebase.aimAtSpeaker(5);
     // autoAim.addRequirements(drivebase);
     // driverJoystick.button(3).whileTrue(autoAim);
 
-    driverJoystick.button(5).whileTrue(new LevelOneScoring(coolArm, climber));
-    driverJoystick.button(10).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
-    driverJoystick.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
-    driverJoystick.button(9).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
+    driverJoystick.povUp().whileTrue(new LevelOneScoring(coolArm, climber));
+    driverJoystick.povLeft().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
+    driverJoystick.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
-    driverJoystick.trigger().whileTrue(driveFieldOrientedAnglularVelocityPrecise);
+    driverJoystick.button(8).whileTrue(driveFieldOrientedAnglularVelocityPrecise);
 
-    driverJoystick.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    driverJoystick.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     
-    driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
+
+    driverJoystick.button(7).onTrue(new InstantCommand(() -> climber.PrepareOrClimb()));
+
+    
+    driverJoystick.button(9).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake()));
+    driverJoystick.button(10).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake()));
 
     // driverJoystick.button(14).whileTrue(new ActiveDriveToReefPose(drivebase));
     
