@@ -39,6 +39,7 @@ import frc.robot.commands.AutoPlace;
 import frc.robot.commands.AutonomousPlace;
 import frc.robot.commands.CenterAlgaeAuto;
 import frc.robot.commands.DynamicCommand;
+import frc.robot.commands.HoldingCoral;
 import frc.robot.commands.LevelOneScoring;
 import frc.robot.commands.ActiveDriveToPose.GoalType;
 import frc.robot.subsystems.AlgaeIntake;
@@ -201,6 +202,8 @@ public class RobotContainer
 
 
     Shuffleboard.getTab("Game HUD").add(autoSelector).withSize(2,1);
+    
+    Shuffleboard.getTab("Debug 2").addBoolean("Holding Coral in Gripper", coolArm::HasCoralInGripper);
   }
 
 
@@ -214,7 +217,8 @@ public class RobotContainer
     NamedCommands.registerCommand("AutoAlign Algae",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
     
     NamedCommands.registerCommand("AutoAlign Station",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Coral_Station));
-
+    
+    NamedCommands.registerCommand("WhileHoldingCoral", new HoldingCoral(coolArm));
 
     NamedCommands.registerCommand("Place", new AutoPlace(coolArm, drivebase, false));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));

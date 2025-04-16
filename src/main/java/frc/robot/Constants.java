@@ -128,7 +128,7 @@ public final class Constants
     
     public static final double INTAKE_DEPLOY_ANGLE = 0.5;
 
-    public static final double kINTAKE_SPEED = 3;
+    public static final double kINTAKE_SPEED = 6;
     public static final double kHOLD_SPEED = 0.5;
     public static final double kOUTTAKE_SPEED = -3;
 

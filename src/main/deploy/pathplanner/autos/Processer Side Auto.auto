@@ -17,25 +17,56 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Arm L4"
+                  "name": "WhileHoldingCoral"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoAlign L"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Place"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Arm L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Place"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Arm L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Place"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -92,25 +123,56 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Arm L4"
+                  "name": "WhileHoldingCoral"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoAlign L"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Place"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Arm L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Place"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Arm L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Place"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -167,25 +229,56 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Arm L4"
+                  "name": "WhileHoldingCoral"
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "AutoAlign R"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Place"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Arm L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Place"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Arm L4"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AutoAlign L"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Place"
+                      }
+                    }
+                  ]
                 }
               }
             ]

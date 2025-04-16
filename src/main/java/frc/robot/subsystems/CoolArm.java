@@ -59,6 +59,9 @@ public class CoolArm extends SubsystemBase {
   private SparkLimitSwitch raiseLimitSwitch = elevatorMotor.getReverseLimitSwitch();
   private SparkLimitSwitch lowerLimitSwitch = elevatorMotor.getForwardLimitSwitch();
 
+  
+  private SparkLimitSwitch coralGripperSensor = angleMotor.getForwardLimitSwitch();
+
   private DigitalInput coralPickupSensor = new DigitalInput(CoolArmConstants.kSensorID);
 
   private int pickupRetryCounter = 0;
@@ -343,6 +346,10 @@ public class CoolArm extends SubsystemBase {
 
   public boolean HasCoralInPickupBin(){
     return !coralPickupSensor.get();
+  }
+
+  public boolean HasCoralInGripper(){
+    return coralGripperSensor.isPressed();
   }
 
   public void DoAction(CommandJoystick copilotController) {
