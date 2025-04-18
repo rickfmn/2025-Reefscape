@@ -49,6 +49,12 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
                       "type": "named",
                       "data": {
                         "name": "Arm L4"
@@ -101,25 +107,25 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pickup Coral"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Arm L3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Processer Side Station to Close"
           }
         },
         {
@@ -155,6 +161,12 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
                       "type": "named",
                       "data": {
                         "name": "Arm L4"
@@ -176,6 +188,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Arm L3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Processer Side Station to Close"
           }
         },
         {
@@ -195,7 +219,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "Close to Processer Side Station"
+                        "pathName": "Far to Processer Side Station"
                       }
                     },
                     {
@@ -207,7 +231,19 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 2.0
+                        "waitTime": 0.25
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Pickup Coral"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
                       }
                     }
                   ]
@@ -258,6 +294,12 @@
                       "type": "named",
                       "data": {
                         "name": "Place"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.25
                       }
                     },
                     {

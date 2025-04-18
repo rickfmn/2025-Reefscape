@@ -61,6 +61,7 @@ public class CoolArm extends SubsystemBase {
 
   
   private SparkLimitSwitch coralGripperSensor = angleMotor.getForwardLimitSwitch();
+  private Timer coralGripperDebounceTimer = new Timer();
 
   private DigitalInput coralPickupSensor = new DigitalInput(CoolArmConstants.kSensorID);
 
@@ -104,11 +105,22 @@ public class CoolArm extends SubsystemBase {
     SmartDashboard.putData(armPIDController);
     SmartDashboard.putData(elevatorPIDController);
     
+    coralGripperDebounceTimer.reset();
+    coralGripperDebounceTimer.stop();
+    
     
   }
 
   @Override
   public void periodic() {
+    if(CoralGripperSensorBlocked() && !coralGripperDebounceTimer.isRunning()){
+      coralGripperDebounceTimer.restart();
+    }
+    else if(!CoralGripperSensorBlocked()){
+      coralGripperDebounceTimer.stop();
+      coralGripperDebounceTimer.reset();
+    }
+
     // This method will be called once per scheduler run
     double absAngle = absAngleEncoder.getPosition();
     //signalLights.ReceiveArmAction(currentAction);
@@ -349,6 +361,10 @@ public class CoolArm extends SubsystemBase {
   }
 
   public boolean HasCoralInGripper(){
+    return coralGripperDebounceTimer.hasElapsed(0.06);
+  }
+
+  public boolean CoralGripperSensorBlocked(){
     return coralGripperSensor.isPressed();
   }
 

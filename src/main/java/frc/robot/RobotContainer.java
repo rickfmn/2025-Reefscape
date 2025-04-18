@@ -6,10 +6,7 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -20,7 +17,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -28,17 +24,12 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.DrivebaseConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.ActiveDriveToPose;
-import frc.robot.commands.AutoAutoCommand;
-import frc.robot.commands.AutoCoralStationRoutine;
 import frc.robot.commands.AutoPickup;
 import frc.robot.commands.AutoPlace;
-import frc.robot.commands.AutonomousPlace;
-import frc.robot.commands.CenterAlgaeAuto;
-import frc.robot.commands.DynamicCommand;
+import frc.robot.commands.AutonomousPickupRoutine;
+import frc.robot.commands.AutonomousScoreRoutine;
 import frc.robot.commands.HoldingCoral;
 import frc.robot.commands.LevelOneScoring;
 import frc.robot.commands.ActiveDriveToPose.GoalType;
@@ -223,6 +214,10 @@ public class RobotContainer
     NamedCommands.registerCommand("Place", new AutoPlace(coolArm, drivebase, false));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup( coolArm));
+
+    NamedCommands.registerCommand("Score L", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left));
+    NamedCommands.registerCommand("Score R", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right));
+    NamedCommands.registerCommand("Station Routine", new AutonomousPickupRoutine(coolArm, signalLights, drivebase));
     //NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
     //NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
 
@@ -267,7 +262,7 @@ public class RobotContainer
     // driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
     driverJoystick.button(4).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Right));
     driverJoystick.button(3).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Left));
-    driverJoystick.trigger().whileTrue(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
+    driverJoystick.button(8).whileTrue(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
     
     
     driverJoystick.button(12).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
@@ -280,9 +275,9 @@ public class RobotContainer
     driverJoystick.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
-    driverJoystick.button(8).whileTrue(driveFieldOrientedAnglularVelocityPrecise);
+    driverJoystick.button(6).whileTrue(driveFieldOrientedAnglularVelocityPrecise);
 
-    driverJoystick.button(6).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
+    driverJoystick.trigger().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     
     driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
@@ -470,9 +465,7 @@ public class RobotContainer
     
     autoSelector.addOption("Simple L1", simpleL1Auto);
 
-    autoSelector.addOption("Auto Auto Command", new AutoAutoCommand(drivebase, signalLights, coolArm,true));
-    
-    autoSelector.addOption("Auto Auto Command - No Algae", new AutoAutoCommand(drivebase, signalLights, coolArm,false));
+
     
     // autoSelector.addOption("Center Algae Removal", new CenterAlgaeAuto(drivebase, signalLights, coolArm, true));
 

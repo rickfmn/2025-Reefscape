@@ -92,6 +92,6 @@ public class AutoPickup extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.25)) || pickupTimer.hasElapsed(0.5) || routineTimeoutTimer.hasElapsed(6) || coolArm.HasCoralInGripper();
+    return (!coolArm.HasCoralInPickupBin() && pickupTimer.hasElapsed(0.25)) || pickupTimer.hasElapsed(0.5) || routineTimeoutTimer.hasElapsed(6) || (coolArm.HasCoralInGripper() && routineTimeoutTimer.hasElapsed(2));
   }
 }

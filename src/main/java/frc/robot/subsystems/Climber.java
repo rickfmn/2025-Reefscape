@@ -160,6 +160,7 @@ public class Climber extends SubsystemBase {
   public void Best(){
     currentState = ClimbState.Best;
     ReleaseServo();
+    
   }
 
   public void Level1Preparation(){
