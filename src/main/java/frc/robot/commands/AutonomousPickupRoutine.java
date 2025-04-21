@@ -34,7 +34,8 @@ public class AutonomousPickupRoutine extends SequentialCommandGroup {
         
         new ParallelDeadlineGroup(
           new SequentialCommandGroup(
-            new WaitForCoralInPickupBin(arm),
+            new ParallelRaceGroup(new WaitForCoralInPickupBin(arm),new WaitCommand(0.5)),
+            
             new InstantCommand(()-> arm.SetArmAction(ArmAction.Pickup),arm),
             new WaitCommand(0.25)
             ),
