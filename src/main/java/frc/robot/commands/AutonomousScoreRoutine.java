@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.ActiveDriveToPose.GoalType;
@@ -27,12 +28,13 @@ public class AutonomousScoreRoutine extends ParallelDeadlineGroup {
       new InstantCommand(() -> arm.SetArmAction(ArmAction.L4)),
       new ActiveDriveToPose(drive, lights, true, leftOrRight),
       new AutoPlace(arm, drive, false),
+      
       new WaitCommand(0.25),
       new InstantCommand(() -> arm.SetArmAction(ArmAction.L4)),
       new ActiveDriveToPose(drive, lights, true, leftOrRight),
-      new AutoPlace(arm, drive, false),
+      new AutoPlace(arm, drive, false)
 
-      new InstantCommand(()->arm.SetArmAction(ArmAction.Travel))
+      
       
     )
     );

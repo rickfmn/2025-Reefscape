@@ -279,7 +279,8 @@ public class RobotContainer
 
     driverJoystick.trigger().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     
-    driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    //driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
+    driverJoystick.button(5).onTrue(new AutoPickup(coolArm));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
 
     driverJoystick.button(7).onTrue(new InstantCommand(() -> climber.PrepareOrClimb()));

@@ -69,6 +69,18 @@
           "data": {
             "name": "Score R"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Close to Processer Side Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Station Routine"
+          }
         }
       ]
     }

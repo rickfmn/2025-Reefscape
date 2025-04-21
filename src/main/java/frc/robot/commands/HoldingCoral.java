@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.CoolArm;
+import frc.robot.subsystems.CoolArm.ArmAction;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class HoldingCoral extends Command {
@@ -32,7 +33,12 @@ public class HoldingCoral extends Command {
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    if(!interrupted){
+      coolArm.SetArmAction(ArmAction.Travel);
+    }
+    
+  }
 
   // Returns true when the command should end.
   @Override

@@ -34,17 +34,15 @@ public class AutonomousPickupRoutine extends SequentialCommandGroup {
         
         new ParallelDeadlineGroup(
           new SequentialCommandGroup(
+            new WaitForCoralInPickupBin(arm),
             new InstantCommand(()-> arm.SetArmAction(ArmAction.Pickup),arm),
             new WaitCommand(0.25)
             ),
           
             new ActiveDriveToPose(drive, lights, true, GoalType.Algae_Removal)
-          
-          
-          
-        
-        //new InstantCommand(()->arm.SetArmAction(ArmAction.L3))
-        )
+        ),
+
+        new InstantCommand(()->arm.SetArmAction(ArmAction.L4))
     );
         
 
