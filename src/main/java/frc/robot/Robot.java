@@ -100,23 +100,15 @@ public class Robot extends TimedRobot
     }
 
 
-    VisionConstants.kCoralStationPoses[0][0][0] = aprilTagFieldLayout_AllTags.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[0][0][1] = aprilTagFieldLayout_AllTags.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[0][0][2] = aprilTagFieldLayout_AllTags.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[0][0] = aprilTagFieldLayout_AllTags.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetLeft);
 
     
-    VisionConstants.kCoralStationPoses[0][1][0] = aprilTagFieldLayout_AllTags.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[0][1][1] = aprilTagFieldLayout_AllTags.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[0][1][2] = aprilTagFieldLayout_AllTags.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[0][1] = aprilTagFieldLayout_AllTags.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetRight);
 
     
-    VisionConstants.kCoralStationPoses[1][0][0] = aprilTagFieldLayout_AllTags.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[1][0][1] = aprilTagFieldLayout_AllTags.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[1][0][2] = aprilTagFieldLayout_AllTags.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[1][0] = aprilTagFieldLayout_AllTags.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetRight);
 
-    VisionConstants.kCoralStationPoses[1][1][0] = aprilTagFieldLayout_AllTags.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetLeft);
-    VisionConstants.kCoralStationPoses[1][1][1] = aprilTagFieldLayout_AllTags.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetCenter);
-    VisionConstants.kCoralStationPoses[1][1][2] = aprilTagFieldLayout_AllTags.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetRight);
+    VisionConstants.kCoralStationPoses[1][1] = aprilTagFieldLayout_AllTags.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetLeft);
 
     
 

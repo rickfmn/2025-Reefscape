@@ -676,14 +676,14 @@ public class SwerveSubsystem extends SubsystemBase
     int upperLowerStation = 0;//by default go to the station closer to the x axis
     if(robotPose.getY() > Constants.REEF_POSE3D_BLUE.getY()){
       upperLowerStation = 1;
-      position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
+      //position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
     }
     
 
     
 
 
-    return VisionConstants.kCoralStationPoses[redBlue][upperLowerStation][position].toPose2d();
+    return VisionConstants.kCoralStationPoses[redBlue][upperLowerStation].toPose2d();
     //return VisionConstants.kCoralStationPoses[0][2][1].toPose2d();
   }
 

@@ -280,7 +280,7 @@ public class RobotContainer
     driverJoystick.trigger().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Place)));
     
     //driverJoystick.button(5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
-    driverJoystick.button(5).onTrue(new AutoPickup(coolArm));
+    driverJoystick.button(5).whileTrue(new AutoPickup(coolArm));
     driverJoystick.button(2).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
 
     driverJoystick.button(7).onTrue(new InstantCommand(() -> climber.PrepareOrClimb()));
@@ -433,12 +433,9 @@ public class RobotContainer
   public Command driveToBestCoralStationAutonomous(){
     //the position is 0 for closest to driver station, 1 for centered, and 2 for farthest away from driverstation
     //the flipping needed to be done to account for upper or lower station is handled in getBestCoralStationByPose
-    int position = 2;
-    if(position > 2){
-      position = 2;
-    }
+    
 
-    Pose2d goalPose = drivebase.getBestCoralStationByPose(position);
+    Pose2d goalPose = drivebase.getBestCoralStationByPose(0);
 
     if(goalPose == null){
       System.out.println("Oh no, It looks like you didn't see anything");
