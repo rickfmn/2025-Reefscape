@@ -184,7 +184,7 @@ public final class Constants
     public static final int FOLLOWER_MOTOR_ID = 18;
     
     //Prep angle
-    public static final double CLIMB_PANGLE = 290.0;
+    public static final double CLIMB_PANGLE = 280.0;//290
     //Stiction angle
     public static final double CLIMB_VANGLE = 232.0;
     //Finish angle
