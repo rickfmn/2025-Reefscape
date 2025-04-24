@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -22,14 +23,15 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutonomousPickupRoutine extends SequentialCommandGroup {
   /** Creates a new AutonomousPickupRoutine. */
-  public AutonomousPickupRoutine(CoolArm arm,SignalLights lights, SwerveSubsystem drive) {
+  public AutonomousPickupRoutine(CoolArm arm,SignalLights lights, SwerveSubsystem drive, boolean isSneaking) {
     // Add the deadline command in the super() call. Add other commands using
-    // addCommands().
+    // addCommands()
+
     super(
       
   
         new InstantCommand(()-> arm.SetArmAction(ArmAction.Travel),arm),
-        new ActiveDriveToPose(drive, lights, true, GoalType.Coral_Station),
+        new ActiveDriveToPose(drive, lights, true, isSneaking ? GoalType.Coral_Station_SNEAK : GoalType.Coral_Station_Normal),
         new WaitCommand(0.25),
         
         new ParallelDeadlineGroup(
@@ -40,7 +42,7 @@ public class AutonomousPickupRoutine extends SequentialCommandGroup {
             new WaitCommand(0.25)
             ),
           
-            new ActiveDriveToPose(drive, lights, true, GoalType.Algae_Removal)
+            ( isSneaking ? new RunCommand(() -> drive.drive(new ChassisSpeeds(1,-1,0))) : new ActiveDriveToPose(drive, lights, true, GoalType.Algae_Removal) )
         ),
 
         new InstantCommand(()->arm.SetArmAction(ArmAction.L4))

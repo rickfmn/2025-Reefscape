@@ -20,17 +20,17 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutonomousScoreRoutine extends ParallelDeadlineGroup {
   /** Creates a new AutonomousScoreRoutine. */
-  public AutonomousScoreRoutine(CoolArm arm,SwerveSubsystem drive, SignalLights lights, GoalType leftOrRight) {
+  public AutonomousScoreRoutine(CoolArm arm,SwerveSubsystem drive, SignalLights lights, GoalType leftOrRight,ArmAction level) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
     super(new HoldingCoral(arm),
     new SequentialCommandGroup(
-      new InstantCommand(() -> arm.SetArmAction(ArmAction.L4)),
+      new InstantCommand(() -> arm.SetArmAction(level)),
       new ActiveDriveToPose(drive, lights, true, leftOrRight),
       new AutoPlace(arm, drive, false),
       
       new WaitCommand(0.25),
-      new InstantCommand(() -> arm.SetArmAction(ArmAction.L4)),
+      new InstantCommand(() -> arm.SetArmAction(level)),
       new ActiveDriveToPose(drive, lights, true, leftOrRight),
       new AutoPlace(arm, drive, false)
 

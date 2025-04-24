@@ -112,6 +112,16 @@ public class Robot extends TimedRobot
 
     
 
+    VisionConstants.kCoralStationPosesSneak[0][0] = aprilTagFieldLayout_AllTags.getTagPose(12).get().transformBy(VisionConstants.coralStationOffsetRight);
+
+    VisionConstants.kCoralStationPosesSneak[0][1] = aprilTagFieldLayout_AllTags.getTagPose(13).get().transformBy(VisionConstants.coralStationOffsetLeft);
+
+    VisionConstants.kCoralStationPosesSneak[1][0] = aprilTagFieldLayout_AllTags.getTagPose(1).get().transformBy(VisionConstants.coralStationOffsetLeft);
+
+    VisionConstants.kCoralStationPosesSneak[1][1] = aprilTagFieldLayout_AllTags.getTagPose(2).get().transformBy(VisionConstants.coralStationOffsetRight);
+
+    
+
 
     updateAlliance();
     // VisionConstants.kReefGoalPoses[16][0] = fieldLayout.getTagPose(16).get().transformBy(rightOffset);

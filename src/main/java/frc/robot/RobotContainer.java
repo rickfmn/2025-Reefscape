@@ -207,7 +207,7 @@ public class RobotContainer
     NamedCommands.registerCommand("AutoAlign L", new ActiveDriveToPose(drivebase,signalLights, true,GoalType.Reef_Left));
     NamedCommands.registerCommand("AutoAlign Algae",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
     
-    NamedCommands.registerCommand("AutoAlign Station",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Coral_Station));
+    NamedCommands.registerCommand("AutoAlign Station",  new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Coral_Station_Normal));
     
     NamedCommands.registerCommand("WhileHoldingCoral", new HoldingCoral(coolArm));
 
@@ -215,9 +215,16 @@ public class RobotContainer
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup( coolArm));
 
-    NamedCommands.registerCommand("Score L", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left));
-    NamedCommands.registerCommand("Score R", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right));
-    NamedCommands.registerCommand("Station Routine", new AutonomousPickupRoutine(coolArm, signalLights, drivebase));
+    NamedCommands.registerCommand("Score L", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L4));
+    NamedCommands.registerCommand("Score R", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L4));
+
+    
+    NamedCommands.registerCommand("Score L L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2));
+    NamedCommands.registerCommand("Score R L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2));
+
+    NamedCommands.registerCommand("Station Routine", new AutonomousPickupRoutine(coolArm, signalLights, drivebase,false));
+    
+    NamedCommands.registerCommand("Station Routine Sneaky", new AutonomousPickupRoutine(coolArm, signalLights, drivebase,true));
     //NamedCommands.registerCommand("AutoCoralStation", new DynamicCommand(this::driveToBestCoralStationAutonomous));
     //NamedCommands.registerCommand("AutoBackupFromReef", new DynamicCommand(drivebase::BackupFromReefAutonomous));
 

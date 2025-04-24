@@ -105,6 +105,9 @@ public final class Constants
     public static final Transform3d coralStationOffsetCenter = new Transform3d(Units.inchesToMeters(18), Units.inchesToMeters(0), Units.inchesToMeters(12),new Rotation3d(0, 0, 0));
 
     public static final Pose3d[][] kCoralStationPoses = new Pose3d[2][2];
+
+    
+    public static final Pose3d[][] kCoralStationPosesSneak = new Pose3d[2][2];
     
     
     

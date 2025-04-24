@@ -28,7 +28,8 @@ public class ActiveDriveToPose extends Command {
   public enum GoalType {
     Reef_Right,
     Reef_Left,
-    Coral_Station,
+    Coral_Station_Normal,
+    Coral_Station_SNEAK,
     Algae_Removal
   }
 
@@ -80,7 +81,7 @@ public class ActiveDriveToPose extends Command {
     rotationController.enableContinuousInput(-Math.PI, Math.PI);
     // Use addRequirements() here to declare subsystem dependencies.
     
-    if( !(inAutonomous && (goalType == GoalType.Coral_Station)) ){
+    if( !(inAutonomous && (goalType == GoalType.Coral_Station_Normal || goalType == GoalType.Coral_Station_SNEAK)) ){
       addRequirements(swerveSubsystem);
     }
     
@@ -98,8 +99,11 @@ public class ActiveDriveToPose extends Command {
     if(goalType == GoalType.Reef_Left || goalType == GoalType.Reef_Right){
       goalPose2d = drivetrain.getBestReefTargetByPose(isRight ? 1: 0);
     }
-    else if (goalType == GoalType.Coral_Station){
+    else if (goalType == GoalType.Coral_Station_Normal){
       goalPose2d = drivetrain.getBestCoralStationByPose(0);
+    }
+    else if (goalType == GoalType.Coral_Station_SNEAK){
+      goalPose2d = drivetrain.getBestCoralStationByPoseSNEAK();
     }
     else{
       goalPose2d = drivetrain.getBestAlgaeRemovalTargetByPose();
@@ -183,7 +187,7 @@ public class ActiveDriveToPose extends Command {
     double positionErrorMagnitude = poseError.getTranslation().getDistance(Translation2d.kZero);
     
 
-    if(goalType == GoalType.Coral_Station){
+    if(goalType == GoalType.Coral_Station_Normal || goalType == GoalType.Coral_Station_SNEAK){
       return (Math.abs(angleError) < 10.0) && positionErrorMagnitude < 0.20;
     
     }
@@ -204,7 +208,7 @@ public class ActiveDriveToPose extends Command {
     }
     atTolerance = nowAtTolerance;
 
-    return timeAtTolerance.hasElapsed(0.15);
+    return timeAtTolerance.hasElapsed(0.1);
   }
 
   // Returns true when the command should end.
@@ -216,7 +220,7 @@ public class ActiveDriveToPose extends Command {
     signalLights.autoAligned = aligned;
 
     if(inAuto){
-      if(goalType == GoalType.Coral_Station){
+      if(goalType == GoalType.Coral_Station_Normal || goalType == GoalType.Coral_Station_SNEAK){
         return atTolerance;
       }
       return aligned;
