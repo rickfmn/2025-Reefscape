@@ -27,12 +27,12 @@ public class AutonomousScoreRoutine extends ParallelDeadlineGroup {
     new SequentialCommandGroup(
       new InstantCommand(() -> arm.SetArmAction(level)),
       new ActiveDriveToPose(drive, lights, true, leftOrRight),
-      new AutoPlace(arm, drive, false),
+      new AutoPlace(arm,lights, drive, false,false),
       
       new WaitCommand(0.25),
       new InstantCommand(() -> arm.SetArmAction(level)),
       new ActiveDriveToPose(drive, lights, true, leftOrRight),
-      new AutoPlace(arm, drive, false)
+      new AutoPlace(arm,lights, drive, false,false)
 
       
       

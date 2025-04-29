@@ -211,7 +211,7 @@ public class RobotContainer
     
     NamedCommands.registerCommand("WhileHoldingCoral", new HoldingCoral(coolArm));
 
-    NamedCommands.registerCommand("Place", new AutoPlace(coolArm, drivebase, false));
+    NamedCommands.registerCommand("Place", new AutoPlace(coolArm,signalLights, drivebase, false,false));
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup( coolArm));
 
