@@ -8,7 +8,9 @@ package frc.robot.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.ActiveDriveToPose.GoalType;
 import frc.robot.subsystems.CoolArm;
+import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.CoolArm.ArmAction;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -19,11 +21,16 @@ public class AutoPlace extends Command {
   private SwerveSubsystem swerveSubsystem;
   private Timer backupDelayTimer = new Timer();
   private boolean algaeRemoval = false;
+  private boolean toStationNonProcessor = false;
+
+  private Command autoStationDrive;
   /** Creates a new AutoPlace. */
-  public AutoPlace(CoolArm arm, SwerveSubsystem swerve,boolean attemptAlgaeRemoval) {
+  public AutoPlace(CoolArm arm, SignalLights lights, SwerveSubsystem swerve,boolean attemptAlgaeRemoval,boolean autoStationNonProcessor) {
     coolArm = arm;
     swerveSubsystem = swerve;
     algaeRemoval = attemptAlgaeRemoval;
+    toStationNonProcessor =  autoStationNonProcessor;
+    autoStationDrive = new ActiveDriveToPose(swerve, lights, true, GoalType.Coral_Station_NonProcesser);
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(arm,swerve);
   }
@@ -33,19 +40,31 @@ public class AutoPlace extends Command {
   public void initialize() {
     coolArm.SetArmAction(ArmAction.Place);
     backupDelayTimer.restart();
-    driveReverse();
+    if(!toStationNonProcessor){
+      driveReverse();
+    }
+    
     
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    driveReverse();
+    if(!toStationNonProcessor){
+      driveReverse();
+    }
+    else if(backupDelayTimer.hasElapsed(0.25) && !autoStationDrive.isScheduled()){
+      autoStationDrive.schedule();
+    }
+    
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    autoStationDrive.cancel();
+  }
 
   // Returns true when the command should end.
   @Override

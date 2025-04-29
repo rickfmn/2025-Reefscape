@@ -30,6 +30,7 @@ public class ActiveDriveToPose extends Command {
     Reef_Left,
     Coral_Station_Normal,
     Coral_Station_SNEAK,
+    Coral_Station_NonProcesser,
     Algae_Removal
   }
 
@@ -104,6 +105,9 @@ public class ActiveDriveToPose extends Command {
     }
     else if (goalType == GoalType.Coral_Station_SNEAK){
       goalPose2d = drivetrain.getBestCoralStationByPoseSNEAK();
+    }
+    else if (goalType == GoalType.Coral_Station_NonProcesser){
+      goalPose2d = drivetrain.getNonProcesserSideStation();
     }
     else{
       goalPose2d = drivetrain.getBestAlgaeRemovalTargetByPose();

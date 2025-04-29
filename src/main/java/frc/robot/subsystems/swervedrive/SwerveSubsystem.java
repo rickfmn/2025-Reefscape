@@ -678,10 +678,21 @@ public class SwerveSubsystem extends SubsystemBase
       upperLowerStation = 1;
       //position = 2-position;//flip the order of the positions, see driveToBestCoralStation in RobotContainer for more details
     }
-    
 
-    
+    return VisionConstants.kCoralStationPoses[redBlue][upperLowerStation].toPose2d();
+    //return VisionConstants.kCoralStationPoses[0][2][1].toPose2d();
+  }
 
+  public Pose2d getNonProcesserSideStation(){
+
+    int redBlue = 0;
+    int upperLowerStation = 1;
+    
+    if(Robot.isRedAlliance){
+      redBlue = 1;
+      upperLowerStation = 0;
+    }
+    
 
     return VisionConstants.kCoralStationPoses[redBlue][upperLowerStation].toPose2d();
     //return VisionConstants.kCoralStationPoses[0][2][1].toPose2d();
