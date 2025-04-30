@@ -73,7 +73,7 @@ public class AutoPlace extends Command {
   }
 
   public void driveReverse(){
-    if(algaeRemoval ? backupDelayTimer.hasElapsed(0.75) : backupDelayTimer.hasElapsed(0.25)){
+    if(algaeRemoval ? backupDelayTimer.hasElapsed(0.75) : backupDelayTimer.hasElapsed(0.25) ){
       if(algaeRemoval){
         swerveSubsystem.setChassisSpeeds(new ChassisSpeeds(-2,1,0.25));
 

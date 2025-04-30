@@ -215,12 +215,17 @@ public class RobotContainer
     NamedCommands.registerCommand("Pickup Coral", new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
     NamedCommands.registerCommand("AutoPickup", new AutoPickup( coolArm));
 
-    NamedCommands.registerCommand("Score L", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L4));
-    NamedCommands.registerCommand("Score R", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L4));
-
+    NamedCommands.registerCommand("Score L", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L4,false));
+    NamedCommands.registerCommand("Score R", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L4,false));
     
-    NamedCommands.registerCommand("Score L L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2));
-    NamedCommands.registerCommand("Score R L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2));
+    NamedCommands.registerCommand("Score L L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2,false));
+    NamedCommands.registerCommand("Score R L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2,false));
+
+    NamedCommands.registerCommand("Score L Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L4,false));
+    NamedCommands.registerCommand("Score R Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L4,false));
+    
+    NamedCommands.registerCommand("Score L L2 Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2,false));
+    NamedCommands.registerCommand("Score R L2 Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2,false));
 
     NamedCommands.registerCommand("Station Routine", new AutonomousPickupRoutine(coolArm, signalLights, drivebase,false));
     
@@ -277,7 +282,7 @@ public class RobotContainer
     // autoAim.addRequirements(drivebase);
     // driverJoystick.button(3).whileTrue(autoAim);
 
-    driverJoystick.povUp().whileTrue(new LevelOneScoring(coolArm, climber));
+    driverJoystick.povUp().whileTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
     driverJoystick.povLeft().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     driverJoystick.povRight().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     driverJoystick.povDown().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
@@ -355,7 +360,7 @@ public class RobotContainer
 
     copilotSNESController.axisGreaterThan(0, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     copilotSNESController.axisLessThan(0, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
-    copilotSNESController.axisGreaterThan(4, 0.5).whileTrue(new LevelOneScoring(coolArm, climber));
+    copilotSNESController.axisGreaterThan(4, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
     copilotSNESController.axisLessThan(4, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
 
@@ -365,8 +370,7 @@ public class RobotContainer
   public void DoSelectedLevelPreparation(){
     ArmAction newAction = coolArm.currentAction;
     if(copilotBoxController.povUp().getAsBoolean()){
-      Command levelOne = new LevelOneScoring(coolArm, climber).onlyWhile(()->copilotBoxController.button(1).getAsBoolean());
-      levelOne.schedule();
+      newAction = ArmAction.L1;
     }    
     else if(copilotBoxController.povRight().getAsBoolean()){
       newAction = ArmAction.L2;

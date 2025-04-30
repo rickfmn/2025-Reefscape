@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score R"
+            "name": "Score R Sneaky"
           }
         },
         {
@@ -43,7 +43,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Score L"
+            "name": "Score L Sneaky"
           }
         },
         {
@@ -73,7 +73,13 @@
         {
           "type": "named",
           "data": {
-            "name": "Score L L2"
+            "name": "AutoAlign L"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Place"
           }
         }
       ]

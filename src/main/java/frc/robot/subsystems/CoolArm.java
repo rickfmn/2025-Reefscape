@@ -13,11 +13,13 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
+import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoolArmConstants;
 import frc.robot.subsystems.SignalLights.LightSignal;;
 
@@ -71,6 +73,12 @@ public class CoolArm extends SubsystemBase {
 
   public SignalLights signalLights;
 
+  private Servo m_servo = new Servo(CoolArmConstants.SERVO_ID);
+  private Timer servoTimer = new Timer();
+
+  private boolean isClearingCollisionCase = false;
+
+
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
   //   new SysIdRoutine.Config(Volts.of( 0.15 ).per(Units.Seconds), Volts.of(0.7), Seconds.of(10)),
   //   //new SysIdRoutine.Config(),
@@ -78,6 +86,8 @@ public class CoolArm extends SubsystemBase {
 
   /** Creates a new CoolArm. */
   public CoolArm(SignalLights lights) {
+    m_servo.setSpeed(1);
+    m_servo.setPosition(0.5);
     // Creates a SysIdRoutine
     signalLights = lights;
     Shuffleboard.getTab("Arm Sysid Testing").addDouble("Absolute Angle", absAngleEncoder::getPosition);
@@ -113,6 +123,14 @@ public class CoolArm extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    if( servoTimer.isRunning() && servoTimer.hasElapsed(1)){
+      servoTimer.stop();
+      servoTimer.reset();
+      m_servo.setPosition(0.5);
+      System.out.println("disabling servo");
+    }
+
     if(CoralGripperSensorBlocked() && !coralGripperDebounceTimer.isRunning()){
       coralGripperDebounceTimer.restart();
     }
@@ -131,24 +149,15 @@ public class CoolArm extends SubsystemBase {
 
     double anglePIDOutput = GetAnglePIDOutput(absAngle);
 
-    if(elevatorEncoder.getPosition() > CoolArmConstants.kMaxPickupBoxElevator && absAngle < CoolArmConstants.kMaxPickupBoxAngle){//if the elevator is above the travel position
-      if(anglePIDOutput > 0){
-        anglePIDOutput = 0;
+    if(isClearingCollisionCase){
+      angleSetpoint = CoolArmConstants.kTravelAngleSP;
+      elevatorSetpoint = CoolArmConstants.kTravelElevatorSP;
+      elevatorControlEnabled = true;
+      if(AtElevatorAndArmSetpoints())
+      {
+        isClearingCollisionCase = false;
+        SetArmAction(currentAction);
       }
-
-      if(currentAction == ArmAction.L1 || currentAction == ArmAction.L2){
-        SetElevatorSetpoint(CoolArmConstants.kTravelElevatorSP);
-      }
-      
-      //SetAngleMotor(armPIDController.calculate(absAngle,previousTrapezoidState.position ) + armFFController.calculate( ( (previousTrapezoidState.position - 180) / 180) * Math.PI, 0));
-    }
-    else if(absAngle > CoolArmConstants.kMaxPickupBoxAngle){
-      if(currentAction == ArmAction.L1){
-        SetElevatorSetpoint(CoolArmConstants.kL1PrepElevatorSP);
-      }else if (currentAction == ArmAction.L2){
-        SetElevatorSetpoint(CoolArmConstants.kL2PrepElevatorSP);
-      }
-      
     }
 
     //this if statement is to overcome the sticky part of the arm angle control to allow us to consistently place the arm angle on the magnet
@@ -228,10 +237,14 @@ public class CoolArm extends SubsystemBase {
     signalLights.ReceiveArmAction(newAction);
     signalLights.autoAligned = false;
 
+    if( (newAction == ArmAction.Pickup && Math.abs(elevatorEncoder.getPosition())  > Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && absAngleEncoder.getPosition() < CoolArmConstants.kMaxPickupBoxAngle) || (Math.abs(elevatorSetpoint) < Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && absAngleEncoder.getPosition() > CoolArmConstants.kMaxPickupBoxAngle && angleSetpoint < CoolArmConstants.kMaxPickupBoxAngle) || (absAngleEncoder.getPosition() < CoolArmConstants.kMaxPickupBoxAngle && Math.abs(elevatorSetpoint) > Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && angleSetpoint > CoolArmConstants.kMaxPickupBoxAngle)){
+      isClearingCollisionCase = true;
+    }
+
     switch(newAction){
       case L1:
         newAngleSP = CoolArmConstants.kL1PrepAngleSP;
-        newElevatorSP = CoolArmConstants.kTravelElevatorSP;
+        newElevatorSP = CoolArmConstants.kL1PrepElevatorSP;
 
         break;
       case L2:
@@ -258,6 +271,7 @@ public class CoolArm extends SubsystemBase {
           pickupRetryCounter = 0;
         }
         newSignal = LightSignal.loadMode;
+        ServoLoad();
         
         break;
       case Place:
@@ -266,8 +280,9 @@ public class CoolArm extends SubsystemBase {
         //newElevatorSP += CoolArmConstants.kPlaceElevatorSPChange;
         int ifCasesRan = 0;
         if(currentAction == ArmAction.L1){
-          newAngleSP = CoolArmConstants.kL2PrepAngleSP;
+          newAngleSP = angleSetpoint;
           newElevatorSP = elevatorSetpoint;
+          ServoEject();
         }
         else if(currentAction == ArmAction.L2){
           newAngleSP = CoolArmConstants.kPlaceAngleSP-10;
@@ -385,5 +400,17 @@ public class CoolArm extends SubsystemBase {
 
     SetArmAction(newAction);
 
+  }
+
+  public void ServoEject(){
+    m_servo.setPosition(1);
+    m_servo.setSpeed(1);
+    servoTimer.restart();
+  }
+
+  public void ServoLoad(){
+    m_servo.setPosition(0);
+    m_servo.setSpeed(-1);
+    servoTimer.restart();
   }
 }
