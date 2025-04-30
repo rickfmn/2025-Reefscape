@@ -23,7 +23,7 @@ public class AlgaeIntake extends SubsystemBase {
     Retracting
   }
 
-  private SparkFlex m_intakeMotor = new SparkFlex(AlgaeIntakeConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
+  //private SparkFlex m_intakeMotor = new SparkFlex(AlgaeIntakeConstants.INTAKE_MOTOR_ID, MotorType.kBrushless);
   private SparkMax m_angleMotor = new SparkMax(AlgaeIntakeConstants.ANGLE_MOTOR_ID, MotorType.kBrushless);
   private SparkLimitSwitch angleLimitSwitch = m_angleMotor.getReverseLimitSwitch();
   private RelativeEncoder m_angleEncoder = m_angleMotor.getEncoder();
@@ -98,7 +98,7 @@ public class AlgaeIntake extends SubsystemBase {
   }
 
   public void SetIntakeMotor(double voltage){
-    m_intakeMotor.setVoltage(voltage);
+    //m_intakeMotor.setVoltage(voltage);
   }
 
   public void StopIntake(){

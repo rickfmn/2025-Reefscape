@@ -237,7 +237,7 @@ public class CoolArm extends SubsystemBase {
     signalLights.ReceiveArmAction(newAction);
     signalLights.autoAligned = false;
 
-    if( (newAction == ArmAction.Pickup && Math.abs(elevatorEncoder.getPosition())  > Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && absAngleEncoder.getPosition() < CoolArmConstants.kMaxPickupBoxAngle) || (Math.abs(elevatorSetpoint) < Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && absAngleEncoder.getPosition() > CoolArmConstants.kMaxPickupBoxAngle && angleSetpoint < CoolArmConstants.kMaxPickupBoxAngle) || (absAngleEncoder.getPosition() < CoolArmConstants.kMaxPickupBoxAngle && Math.abs(elevatorSetpoint) > Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && angleSetpoint > CoolArmConstants.kMaxPickupBoxAngle)){
+    if( (newAction == ArmAction.Pickup && absAngleEncoder.getPosition() > CoolArmConstants.kMaxPickupBoxAngle) || (Math.abs(elevatorSetpoint) < Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && absAngleEncoder.getPosition() > CoolArmConstants.kMaxPickupBoxAngle && angleSetpoint < CoolArmConstants.kMaxPickupBoxAngle) || (absAngleEncoder.getPosition() < CoolArmConstants.kMaxPickupBoxAngle && Math.abs(elevatorSetpoint) > Math.abs(CoolArmConstants.kMaxPickupBoxElevator) && angleSetpoint > CoolArmConstants.kMaxPickupBoxAngle)){
       isClearingCollisionCase = true;
     }
 

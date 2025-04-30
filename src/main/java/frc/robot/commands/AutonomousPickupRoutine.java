@@ -42,7 +42,7 @@ public class AutonomousPickupRoutine extends SequentialCommandGroup {
             new WaitCommand(0.25)
             ),
           
-            ( isSneaking ? new RunCommand(() -> drive.drive(new ChassisSpeeds(1,-1,0))) : new ActiveDriveToPose(drive, lights, true, GoalType.Algae_Removal) )
+            ( isSneaking ? new RunCommand(() -> drive.drive(new ChassisSpeeds(2,-1,0))) : new ActiveDriveToPose(drive, lights, true, GoalType.Algae_Removal) )
         ),
 
         new InstantCommand(()->arm.SetArmAction(ArmAction.L4))

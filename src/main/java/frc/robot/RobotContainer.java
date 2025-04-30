@@ -221,11 +221,11 @@ public class RobotContainer
     NamedCommands.registerCommand("Score L L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2,false));
     NamedCommands.registerCommand("Score R L2", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2,false));
 
-    NamedCommands.registerCommand("Score L Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L4,false));
-    NamedCommands.registerCommand("Score R Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L4,false));
+    NamedCommands.registerCommand("Score L Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L4,true));
+    NamedCommands.registerCommand("Score R Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L4,true));
     
-    NamedCommands.registerCommand("Score L L2 Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2,false));
-    NamedCommands.registerCommand("Score R L2 Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2,false));
+    NamedCommands.registerCommand("Score L L2 Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Left, ArmAction.L2,true));
+    NamedCommands.registerCommand("Score R L2 Sneaky", new AutonomousScoreRoutine(coolArm, drivebase, signalLights, GoalType.Reef_Right, ArmAction.L2,true));
 
     NamedCommands.registerCommand("Station Routine", new AutonomousPickupRoutine(coolArm, signalLights, drivebase,false));
     
