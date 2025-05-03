@@ -21,36 +21,6 @@
           "data": {
             "name": "Place"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Arm L3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlign Algae"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Place"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Arm L3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlign Algae"
-          }
         }
       ]
     }

@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
@@ -272,9 +273,9 @@ public class RobotContainer
 
     // driverJoystick.button(4).whileTrue(new StartEndCommand(() -> driveToBestTarget(false), ()-> System.out.println("Lined Up Right"),drivebase));
     // driverJoystick.button(3).whileTrue(new StartEndCommand(() -> driveToBestTarget(true), () -> System.out.println("Lined UP Left?"),drivebase));
-    driverJoystick.button(4).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Right));
-    driverJoystick.button(3).whileTrue(new ActiveDriveToPose(drivebase,signalLights, false,GoalType.Reef_Left));
-    driverJoystick.button(8).whileTrue(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal));
+    driverJoystick.button(4).whileTrue(new SequentialCommandGroup(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Reef_Right),new InstantCommand(()->coolArm.SetArmAction(ArmAction.Place)) ));
+    driverJoystick.button(3).whileTrue(new SequentialCommandGroup(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Reef_Left),new InstantCommand(()->coolArm.SetArmAction(ArmAction.Place)) ));
+    driverJoystick.button(8).whileTrue(new SequentialCommandGroup(new ActiveDriveToPose(drivebase, signalLights, true, GoalType.Algae_Removal),new InstantCommand(()->coolArm.SetArmAction(ArmAction.Place)) ));
     
     
     driverJoystick.button(12).whileTrue(new RunCommand(() -> drivebase.setChassisSpeeds(new ChassisSpeeds(0, 0, 12)), drivebase));
@@ -298,8 +299,8 @@ public class RobotContainer
     driverJoystick.button(7).onTrue(new InstantCommand(() -> climber.PrepareOrClimb()));
 
     
-    driverJoystick.button(9).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake()));
-    driverJoystick.button(10).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake()));
+    driverJoystick.button(9).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(),algaeIntake));
+    driverJoystick.button(10).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(),algaeIntake));
 
     // driverJoystick.button(14).whileTrue(new ActiveDriveToReefPose(drivebase));
     
@@ -329,8 +330,8 @@ public class RobotContainer
 
     copilotBoxController.button(9).whileTrue(new RunCommand(() -> coolArm.ManualAngleControl(copilotBoxController), coolArm));
    
-    copilotBoxController.button(4).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake()));
-    copilotBoxController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake()));
+    copilotBoxController.button(4).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(),algaeIntake));
+    copilotBoxController.button(2).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(),algaeIntake));
 
     copilotBoxController.button(6).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
     //copilotController.button(6).onTrue(new PrintCommand("Should be preparing"));
@@ -350,8 +351,8 @@ public class RobotContainer
     // copilotController.povUp().onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Travel)));
     copilotSNESController.button(3).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.Pickup)));
    
-    copilotSNESController.button(5).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake()));
-    copilotSNESController.button(6).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake()));
+    copilotSNESController.button(5).toggleOnTrue(new StartEndCommand(() ->  algaeIntake.Intake(), () -> algaeIntake.StopIntake(),algaeIntake));
+    copilotSNESController.button(6).whileTrue(new StartEndCommand(() ->  algaeIntake.Outtake(), () -> algaeIntake.StopIntake(),algaeIntake));
 
     copilotSNESController.button(10).onTrue(new InstantCommand(() -> climber.Prepare(), climber));
     copilotSNESController.button(9).onTrue(new InstantCommand(() -> climber.Climb(), climber));
@@ -360,7 +361,7 @@ public class RobotContainer
 
     copilotSNESController.axisGreaterThan(0, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L2)));
     copilotSNESController.axisLessThan(0, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
-    copilotSNESController.axisGreaterThan(4, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L3)));
+    copilotSNESController.axisGreaterThan(4, 0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L1)));
     copilotSNESController.axisLessThan(4, -0.5).onTrue(new InstantCommand(()->coolArm.SetArmAction(CoolArm.ArmAction.L4)));
 
 

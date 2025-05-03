@@ -77,6 +77,8 @@ public class CoolArm extends SubsystemBase {
   private Timer servoTimer = new Timer();
 
   private boolean isClearingCollisionCase = false;
+  
+  private boolean sensorWasBlocked = true;
 
 
   // public SysIdRoutine sysIdRoutine = new SysIdRoutine(
@@ -103,6 +105,7 @@ public class CoolArm extends SubsystemBase {
     Shuffleboard.getTab("Debug 1").addBoolean("Coral Sensor", this::HasCoralInPickupBin);
     armPIDController.setIZone(20);
     elevatorPIDController.setIZone(1);
+    sensorWasBlocked = CoralGripperSensorBlocked();
     
 
     angleSetpoint = absAngleEncoder.getPosition();
@@ -131,10 +134,13 @@ public class CoolArm extends SubsystemBase {
       System.out.println("disabling servo");
     }
 
-    if(CoralGripperSensorBlocked() && !coralGripperDebounceTimer.isRunning()){
+    if(CoralGripperSensorBlocked() != sensorWasBlocked && !coralGripperDebounceTimer.isRunning()){
       coralGripperDebounceTimer.restart();
     }
-    else if(!CoralGripperSensorBlocked()){
+    else if(coralGripperDebounceTimer.hasElapsed(0.06)){
+      sensorWasBlocked = CoralGripperSensorBlocked();
+    }
+    else if(CoralGripperSensorBlocked() == sensorWasBlocked){
       coralGripperDebounceTimer.stop();
       coralGripperDebounceTimer.reset();
     }
@@ -376,7 +382,7 @@ public class CoolArm extends SubsystemBase {
   }
 
   public boolean HasCoralInGripper(){
-    return coralGripperDebounceTimer.hasElapsed(0.06);
+    return sensorWasBlocked;
   }
 
   public boolean CoralGripperSensorBlocked(){
