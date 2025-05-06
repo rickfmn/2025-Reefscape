@@ -139,16 +139,16 @@ public class ActiveDriveToPose extends Command {
     ChassisSpeeds currentSpeeds = drivetrain.getRobotVelocity();
 
 
-    // TrapezoidProfile.State currentPositionXState = new State(translationError.getX(), -currentSpeeds.vxMetersPerSecond);
+    TrapezoidProfile.State currentPositionXState = new State(translationError.getX(), -currentSpeeds.vxMetersPerSecond);
     
-    // TrapezoidProfile.State currentPositionYState = new State(translationError.getY(), -currentSpeeds.vyMetersPerSecond);
+    TrapezoidProfile.State currentPositionYState = new State(translationError.getY(), -currentSpeeds.vyMetersPerSecond);
 
 
-    previousPositionXState = positionXTrapezoidProfile.calculate(loopTimer.get(), previousPositionXState, new State(0,0));
-    double positionXPIDOutput = positionXController.calculate(translationError.getX(), 0);
+    previousPositionXState = positionXTrapezoidProfile.calculate(loopTimer.get(), currentPositionXState, new State(0,0));
+    double positionXPIDOutput = positionXController.calculate(previousPositionXState.position, 0);
 
-    previousPositionYState = positionYTrapezoidProfile.calculate(loopTimer.get(), previousPositionYState, new State(0,0));
-    double positionYPIDOutput = positionYController.calculate(translationError.getY(), 0);
+    previousPositionYState = positionYTrapezoidProfile.calculate(loopTimer.get(), currentPositionYState, new State(0,0));
+    double positionYPIDOutput = positionYController.calculate(previousPositionYState.position, 0);
 
 
     // if(!atTolerance){
