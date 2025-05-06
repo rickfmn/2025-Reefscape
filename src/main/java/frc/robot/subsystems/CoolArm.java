@@ -128,10 +128,7 @@ public class CoolArm extends SubsystemBase {
   public void periodic() {
 
     if( servoTimer.isRunning() && servoTimer.hasElapsed(1)){
-      servoTimer.stop();
-      servoTimer.reset();
-      m_servo.setPosition(0.5);
-      System.out.println("disabling servo");
+      ServoStop();
     }
 
     if(CoralGripperSensorBlocked() != sensorWasBlocked && !coralGripperDebounceTimer.isRunning()){
@@ -298,6 +295,10 @@ public class CoolArm extends SubsystemBase {
           newAngleSP = CoolArmConstants.kL4PlaceAngleSP;
           newElevatorSP = elevatorSetpoint;
         }
+        else if (currentAction == ArmAction.L3){
+          newAngleSP = CoolArmConstants.kPlaceAngleSP;
+          newElevatorSP = CoolArmConstants.kL3PrepElevatorSP - 2;
+        }
         else if (currentAction == ArmAction.Travel){
           newAngleSP = CoolArmConstants.kTravelAngleSP;
           newElevatorSP = CoolArmConstants.kTravelHighElevatorSP;
@@ -418,5 +419,11 @@ public class CoolArm extends SubsystemBase {
     m_servo.setPosition(0);
     m_servo.setSpeed(-1);
     servoTimer.restart();
+  }
+
+  public void ServoStop(){
+    servoTimer.stop();
+    servoTimer.reset();
+    m_servo.setPosition(0.5);
   }
 }

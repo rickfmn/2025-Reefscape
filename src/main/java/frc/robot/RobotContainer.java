@@ -251,6 +251,8 @@ public class RobotContainer
 
     NamedCommands.registerCommand("Simple L1", simpleL1Auto);
 
+    NamedCommands.registerCommand("Sick", new InstantCommand(()->coolArm.ServoLoad()));
+
 
   }
 
@@ -518,6 +520,7 @@ public class RobotContainer
 
   public void disabledInit(){
     signalLights.SetSignal(LightSignal.Idle);
+    //coolArm.ServoStop();
   }
 
 

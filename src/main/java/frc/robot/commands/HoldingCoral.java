@@ -36,6 +36,7 @@ public class HoldingCoral extends Command {
   public void end(boolean interrupted) {
     if(!interrupted){
       coolArm.SetArmAction(ArmAction.Travel);
+      System.out.println("Not Holding Coral Anymore");
     }
     
   }

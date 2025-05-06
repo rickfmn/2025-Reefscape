@@ -224,6 +224,7 @@ public class Robot extends TimedRobot
     disabledTimer.reset();
     disabledTimer.start();
     m_robotContainer.disabledInit();
+    
   }
 
   @Override
