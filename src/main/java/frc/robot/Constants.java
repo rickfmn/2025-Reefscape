@@ -59,7 +59,7 @@ public final class Constants
    public static final double positionKI = 0.001;
    public static final double positionKD = 0.00;
 
-   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/*meters per second */, 8 /*meters per second per second*/);
+   public static final TrapezoidProfile.Constraints positionPIDConstraints = new Constraints(MAX_SPEED/*meters per second */, 12 /*meters per second per second*/);
    public static final TrapezoidProfile.Constraints rotationPIDConstraints = new Constraints(2/*radians per second */, 2 /*radians per second per second*/);
 
 
