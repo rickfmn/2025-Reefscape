@@ -515,6 +515,7 @@ public class RobotContainer
     coolArm.SetElevatorSetpoint(coolArm.elevatorEncoder.getPosition());
     coolArm.SetElevatorControlEnabled(false);
     signalLights.periodic();
+    
     //signalLights.SetSignal(LightSignal.databitsAnimated);
   }
 

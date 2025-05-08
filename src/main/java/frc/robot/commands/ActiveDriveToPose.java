@@ -89,9 +89,9 @@ public class ActiveDriveToPose extends Command {
     
     
     
-    //SmartDashboard.putData(positionController);
+    SmartDashboard.putData(positionController);
     
-    SmartDashboard.putData(rotationController);
+    //SmartDashboard.putData(rotationController);
   }
 
   // Called when the command is initially scheduled.
