@@ -22,7 +22,7 @@ import frc.robot.subsystems.SignalLights;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ActiveDriveToPose extends Command {
+public class AutoDriveToPose extends Command {
 
 
 
