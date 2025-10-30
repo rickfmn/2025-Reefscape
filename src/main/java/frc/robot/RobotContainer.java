@@ -57,7 +57,6 @@ public class RobotContainer
   final         CommandJoystick driverJoystick = new CommandJoystick(0);
 
   final         CommandJoystick copilotBoxController = new CommandJoystick(1);
-
   
   final         CommandJoystick copilotSNESController = new CommandJoystick(2);
 
